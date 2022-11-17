@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- signup form starts -->
+<section class="h-100 " style="background-image: url(/static/images/same1.jpg); background-size:cover;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="my-4 m-0 row g-0" style="background: rgba(236, 240, 236, 0.2)">
+              <div class="m-0 d-flex align-items-center ">
+                <div class=" card-body p-md-5 text-black">  
+                  {% block form %}
+                    <form action="" method="POST">
+                      {% csrf_token %}
+                  <div class="form-outline mb-4">
+                    <input name="username" type="text" placeholder="Username" id="form3Example90" class="form-control form-control-lg" />
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input name="first_name" type="text" placeholder="First Name" id="form3Example90" class="form-control form-control-lg" />
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input name="email" type="email" placeholder="Email" id="form3Example8" class="form-control form-control-lg" />
+                  </div>
+                  <div class=" d-flex mb-4 ">
+                    <div class=" col-md-2 col-4 form-outline">
+                      <input value="+91" name="country_code" type="text" placeholder="Country" id="form3Example99" class="form-control form-control-lg" />
+                    </div>
+                    <div class="col-md-10 col-8 form-outline ">
+                      <input name="phone_number" type="text" placeholder="Mobile" id="form3Example99" class="form-control form-control-lg" />
+                    </div>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input name="password1" type="password" placeholder="Password" id="form3Example90" class="form-control form-control-lg" />
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input name="password2" type="Password" placeholder="Re-enter Password" id="form3Example90" class="form-control form-control-lg" />
+                  </div>
+                  <div class="d-flex justify-content-end pt-3">
+                    <div class="col-md-9">
+                    <p>Already have an account?<a href="{% url 'LogIn' %}">LogIn</a></p>
+                  </div>
+                  <div class="col-md-3 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-dark btn-lg ms-2">Verify Phone No & Sign Up</button>
+                  </div>  
+                </div>
+                </form>
+                {% endblock %}
+                {% block messages %}
+                  {% for message in messages %}
+                        <div class="pt-3 col-md-12 d-flex justify-content-center text-danger">
+                            <p class="card ">{{message}}</p>
+                        </div>
+                    {% endfor %}
+                  {% endblock %}
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+  </section>
+<!-- signup form ends -->
+{% endblock %}

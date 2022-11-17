@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="h-100 pb-5">
+
+    <div class=" container">
+        <div class="row rounded">
+            <div class="col-md-6 col-6 pt-3">
+                <!-- <div style="height: 20rem" class=" show d-flex justify-content-center prod-img-box"
+                    href="{{prod_detail.product_image.url}}">
+                    <img id="show-img" class="img-fluid" src="{{prod_detail.product_image.url}}" alt="">
+                </div> -->
+
+                <div style="height: 20rem" class=" show d-flex justify-content-center prod-img-box">
+                    <img id="" class="img-fluid zoom" src="{{prod_detail.product_image.url}}" alt="">
+                </div>
+
+                <div class=" detail-box ">
+                    <div class=" d-flex  justify-content-center ">
+                        {% for pi in prod_detail.productimage_set.all %}
+                        <div class="col-md-4">
+                            <img class="img-fluid" src="{{pi.product_image.url}}" alt="">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class=" col-md-6 col-6 pt-3">
+                <h3 class=" container">{{prod_detail.product_name}}</h3>
+                <h6 class="container ">{{prod_detail.product_description}}</h6>
+                <h6 class="container pt-2 text-danger ">Rs.{{prod_detail.product_price}}</h6>
+                <div class="container h-50 pt-5 d-flex justify-content-between">
+                    <a class="" href="{% url 'add_to_cart' prod_detail.id %}"><button class=" btn btn-warning">Add To Cart</button></a>
+                    <a class="" href=""><button class="mr-auto btn btn-success">Buy Now</button></a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+{% endblock %}
+
+{% block lowerBodyScript %}
+
+
+
+<script>
+    $(document).ready(function(){
+        $('.zoom').imagezoomsl({
+        zoomrange:[3,3]
+        });
+    })
+</script>
+{% endblock %}

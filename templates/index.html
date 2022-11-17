@@ -1,0 +1,393 @@
+<!-- {% load static %} -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkateBuddy</title>
+  <link rel="icon" href="{% static 'images/logo1.jpg' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/indexstyle.css' %}">
+</head>
+{%block style %}{% endblock %}
+
+<body>
+  {% block index %}
+  <div style="background-image: url(/static/images/bg.jpg); background-size:cover;">
+    <header>
+      <div class="container-fluid " style="height: 20px;">
+        <div class="row ">
+          <div class="col-md-6 col-6">
+            <small class="text-light">IND</small>
+          </div>
+          <div class="col-md-6 col-6">
+            <ul class="d-flex  list-unstyled justify-content-end">
+              <li><a class="text-light" href=""><small>About Us</small></a></li>
+              <li class=" mx-3"><a class="text-light" href=""><small>Contact Us</small></a></li>
+              {% if not user.is_authenticated %}
+              <li><a class=" text-success" href="{% url 'signup' %}">SignUp</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- navBar starts -->
+      <div class="container">
+        <nav class=" navbar navbar-expand-lg navbar-light ">
+          <a class="navbar-brand text-light font-weight-bold" href="#">SkateBuddy</a>
+          <button class="bg-dark navbar-toggler " type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class=" navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class=" navbar-nav mr-auto">
+              <li class="nav-item active ">
+                <a class="nav-link text-light" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <!-- <li class="nav-item">
+                  <a class="nav-link text-light" href="#">SkateBoards</a>
+                </li> -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-toggle="dropdown"
+                  aria-expanded="false">
+                  Products
+                </a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{% url 'prod_deck' %}">Deck</a>
+                  <a class="dropdown-item" href="{% url 'prod_wheel' %}">Wheels</a>
+                  <a class="dropdown-item" href="{% url 'prod_trucks' %}">Trucks</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="#">Blogs</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 mr-auto" method="" action="{% url 'search' %}">
+              {% csrf_token %}
+              <input name="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav ">
+              <li class="nav-item">
+                <a class="nav-link text-light" href="{% url 'user_details' %}"><i class="fa-solid fa-user"></i>
+                  {% if user.is_authenticated %}
+                  &nbsp;{{user}}
+                  {% endif %}
+                </a>
+                <!-- <a class="nav-link text-light" href=""><i class="fa fa-heart" aria-hidden="true"></i></a> -->
+                {% if user.is_authenticated %}
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="/cart"><i class="fa fa-shopping-cart" aria-hidden="true">
+                    {% if user.cart_set.count > 0 %}
+                    <div class="badge badge-warning">{{user.cart_set.count}}</div>
+                  </i></a>
+                {% else %}
+                <div class="badge badge-warning"></div></i></a>
+                {% endif %}
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-toggle="dropdown"
+                  aria-expanded="false">
+                  <i class="fa-solid fa-gears"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="{% url 'user_orders' %}">Orders</a>
+                    <a class="dropdown-item" href="{% url 'LogOut' %}">LogOut</a>
+                </div>
+              </li>
+              {% endif %}
+
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <!-- navBar ends -->
+    </header>
+
+    <!-- Intro starts-->
+    <section>
+      <div class="container ">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="detail-box text-light">
+              <h1>Best Skateboards</h1>
+              <p>
+                Skateboarding has always been for the ones driven by passion. For the one’s who wanted to do things
+                differently and the ones who at some point got tired of waiting on the sidelines. We skate because it
+                liberates us. For some of us it gives us joy, for some it’s an outlet to our problems and for some it's
+                the outlet to our creativity. This is why we don’t make excuses to grow. If you really think of it,
+                almost everything is skate able is some way. You just have to stop making excuses.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Intro ends-->
+
+    <!-- Offer starts -->
+    <section class="offer_section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 px-0">
+            <div class="box ">
+              <img class="p-2" src="{% static 'images/offer1.jpg'%}" alt="">
+              <div class="detail-box">
+                <h2>Skateboards</h2>
+                <h3>Upto 10% Off</h3>
+                <a href="">Shop Now</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 px-0">
+            <div class="box">
+              <img src="{% static 'images/offer2.jpg'%}" alt="">
+              <div class="detail-box">
+                <h2>Skateboards</h2>
+                <h3>Upto 20% Off</h3>
+                <a href="">Shop Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Offer ends -->
+
+    <!-- about section -->
+    <section class="about_section about_section1 layout_padding-bottom">
+      <div class="container  ">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="text-light detail-box" style="height: 15rem;">
+              <div class="heading_container">
+                <h2 class="heading">About Us</h2>
+              </div>
+              <p>
+                There are many variations of passages of Lorem Ipsum available, but the majority have suffered
+                alteration
+                in some form, by injected humour, or randomised words which don't look even slightly believable. If you
+                are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden
+                in
+                the middle of text. All
+              </p>
+              <a href="">Read More</a>
+            </div>
+          </div>
+          <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <div class="img-box " style="height: 15rem;">
+              <img class="rounded w-100 h-100" src="{% static 'images/about.jpg'%}" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end about section -->
+
+    <!-- Product section starts -->
+    <section class="pt-4 product_section ">
+      <div class="text-light container heading_container heading_center">
+        <h2>Featured Skateboards</h2>
+      </div>
+      <div class="product container">
+        <div class="row rounded  bg-light">
+          <div class="col-md-4 col-6 d-flex justify-content-center">
+            <div class="prod-box m-3" style="height: 350px;">
+              <div class="h-75 d-flex justify-content-center prod-img-box">
+                <img class="img-fluid" src="{% static 'images/p1.png'%}" alt="">
+              </div>
+              <div class="h-25 detail-box ">
+                <h4 class="d-flex justify-content-center">Skateboard</h4>
+                <h6 class="price d-flex justify-content-center">
+                  <span class="new_price">40$</span>
+                </h6>
+                <a class="d-flex justify-content-center" href="">Buy Now</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-6 d-flex justify-content-center">
+            <div class="prod-box m-3 " style="height: 350px;">
+              <div class="h-75  d-flex justify-content-center prod-img-box ">
+                <img class="img-fluid" src="{% static 'images/p3.png'%}" alt="">
+              </div>
+              <div class="h-25 detail-box ">
+                <h4 class="d-flex justify-content-center">Skateboard</h4>
+                <h6 class="price d-flex justify-content-center">
+                  <span class="new_price">40$</span>
+                </h6>
+                <a class="d-flex justify-content-center" href="">Buy Now</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-6 d-flex justify-content-center">
+            <div class="prod-box m-3" style="height: 350px;">
+              <div class="h-75  d-flex justify-content-center prod-img-box">
+                <img class="img-fluid" src="{% static 'images/p2.png'%}" alt="">
+              </div>
+              <div class="h-25 detail-box ">
+                <h4 class="d-flex justify-content-center">Skateboard</h4>
+                <h6 class="price d-flex justify-content-center">
+                  <span class="new_price">40$</span>
+                </h6>
+                <a class="d-flex justify-content-center" href="">Buy Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- product section ends -->
+
+    <!-- blog section -->
+    <section class="pb-4 pt-4 blog_section layout_padding">
+      <div class="container">
+        <div class="text-light heading_container heading_center">
+          <h2>Our Blog</h2>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="box">
+              <div class="img-box">
+                <img class="img-fluid" src="{% static 'images/blog1.png'%}" alt="">
+              </div>
+              <div class="text-light  detail-box">
+                <h6 class="blog_date">
+                  <i class="fa fa-calendar" aria-hidden="true"></i> April 21, 2021
+                </h6>
+                <h5>SKATESPARKS IN REST OF INDIA</h5>
+                <p>
+                  Rajasthan - There’s a big skatepark called “Desert Dolphin” in the middle of a desert. It was built in
+                  2018 by a group of skatepark builders and skaters called 100ramps. The park takes up 14000 sq.ft. of
+                  land and looks extremely fun to skate. The skatepark...
+                </p>
+                <a href="">Read More</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="box">
+              <div class="img-box">
+                <img class="img-fluid " src="{% static 'images/blog2.jpg'%}" alt="">
+              </div>
+              <div class="text-light detail-box">
+                <h6 class="blog_date">
+                  <i class="fa fa-calendar" aria-hidden="true"></i> March 31, 2021
+                </h6>
+                <h5>SKATEPARKS IN NORTH EAST INDIA</h5>
+                <p>
+                  Pro-Life Skatepark (Meghalaya)- is one of the two skateparks located in the cloudy mountains of
+                  Shillong. It’s incredible to even think that skateboarding exists amongst the roller coaster like
+                  geographical terrain of Meghalaya. Only a few warriors are brave...
+                </p>
+                <a href="">Read More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end blog section -->
+  </div> <!-- background picture ends  -->
+
+  <!-- footer start -->
+  <footer class="pb-3 bg-secondary  info_section">
+    <div class=" container">
+      <div class="row info_main_row">
+        <div class="pt-2 col-md-6 info_col">
+          <div class="info_form">
+            <h5>Newsletter</h5>
+            <form action="#">
+              <input type="text" class="form-control" placeholder="Enter Your Email" />
+              <a href=""><button class="mt-2 btn btn-outline-dark text-light" type="submit">Subscribe</button></a>
+            </form>
+          </div>
+        </div>
+        <div class="pt-2 col-md-6 col-lg-3 mx-auto info_col">
+          <h5>Connect With Us</h5>
+          <div class="info_contact">
+            <a class="" href="#">
+              <i class="fa fa-map-marker" aria-hidden="true"></i>
+              <span>Location</span>
+            </a>
+            <a href="">
+              <i class="fa fa-phone" aria-hidden="true"></i>
+              <span>Call +01 1234567890</span>
+            </a>
+            <a href="">
+              <i class="fa fa-envelope"></i>
+              <span>demo@gmail.com</span>
+            </a>
+          </div>
+          <div class=" mt-2 social_box">
+            <a href="">
+              <i class="fa fa-facebook" aria-hidden="true"></i>
+            </a>
+            <a href="">
+              <i class="fa fa-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="">
+              <i class="fa fa-linkedin" aria-hidden="true"></i>
+            </a>
+            <a href="">
+              <i class="fa fa-instagram" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- footer end -->
+
+
+
+  {% endblock %}
+
+
+  <script src="{% static '/js/validation.js' %}"></script>
+
+  <!-- jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+
+
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+  {% block lowerBodyScript %}
+
+  {% endblock %}
+
+  <!-- sweet alert -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- sweet alert -->
+
+  {% for message in messages %}
+  <script>
+    swal.fire('{{message}}')
+  </script>
+  {% endfor %}
+  <!-- image zooming -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="{% static '/js/zoomsl.min.js' %}"></script>
+  <!-- image zooming ends -->
+
+  <!-- fontAwesome -->
+  <script src="https://kit.fontawesome.com/b067624169.js" crossorigin="anonymous"></script>
+  <!-- fontAwesome -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+    crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

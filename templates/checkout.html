@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="" style="background-color: gainsboro;">
+    <div class="container-fluid  ">
+        <!-- Heading -->
+        <h2 class="my-3 h2 pt-3 text-center">Checkout form</h2>
+
+        <!--Grid row-->
+        <div class="row">
+
+            <!--Grid column-->
+            <div class="col-md-8 mb-4">
+                <!-- Add new address -->
+                <!-- <div class="col-md-12 row  pb-3 d-flex justify-content-start align-items-center">
+                    <a style="text-decoration: none;" href="{% url 'add_address' %}"><button type="submit"
+                            class="btn btn-sm btn-outline-dark my-2 my-sm-0">Add new Address</button></a>
+                </div> -->
+                <!--Card-->
+                <div class="card">
+                    {% if user.address_set.all %}
+                    <div class="container">
+                        <small><strong>Choose Address:</strong></small>
+                    </div>
+                    <div class="container d-flex pt-3">
+                        {%for ua in user.address_set.all %}
+                        <div class=" card col-md-4">
+                            <div class=" pt-3 h-75">
+                                <ul class="d-flex" style="list-style: none;">
+                                    <li>
+                                        <!-- Form start -->
+                                        <form class="" action="{% url 'place_order' %}" id="addressform" method="POST"
+                                            enctype="multipart/form-data">
+                                            <div class=" ">
+                                                <input value="{{ua.id}}" id="{{ua.type}}"
+                                                    onclick="selectAddress('{{ua.type}}','{{ua.address}}','{{ua.district}}','{{ua.pin}}','{{ua.state}}','{{ua.landmark}}','{{ua.phone_number}}')"
+                                                    id="address_chose" name="address_chose" type="radio" class="" required>
+                                                <label for="{{ua.type}}">&nbsp;{{ua.type}}</label>
+                                            </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                    </div>
+                    <div class="container pb-3">
+                        {% csrf_token %}
+                        <div class="pt-5 form-outline mb-4">
+                            <input disabled name="type" type="text" placeholder="Type (Eg.Home, Office)" id="type"
+                                class=" form-control form-control-lg" onkeyup="validateType()" />
+                            <span id=type-error></span>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <textarea disabled name="address" type="text" placeholder="Address" id="address"
+                                class="form-control form-control-lg" onkeyup="validateAddress()"></textarea>
+                            <span id=address-error></span>
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <input disabled name="pin" type="number" placeholder="PIN No." id="pin"
+                                class="form-control form-control-lg" onkeyup="validatePin()" />
+                            <span id=pin-error></span>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <input disabled name="district" type="text" placeholder="District" id="district"
+                                class="form-control form-control-lg" onkeyup="validateDistrict()" />
+                            <span id=district-error></span>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <input disabled name="state" type="text" placeholder="State" id="state"
+                                class="form-control form-control-lg" onkeyup="validateState()" />
+                            <span id=state-error></span>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <input disabled name="landmark" type="text" placeholder="Landmark" id="landmark"
+                                class="form-control form-control-lg" onkeyup="validateLandmark()" />
+                            <span id=landmark-error></span>
+                        </div>
+
+                        <div class=" form-outline ">
+                            <input disabled name="phone_number" type="number" placeholder="Mobile" id="phone"
+                                class="form-control form-control-lg" onkeyup="validatePhone()" />
+                            <span id=phone-error></span>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <!--/.Card-->
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-4 mb-4">
+
+                <!-- Heading -->
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Your cart</span>
+                    <span class="badge badge-secondary badge-pill">{{count}}</span>
+                </h4>
+
+                <!-- Cart -->
+                <ul class="list-group mb-3 z-depth-1">
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+                            <h6 class="my-0">Sub Total</h6>
+                        </div>
+                        <span class="text-muted">₹.&nbsp;{{tot_amount}}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+                            <h6 class="my-0">Shipping</h6>
+                        </div>
+                        <span class="text-muted">Free</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+                            <h6 class="my-0">Discount</h6>
+                        </div>
+                        <span class="text-muted">₹.&nbsp;0.0</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+                        <!-- Promo code -->
+                        <div class=" my-3">
+                            <div class="pb-3    custom-control custom-radio">
+                                <input id="cod" value="COD" name="paymentmethod" type="radio"
+                                    class="custom-control-input" required>
+                                <label class="custom-control-label" for="cod">Cash on Delivery</label>
+                            </div>
+                            <div class="pb-3    custom-control custom-radio">
+                                <input id="paypal" value="paypal" name="paymentmethod" type="radio"
+                                    class="custom-control-input" required>
+                                <label class="custom-control-label" for="paypal">PayPal</label>
+                            </div>
+                            <div class="pb-3    custom-control custom-radio">
+                                <input id="razorpay" value="razorpay" name="paymentmethod" type="radio"
+                                    class="custom-control-input" required>
+                                <label class="custom-control-label" for="razorpay">Razor Pay</label>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Promo code"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary btn-md waves-effect m-0" type="button">Redeem</button>
+                            </div>
+                        </div>
+                        <!-- Promo code -->
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total (Rs)</span>
+                        <strong>₹&nbsp;{{tot_amount}}</strong>
+                    </li>
+                </ul>
+                <!-- Cart -->
+                <div class="p-3 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-outline-success btn-lg ms-2">Continue To Checkout</button>
+                </div>
+
+
+
+            </div>
+            <!--Grid column-->
+            </form>
+
+        </div>
+        <!--Grid row-->
+
+
+
+    </div>
+</section>
+{% endblock %}
+
+{% block lowerBodyScript %}
+<script>
+
+    function selectAddress(type, address, district, pin, state, landmark, phone) {
+        document.getElementById('type').value = type
+        document.getElementById('address').value = address
+        document.getElementById('district').value = district
+        document.getElementById('pin').value = pin
+        document.getElementById('state').value = state
+        document.getElementById('landmark').value = landmark
+        document.getElementById('phone').value = phone
+
+    }
+
+</script>
+
+
+{% endblock %}

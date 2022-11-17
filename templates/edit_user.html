@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="h-100 pb-5">
+    <div  class="container" >
+        
+        <form action="" method="POST">
+            {% csrf_token %}
+        <div class="form-outline mb-4">
+            <label for="username">Username</label>
+          <input name="username" type="text" placeholder="Username" id="username" value="{{user.username}}" class="form-control form-control-lg" onkeyup="validateUsername()"/>
+          <span id=username-error></span>
+        </div>
+        <div class="form-outline mb-4">
+            <label for="firstname">First Name</label>
+            <input name="firstname" type="text" placeholder="First Name" id="firstname" value="{{user.first_name}}"  class="form-control form-control-lg" onkeyup="validateFirstname()"/>
+          <span id=firstname-error></span>
+        </div>
+        <div class="form-outline mb-4">
+            <label for="email">Email</label>
+            <input name="email" type="email" placeholder="Email" id="email" value="{{user.email}}" class="form-control form-control-lg" onkeyup="validateEmail()"/>
+          <span id=email-error></span>
+        </div>
+        <div class="form-outline mb-4 ">
+            <label for="phonenumber">Phone Number</label>
+            <input name="phonenumber" type="text" placeholder="Mobile" id="phonenumber" value="{{user.phone_number}}" class="form-control form-control-lg"  onkeyup="validatePhonenumber()"/>
+          <span id=phonenumber-error></span>
+        </div>
+        <div class="form-outline mb-4">
+            <label for="password">Password</label>
+            <input name="password" type="password" placeholder="Password" id="password" value="{{user.password}}" class="form-control form-control-lg" onkeyup="validatePassword()"/>
+            <span id=password-error></span>
+        </div>
+        <div class="">
+          <button type="submit" class="btn btn-dark btn-lg ms-2">Update</button>
+        </div>  
+        </div>
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block lowerBodyScript %}
+
+
+<!-- validation submit -->
+
+<script>
+
+var usernameError = document.getElementById('username-error');
+var firstnameError = document.getElementById('firstname-error');
+var emailError = document.getElementById('email-error');
+var phonenumberError = document.getElementById('phonenumber-error');
+var passwordError = document.getElementById('password-error');
+
+function validateUsername() {
+var username=document.getElementById('username').value.trim();  
+
+if (username.length==0 || username.length<3) {
+    usernameError.innerHTML='Enter min 3 characters';
+    usernameError.style.color='red'
+    return false;
+}
+
+if (!username.match(/^[A-Za-z0-9]*$/)){
+    usernameError.innerHTML='Username is incorrect';
+    usernameError.style.color='red'
+    return false;
+}
+
+usernameError.innerHTML='UserName is valid';
+usernameError.style.color='green'
+return true;
+}
+
+function validateFirstname() {
+    var firstname=document.getElementById('firstname').value.trim();  
+    
+    if (firstname.length==0 || firstname.length<3) {
+        firstnameError.innerHTML='Enter min 3 characters';
+        firstnameError.style.color='red'
+        return false;
+    }
+    
+    if (!firstname.match(/^[A-Za-z]*$/)){
+        firstnameError.innerHTML='Enter correct name';
+        firstnameError.style.color='red'
+        return false;
+    }
+    
+    firstnameError.innerHTML='Name is valid';
+    firstnameError.style.color='green'
+    return true;
+    }
+
+    function validatePhonenumber() {
+        var phonenumber =document.getElementById('phonenumber').value.trim();
+        
+            if(phonenumber.match(/^[0-9]+$/) && phonenumber.length>9 && phonenumber.length<14)
+            {
+                phonenumberError.innerHTML='Number is valid';
+                phonenumberError.style.color='green'
+                return true;
+            }
+    
+            else{
+                phonenumberError.innerHTML ='Mobile Number is Required';
+                phonenumberError.style.color='red'
+                return false;
+            }
+        }
+
+
+    function validateEmail(){
+        var email = document.getElementById('email').value.trim();
+        if (email.length==0) {
+            emailError.innerHTML='Email is Required';
+            emailError.style.color='red'
+            return false;
+        }
+    
+        if (!email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+            emailError.innerHTML='Email is Invalid';
+            emailError.style.color='red'
+            return false;
+        }
+        emailError.innerHTML='Email is valid';
+        emailError.style.color='green'
+        return true;
+    }
+
+    
+    function validatePassword() {
+        var password=document.getElementById('password').value.trim();  
+        
+        if (password.length==0 || password.length<3) {
+            passwordError.innerHTML='Enter atleast 3 characters';
+            passwordError.style.color='red'
+            return false;
+        }
+        passwordError.innerHTML='Password is Valid';
+        passwordError.style.color='green'
+        return true;
+    }
+</script>
+<script type="text/javascript">var jQuery_1_7_1 = $.noConflict(true);</script>
+
+<script>
+    jQuery_1_7_1(document).on("submit", "form", function (e) {
+        validateUsername()
+        validateFirstname()
+        validatePhonenumber()
+        validateEmail()
+        validatePassword()
+
+      if (validateUsername() && validateFirstname() && validatePhonenumber() && validateEmail()  && validatePassword() ) {
+         
+      } else {
+          e.preventDefault();
+      console.log("Fayas")
+      swal('Complete the form');
+          return true;
+      }
+  });
+</script>
+{% endblock %}
+
+
+

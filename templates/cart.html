@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="h-100 h-custom" style="background-color: #A9A9A9;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12">
+                <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+                    <div class="card-body p-0">
+                        {% if message %}
+                        <div style="height: 50vh;" class="d-flex justify-content-center align-items-center row">
+                            <h4>{{message}}</h4>
+                        </div>
+                        {% else %}
+                        <div class="row g-0">
+                            <div class="col-lg-8">
+                                <div class="p-5">
+                                    <div class="d-flex justify-content-between align-items-center mb-5">
+                                        <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+                                        <h6 class="mb-0 text-muted">{{count}}&nbsp;&nbsp;items</h6>
+                                    </div>
+                                    <hr class="my-4">
+                                    <!-- One Product  -->
+                                    {% for order_item in orders %}
+                                    <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                        <div class="col-md-2 col-lg-2 col-xl-2">
+                                            <img src="{{order_item.product.product_image.url}}"
+                                                class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                        </div>
+                                        <div class="col-md-3 col-lg-3 col-xl-3">
+                                            <h6 class="text-muted">{{order_item.product.category.category_name}}</h6>
+                                            <h6 class="text-black mb-0">{{order_item.product.product_name}}</h6>
+                                        </div>
+                                        {% csrf_token %}
+                                        <!-- quantity start -->
+                                        <div class="col-md-3 col-lg-3 col-xl-2 d-flex text-center">
+
+                                            <button onclick="minus('{{order_item.id}}','{{order_item.quantity}}','{{order_item.get_final_price}}')"
+                                                style="text-decoration: none;" class="btn change_qty btn-link px-2 input-group-text">
+                                                <i class="fas fa-minus"></i></button>
+
+                                            <span id="{{order_item.id}}" class="input-group-text bg-light">{{order_item.quantity}}</span>
+
+                                            <button style="text-decoration: none;" onclick="plus('{{order_item.id}}','{{order_item.quantity}}','{{order_item.get_final_price}}')"
+                                                class=" btn btn-link px-2 input-group-text">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <!-- quantity end -->
+                                        <div class="col-md-3 col-lg-2 col-xl-2 d-flex align-items-center offset-lg-1">
+                                            <span>Rs.</span><h6 id="{{order_item.get_final_price}}" class="mb-0">{{order_item.get_final_price}}</h6>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                            <a href="{% url 'removeitem' order_item.id %}" class="text-muted"><i
+                                                    class="fas fa-times"></i></a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4">
+                                    {% endfor %}
+                                    <!-- One Product ends -->
+
+                                    <div class="pt-5">
+                                        <h6 class="mb-0"><a href="#!" class="text-body"><i
+                                                    class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 bg-grey">
+                                <div class="p-5">
+                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                                    <hr class="my-4">
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <h5 class="text-uppercase">Items&nbsp;&nbsp;&nbsp;{{count}}</h5>
+                                        <!-- <h5>Rs.{{order.get_total_price}}</h5> -->
+                                    </div>
+                                    <div class="d-flex ">
+                                    <h5 class="text-uppercase mb-3">Shipping</h5>
+                                    <h5 class="">&nbsp;&nbsp;&nbsp;Free</h5>
+                                    </div>
+                                    <!-- <div class="mb-4 pb-2">
+                                        <select class="select">
+                                            <option  value="40">Standard-Delivery</option>
+                                            <option value="100">Superfast-Delivery</option>
+                                        </select>
+                                    </div> -->
+
+                                    
+
+                                    <hr class="my-4">
+
+                                    <div class="d-flex justify-content-between mb-5">
+                                        <h5 class="text-uppercase">Total price</h5>
+                                        <span>Rs.</span><h5 id="total">{{tot_amount}}</h5>
+                                    </div>
+
+                                    <a style="text-decoration: none;" href="/checkout"><button type="button" class="btn btn-success btn-block btn-lg"
+                                        data-mdb-ripple-color="dark">Checkout</button></a>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block lowerBodyScript %}
+
+<script>
+    function minus(orderid, qty, item_tot_price) {
+        $.ajax({
+            type: "GET",
+            url: "qty_minus/" + orderid,
+            success: function (response) {
+                if (response.qty == 0) {
+                    $.ajax({
+                        type: "GET",
+                        url: "removeitem/" + orderid,
+                        success: function () {
+                            console.log("hi")
+                            swal.fire("Item removed").then(() => {
+                                location.reload()
+                            })
+                        }
+                    });
+                }
+                else {
+                    document.getElementById(orderid).innerHTML = response.qty;
+                    document.getElementById(item_tot_price).innerHTML = response.updated_price;
+                    document.getElementById('total').innerHTML = response.tot_amount;
+                    item_tot_price
+                }
+            }
+        });
+    }
+
+    function plus(orderid, qty, item_tot_price) {
+        $.ajax({
+            type: "GET",
+            url: "qty_plus/" + orderid,
+            success: function (response) {
+                console.log(response)
+
+                document.getElementById(orderid).innerHTML = response.qty;
+                document.getElementById(item_tot_price).innerHTML = response.updated_price;
+                document.getElementById('total').innerHTML = response.tot_amount;
+            }
+        })
+    }
+</script>
+{% endblock %}

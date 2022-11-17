@@ -1,0 +1,46 @@
+{% extends 'admin/admindashboard.html' %}
+{% load static %}
+
+    {% block innercontent %}
+    <section class="pt-3">
+        <div class="container">
+            {% block form %}
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class=" form-outline mb-4">
+              <input name="product_name" type="text" placeholder="Product_Name" id="form3Example90" class="border-success form-control form-control-lg" />
+            </div>
+            <div class="form-outline mb-4">
+              <input name="product_price" type="text" placeholder="Product_Price" id="form3Example90" class="border-success form-control form-control-lg" />
+            </div>
+            <div class="form-outline mb-4">
+              <textarea  cols="30" rows="10" style="height: 10rem;" name="product_description" type="text" placeholder="Product_Description" id="form3Example90" class="border-success form-control  form-control-lg"></textarea>
+              </div>
+            <div class="form-outline mb-4">
+              <input name="product_qty" type="number" placeholder="Product_Qty" id="form3Example95" class="border-success form-control form-control-lg" />
+            </div>
+            <div class="form-outline mb-4">
+                <label class="container" for="prod_categ" placeholder="">Select Category</label>
+                <select class="border-success form-control form-control-lg" name="product_category" placeholder="category" id="prod_categ">
+                    {% for category in category_list %}
+                    <option value="{{category.id}}">{{category.category_name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class=" form-outline mb-4">
+              <label class="container" for="form3Example90" placeholder="">Add Product Images</label>
+              <input name="product_image" type="file"   id="form3Example90" class="  " required/>
+            </div>
+            <div class="form-outline mb-4">
+              <label class="container" for="form3Example91" placeholder="">Add More Product Images</label>
+              <input name="product_images" type="file" multiple  id="form3Example91" class="  "  accept="image/*"/>
+            </div>
+              <div class="">
+              <button type="submit" class="btn btn-dark btn-lg ms-2">Upload</button>
+            </div>  
+            </form>
+                {% endblock %}
+
+        </div>
+    </section>
+    {% endblock %}

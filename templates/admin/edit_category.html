@@ -1,0 +1,91 @@
+{% extends 'admin/admindashboard.html' %}
+{% block innercontent %}
+<section>
+  <div class="pt-3 col-md-12 ml-auto">
+    <a href="{% url 'admincategory' %}"><button type="submit" class=" btn btn-secondary text-light">Back</button></a>
+  </div>
+  <div class="container-fluid h-100">
+    <div class="row">
+      <div class="col-md-12  ">
+        <!-- form start -->
+        <form method="POST" id="submit-form" enctype="multipart/form-data">
+            {% csrf_token %}
+              <div class="pt-5 form-outline mb-4">
+                <label class="text-success" for="categ_name"  >Change Category Name</label>
+                <input value="{{category.category_name}}" name="categ_name" type="text" placeholder="CategoryName" id="categ_name" class="border-success form-control form-control-lg" onkeyup="validateCategname()" />
+                <span id=categ_name-error></span>
+              </div>
+              <div class="d-flex flex-column form-group mt-3">
+                <label class="text-success" for="form3Example90" >Change Category Image</label>
+                {% if category.category_image %}
+                <img class="pb-3 col-md-3 col-3"   src="{{category.category_image.url}}" alt="">
+                {% endif %}
+                <input name="categ_image" type="file" id="form3Example90" accept="image/*" class="border-success form-control form-control-lg" />
+              </div>
+              <div class="pb-5 d-flex justify-content-center">
+                <button type="submit" class="btn btn-dark btn-lg ms-2">Update</button>
+              </div>  
+          </form>
+
+      </div>
+    </div>
+    <!-- form end -->
+
+    <div class="row">
+      {% block messages %}
+      {% for message in messages %}
+      <div class="col-md-12 text-danger ">
+        <h3>{{message}}</h3>
+      </div>
+      {% endfor %}
+      {% endblock %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+
+{% block lowerBodyScript %}
+
+<script>
+var categ_nameError = document.getElementById('categ_name-error');
+    
+    function validateCategname() {
+    var categ_name=document.getElementById('categ_name').value.trim();  
+
+    if (categ_name.length==0 || categ_name.length<3) {
+        categ_nameError.innerHTML='Enter min 3 characters';
+        categ_nameError.style.color='red'
+        return false;
+    }
+
+    if (!categ_name.match(/^[A-Za-z]*$/)){
+        categ_nameError.innerHTML='Name is incorrect';
+        categ_nameError.style.color='red'
+        return false;
+    }
+    
+    categ_nameError.innerHTML='Name is valid';
+    categ_nameError.style.color='green'
+    return true;
+}</script>
+
+<!-- validation submit -->
+<script type="text/javascript">var jQuery_1_7_1 = $.noConflict(true);</script>
+
+<script>
+    jQuery_1_7_1(document).on("submit", "form", function (e) {
+        validateCategname()
+      
+      if (validateCategname()) {
+         
+      } else {
+          e.preventDefault();
+      console.log("Fayas")
+      swal('Invalid data! Ensure You have entered correct data');
+          return true;
+      }
+  });
+</script>
+{% endblock %}

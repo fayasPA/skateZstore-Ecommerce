@@ -1,0 +1,71 @@
+
+.nav-item:hover{
+    text-decoration: underline;
+}
+
+
+
+/* Offer starts */
+.offer_section {
+    padding: 45px 0 90px 0;
+  }
+  
+  .offer_section .row > div {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-pack: stretch;
+        -ms-flex-pack: stretch;
+            justify-content: stretch;
+  }
+  
+  .offer_section .box {
+    margin: 10px;
+    height: 100%;
+    position: relative;
+    margin-top: 45px;
+    min-height: 175px;
+    padding: 2rem;
+  }
+  
+  .offer_section .box img {
+    width: 100%;
+    min-height: 100%;
+  }
+  
+  .offer_section .box .detail-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    color: #ffffff;
+    padding: 50px;
+    background-color: rgba(0, 0, 0, 0.25);
+    }
+    /* Offer ends */
+
+    /* product */
+
+    .info_col a{
+        color: black;
+    }
+
+    

@@ -1,0 +1,21 @@
+{% extends 'add_address.html' %}
+{% load static %}
+
+{% block valuetype %}
+value={{adrs.type}}
+{% endblock %}
+{% block valueaddress %}
+{{adrs.address}}
+{% endblock %}
+{% block valuepin %}
+value={{adrs.pin}}
+{% endblock %}
+{% block valuedistrict %}
+value={{adrs.district}}
+{% endblock %}
+{% block valuestate %}
+value={{adrs.state}}
+{% endblock %}
+{% block valuelandmark %}
+value={{adrs.landmark}}
+{% endblock %}

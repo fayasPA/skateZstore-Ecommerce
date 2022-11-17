@@ -1,0 +1,136 @@
+{% extends 'admin/admindashboard.html' %}
+{% load static %}
+
+{% block style %}
+{% endblock %}
+
+{% block add %}
+<li class="d-flex justify-content-center align-items-center nav-item">
+  <a style="text-decoration: none;" href="{% url 'admin_addproduct' %}"><button type="submit"
+      class="btn btn-sm btn-outline-light my-2 my-sm-0">Add Product</button></a>
+</li>
+{% endblock %}
+{% block innercontent %}
+<section class="pt-3">
+  <div class="container-fluid">
+
+    <!-- Table starts here -->
+    <div style="overflow-x:scroll;">
+      <table  id="product_table"  class=" table table-striped" >
+        <thead class="col-md-12 col-12 text-light bg-dark">
+          <tr>
+            <th scope="col">Product Name</th>
+            <th scope="col">Product Price</th>
+            <th scope="col">Product Category</th>
+            <th scope="col">Product Qty</th>
+            <th scope="col">
+              <div class="h-100 d-flex justify-content-center">Product Image</div>
+            </th>
+            <th scope="col">
+              <div class="h-100 d-flex justify-content-center">Extra Images</div>
+            </th>
+            <th scope="col">Product Description</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+
+          <!--Edit Modal start-->
+          <div class="modal fade" id="editmodal{{product.id}}" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                  <h5 class="modal-title " id="">Sure U want to Edit {{product.product_name}}</h5>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <a href="{% url 'edit_product' product.id %}"><button type="button"
+                      class="btn btn-primary">Confirm</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Edit Modal Ends -->
+
+          <!--Delete Modal start-->
+          <div class="modal fade" id="deletemodal{{product.id}}" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                  <h5 class="modal-title " id="">Sure U want to Delete <img style="height: 40px;"
+                      src="{{product.product_image.url}}" alt=""></h5>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <a href="{% url 'delete_product' product.id %}"><button type="button"
+                      class="btn btn-primary">Confirm</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Delete Modal Ends -->
+
+
+          <tr class=" ">
+            <td>{{product.product_name}}</td>
+            <td>Rs.{{product.product_price}}</td>
+            <td>{{product.category.category_name}}</td>
+            <td>{{product.product_qty}}</td>
+            <td>
+              <div class="d-flex justify-content-center "><img style="height: 3rem;" class=" img-fluid"
+                  src="{{product.product_image.url}}" alt=""></div>
+            </td>
+            <td class="d-flex justify-content-center">
+              {% for image in product.productimage_set.all %}
+              <img style="height: 3rem;" class="img-fluid" src="{{image.product_image.url}}"
+                alt="{% static '/images/blank.jpg' %}">
+              {% endfor %}
+            </td>
+            <td>{{product.product_description | truncatewords:3}}</td>
+            <td>
+              <div class="d-flex p-0">
+                <button type="button" data-toggle="modal" data-target="#editmodal{{product.id}}"
+                  class="pl-4 pr-4 btn btn-sm btn-outline-success">Edit</button>
+                &nbsp;<button type="button" data-toggle="modal" data-target="#deletemodal{{product.id}}"
+                  class=" btn btn-sm btn-outline-danger">Delete</button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- Table ends here -->
+
+  </div>
+
+  <!-- pagination starts -->
+  <br>
+  <!-- <div class="container-fluid">
+    {% if products.has_previous %}
+    <a href="?page={{products.previous_page_number}}">&laquo;Prev</a>
+    {% endif %}
+    Page {{products.number}} of {{products.paginator.num_pages}}
+    {% if products.has_next %}
+    <a href="?page={{products.next_page_number}}">Next&raquo;</a>
+    {% endif %}
+  </div> -->
+  <!-- pagination ends -->
+
+</section>
+
+
+{% endblock %}
+
+{% block lowerBodyScript %}
+
+
+<script>
+  $(document).ready( function () {
+    $('#product_table').DataTable();
+} );
+</script>
+{% endblock %}

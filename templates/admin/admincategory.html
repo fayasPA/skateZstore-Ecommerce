@@ -1,0 +1,98 @@
+{% extends 'admin/admindashboard.html' %}
+{% load static %}
+
+    {% block add %}
+    <!-- Add Category modal -->
+        <div class=" modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class=" modal-dialog  modal-lg">
+          <div class=" modal-content">
+            <div class="rounded bg-secondary container">  
+              <form class="" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                  <div class="pt-5 form-outline mb-4">
+                    <input name="categ_name" type="text" placeholder="CategoryName" id="form3Example90" class="border-dark form-control form-control-lg" />
+                  </div>
+                  <div class="form-outline mb-4">
+                  <label class="container" for="form3Example90" >Add Category Images</label>
+                    <input name="categ_image" type="file" id="form3Example90" accept="image/*" class="border-dark form-control form-control-lg" />
+                  </div>
+                  <div class="pb-5 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-dark btn-lg ms-2">Update</button>
+                  </div>  
+              </form>
+            </div>
+          </div>
+      </div>
+        </div>
+    <!-- modal ends -->
+    
+
+   
+
+
+        <li class="d-flex justify-content-center align-items-center nav-item">
+            <a data-toggle="modal" data-target=".bd-example-modal-lg" style="text-decoration: none;" href=""><button  type="submit" class="btn btn-sm btn-outline-light my-2 my-sm-0" >Add Category</button></a>
+        </li>
+    {% endblock %}
+    {% block innercontent %}
+    <section class=" categ_section">
+        <div class="container-fluid">
+          <div class="row">
+            {% for category in categories %}
+
+          <!--Edit Modal start-->
+          <div class="modal fade" id="editmodal{{category.id}}" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                  <h5 class="modal-title " id="">Sure U want to Edit {{category.category_name}}</h5>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <a href="{% url 'edit_category' category.id %}"><button type="button"
+                      class="btn btn-primary">Confirm</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Edit Modal Ends -->
+        <!--Delete Modal start-->
+        <div class="modal fade" id="deletemodal{{category.id}}" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+              <h5 class="modal-title " id="">Sure U want to Delete {{category.category_name}}</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <a href="{% url 'delete_category' category.id %}"><button type="button"
+                  class="btn btn-primary">Confirm</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Delete Modal Ends -->
+
+            <div class="p-3 col-md-4  px-0">
+              <div class="card  " style="background-color: rgba(0, 0, 0, 0.10);">
+                <img class=" p-2" style="height: 20rem;" src="{{category.category_image.url}}" alt="">
+                <div class="d-flex ">
+                  <div class="col-md-6">
+                  <h2>{{category.category_name}}</h2>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end align-items-center">
+                  <a data-toggle="modal" data-target="#editmodal{{category.id}}" href=""><i  class="fa-solid fa-pen-to-square"></i></a>&nbsp;&nbsp;
+                  <a data-toggle="modal" data-target="#deletemodal{{category.id}}" href=""><i class="fa-solid fa-trash"></i></a>
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+        </div>
+        </div>
+      </section>
+      
+    {% endblock %}

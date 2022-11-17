@@ -1,0 +1,308 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+
+
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+
+{% endblock %}
+
+
+{% block content %}
+<header>
+    <!--navbar starts  -->
+        <nav class=" navbar navbar-expand-lg navbar-light   " style="background-color: black;">
+            <a style="border-radius: 10%;" class="navbar-brand text-dark font-weight-bold bg-light" href="">&nbsp;AdminPanel&nbsp;</a>
+            <button class="bg-light navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=" navbar-toggler-icon"></span>
+            </button>
+          
+            <div class=" collapse navbar-collapse"  id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto ">
+                <li class="d-flex justify-content-center nav-item active ">
+                  <a class="nav-link text-light" href="{% url 'admindashboard' %}">DashBoard </a>
+                </li>
+                <li class="d-flex justify-content-center nav-item">
+                  <a class="nav-link text-light" href="{% url 'adminproduct' %}">Products</a>
+                </li>
+                <li class="d-flex justify-content-center nav-item">
+                  <a class="nav-link text-light" href="{% url 'admincategory' %}">Category</a>
+                </li>
+                <li class="d-flex justify-content-center nav-item">
+                    <a class="nav-link text-light" href="{% url 'adminuser' %}">Users</a>
+                </li>
+                <li class="d-flex justify-content-center nav-item">
+                    <a class="nav-link text-light" href="{% url 'order_list' %}">Orders</a>
+                </li>
+              </ul>
+              <!-- <form class=" form-inline d-flex justify-content-center flex-nowrap my-2 my-lg-0 mr-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+              </form> -->
+              <ul class=" navbar-nav ">
+                {% block add %}
+                
+                {% endblock %}
+                <li class="d-flex justify-content-center nav-item">
+                  <a class="nav-link text-light" href=""><i class="fa-solid fa-user"></i><span>  {{user}}</span></a>
+                </li>
+                <li class="d-flex justify-content-center nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-gears"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right ">
+                      <a class="dropdown-item " href="{% url 'adminlogout' %}">LogOut</a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        <!-- navBar ends -->
+    </header>
+    {% block innercontent %}
+    <section class="bg-dark pt-5">
+        <div class="container">
+            <div class="text-light row">
+              <div class="col-md-3 col-6">
+              <div class="p-3 card ">
+                <a class="nav-link text-light" href="{% url 'adminuser' %}"><div style="box-shadow: 0px 0px 15px black;" class=" card-body bg-dark">
+                  <h4 class="card-title">User</h4>
+                  <p class="card-text">{{user_count}}+</p>
+    
+                  <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                
+                </div></a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="p-3 card " >
+                <a class="nav-link text-light" href="{% url 'order_list' %}"><div class="card-body bg-dark" style="box-shadow: 0px 0px 15px black;">
+                  <h4 class="card-title">Orders</h4>
+                  <p class="card-text">{{order_count}}+</p>
+                </div></a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="p-3 card " >
+                <a class="nav-link text-light" href="{% url 'adminproduct' %}"><div class="card-body bg-dark" style="box-shadow: 0px 0px 15px black;">
+                  <h4 class="card-title">Products</h4>
+                  <p class="card-text">{{products.count}}+</p>
+                </div></a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="p-3 card " >
+                <div class="card-body bg-dark" style="box-shadow: 0px 0px 15px black;">
+                  <h4 class="card-title">Delivered</h4>
+                  <a class="nav-link text-light" href="{% url 'order_list' %}"><p class="card-text">{{delivery_count}}</p></a>
+                </div>
+              </div>
+            </div>
+    
+            </div>
+        </div>
+    </section>
+<section class="bg-dark p-4">              
+
+
+<!-- Chart Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Chart Script -->
+<div class="row">
+<div class="col-md-6 h-100 bg-light rounded mt-5  p-3 " style="width:100%; height:200px;">
+  <h3 class="mt-3 ms-3 d-flex justify-content-center">Product - Stock chart</h3>
+  <hr>
+          <canvas class="mt-3 " id="myChart" width="400" height="200"></canvas>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [{% for product in products %} '{{product.product_name}}',  {% endfor %}],        //Chart x axis
+      datasets: [{
+        label: '# of Stock',
+        data: [{% for product in products %} {{product.product_qty}},  {% endfor %}],           //Chart Y axis
+        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+      
+</div>
+
+
+<div class="col-md-6 h-100 bg-light rounded mt-5  p-3 " style="width:100%; height:200px;">
+  <h3 class="mt-3 ms-3 d-flex justify-content-center">Product - Price chart</h3>
+  <hr>
+          <canvas class="mt-3 " id="myChart2" width="400" height="200"></canvas>
+
+<script>
+  const ctx2 = document.getElementById('myChart2');
+
+  new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: [{% for product in products %} '{{product.product_name}}',  {% endfor %}],        //Chart x axis
+      datasets: [{
+        label: '# of Stock',
+        data: [{% for product in products %} {{product.product_price}},  {% endfor %}],           //Chart Y axis
+        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+      
+</div>
+</div>
+<div class="row">
+  <div class="col-md-6 h-100 bg-light rounded mt-3 mx-auto p-3 " style="width:100%; height:200px;">
+    <h3 class="mt-3 ms-3 d-flex justify-content-center">Category - Product_Count chart</h3>
+    <hr>
+            <canvas class="mt-3 " id="myChart3" width="400" height="200"></canvas>
+  
+  <script>
+    const ctx3 = document.getElementById('myChart3');
+  
+    new Chart(ctx3, {
+      type: 'doughnut',
+      data: {
+        labels: [{% for category in category %} '{{category.category_name}}',  {% endfor %}],        //Chart x axis
+        datasets: [{
+          label: '# of Stock',
+          data: [{% for c in cat_count %} {{c}},  {% endfor %}],           //Chart Y axis
+          backgroundColor: [
+                              'rgba(255, 99, 132, 0.8)',
+                              'rgba(54, 162, 235, 0.8)',
+                              'rgba(255, 206, 86, 0.8)',
+                              'rgba(75, 192, 192, 0.8)',
+                              'rgba(153, 102, 255, 0.8)',
+                              'rgba(255, 159, 64, 0.8)'
+                          ],
+                          borderColor: [
+                              'rgba(255, 99, 132, 1)',
+                              'rgba(54, 162, 235, 1)',
+                              'rgba(255, 206, 86, 1)',
+                              'rgba(75, 192, 192, 1)',
+                              'rgba(153, 102, 255, 1)',
+                              'rgba(255, 159, 64, 1)'
+                          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+        
+  </div>
+</div>
+
+<!-- <div class="row">
+  <div class="col-md-6 h-100 bg-light rounded mt-3 mx-auto p-3 " style="width:100%; height:200px;">
+    <h3 class="mt-3 ms-3 d-flex justify-content-center">Daily Sales chart</h3>
+    <hr>
+            <canvas class="mt-3 " id="myChart4" width="400" height="200"></canvas>
+  
+  <script>
+    const ctx4 = document.getElementById('myChart4');
+  
+    new Chart(ctx4, {
+      type: 'pie',
+      data: {
+        labels: [{% for category in category %} '{{category.category_name}}',  {% endfor %}],        //Chart x axis
+        datasets: [{
+          label: '# of Stock',
+          data: [{% for c in cat_count %} {{c}},  {% endfor %}],           //Chart Y axis
+          backgroundColor: [
+                              'rgba(255, 99, 132, 0.8)',
+                              'rgba(54, 162, 235, 0.8)',
+                              'rgba(255, 206, 86, 0.8)',
+                              'rgba(75, 192, 192, 0.8)',
+                              'rgba(153, 102, 255, 0.8)',
+                              'rgba(255, 159, 64, 0.8)'
+                          ],
+                          borderColor: [
+                              'rgba(255, 99, 132, 1)',
+                              'rgba(54, 162, 235, 1)',
+                              'rgba(255, 206, 86, 1)',
+                              'rgba(75, 192, 192, 1)',
+                              'rgba(153, 102, 255, 1)',
+                              'rgba(255, 159, 64, 1)'
+                          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+        
+  </div>
+</div> -->
+
+</section>
+    
+    {% endblock %}
+
+{% endblock %}
+
+{% block lowerBodyScript %}
+{% endblock %}

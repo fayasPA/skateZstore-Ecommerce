@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- signup form starts -->
+    <section class="h-100 pb-5">
+      <!-- <div style="text-decoration: underline;" class="text-dark navbar heading_container heading_center">
+        <h2 class="text-dark">Trucks</h2>
+      </div>
+          <div class="product container-fluid">
+            <div class="row rounded bg-light" >
+            {% for product in products %}
+              <div class="col-md-4 col-6 d-flex justify-content-center item">
+                <div class="box m-3"  >
+                  <div class="d-flex justify-content-center  prod-img-box">
+                    <a href="{% url 'prod_details' product.id %}"><img  style="height: 10rem;" class="img-fluid" src="{{product.product_image.url}}" alt=""></a>
+                  </div>
+                  <div class="pt-3 detail-box ">
+                    <h4 class="d-flex justify-content-center">{{product.product_name}}</h4>
+                    <h6 class="price d-flex justify-content-center">
+                      <span class="new_price">Rs.{{product.product_price}}</span>
+                    </h6>
+                    <a class="d-flex justify-content-center" href="">Buy Now</a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          </div> -->
+          
+          <div class="d-flex justify-content-center text-dark navbar heading_container heading_center">
+            <h2 class="text-dark font-weight-bold">Trucks</h2>
+          </div>
+        
+          <div class="product container-fluid">
+            <div class="row d-flex justify-content-center">
+              {% for product in products %}
+              <div style="border-radius: 20px;" class="card col-md-4 col-5">
+                <img  style="border: none;height: 15rem;" class='mx-auto img-thumbnail'
+                    src="{{product.product_image.url}}"
+                    width="auto" height="auto"/>
+                <div class="card-body text-center mx-auto">
+                    <div class='cvp'>
+                        <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
+                        <p class="card-text">₹&nbsp;{{product.product_price}}</p>
+                        <a href="{% url 'prod_details' product.id %}" style="box-shadow: 0px 0px 15px #212121;" class="font-weight-bold btn bg-dark text-light px-3">view details</a><br />
+                    </div>
+                </div>
+            </div>
+        
+              {% endfor %}
+            </div>
+        
+          </div>
+  <!-- Pagination  starts -->
+  <br>
+  <div class="container-fluid d-flex justify-content-center">
+    {% if products.has_previous %}
+      <a href="?page={{products.previous_page_number}}">&laquo;Prev</a>          
+    {% endif %}
+    Page {{products.number}} of {{products.paginator.num_pages}}
+    {% if products.has_next %}
+      <a href="?page={{products.next_page_number}}">Next&raquo;</a>          
+    {% endif %}
+    </div>
+<!-- pagination ends -->
+
+    </section>
+<!-- signup form ends -->
+{% endblock %}

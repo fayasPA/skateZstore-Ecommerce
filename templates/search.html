@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="h-100 pb-5">
+
+  <div class="product container-fluid">
+    <div class="row d-flex justify-content-center">
+      {% if message %}
+                        <div style="height: 50vh;" class="d-flex justify-content-center align-items-center row">
+                            <h4>{{message}}  for  {{q}}</h4>
+                        </div>
+      {% else %}
+      <div class="col-md-12 d-flex justify-content-start text-dark navbar  ">
+        <h2 class="text-dark">Showing results for  "{{q}}":</h2>
+      </div>
+      {% for product in queries %}
+      <div style="border-radius: 20px;" class="card col-md-4 col-5">
+        <img  style="border: none;height: 15rem;" class='mx-auto img-thumbnail'
+            src="{{product.product_image.url}}"
+            width="auto" height="auto"/>
+        <div class="card-body text-center mx-auto">
+            <div class='cvp'>
+                <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
+                <p class="card-text">₹&nbsp;{{product.product_price}}</p>
+                <a href="{% url 'prod_details' product.id %}" style="box-shadow: 0px 0px 15px #212121;" class="font-weight-bold btn bg-dark text-light px-3">view details</a><br />
+            </div>
+        </div>
+    </div>
+
+      {% endfor %}
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- Pagination  starts -->
+  <br>
+  <div class="container-fluid d-flex justify-content-center">
+    {% if queries.has_previous %}
+      <a href="?page={{queries.previous_page_number}}">&laquo;Prev</a>          
+    {% endif %}
+    Page {{queries.number}} of {{queries.paginator.num_pages}}
+    {% if queries.has_next %}
+      <a href="?page={{queries.next_page_number}}">Next&raquo;</a>          
+    {% endif %}
+    </div>
+<!-- pagination ends -->
+</section>
+
+
+<div class='container-fluid'>
+  
+
+</div>
+
+
+{% endblock %}

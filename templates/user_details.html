@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="h-100 pb-5">
+  <div class="container">
+    <div class="col-md-12 col-12 row d-flex justify-content-center">
+      <div class="card " style="width: 20rem;">
+        <img class="card-img-top img-fluid" src="/static/images/dp.png" alt="Card image cap">
+      </div>
+      <!-- user edit modal -->
+      <div class="modal fade" id="usereditmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+              <h5 class="modal-title " id="">Sure U want to Edit {{user}}'s Details</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <a href="{% url 'edit_user'  %}"><button type="button" class="btn btn-primary">Confirm</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--user edit modal ends -->
+
+      <div class="bg-dark border text-light card-body d-flex flex-column justify-content-center align-items-center">
+        <h5 class=" card-title">Username:&nbsp;{{user}}</h5>
+        <h5 class=" card-title">First Name:&nbsp;{{user.first_name}}</h5>
+        <h5 class=" card-title">Email:&nbsp;{{user.email}}</h5>
+        <h5 class=" card-title">Joined SkateBuddy on&nbsp;{{user.date_joined}}</h5>
+        <div class="container d-flex justify-content-end">
+          <a class="" data-toggle="modal" data-target="#usereditmodal" href=""><i
+              class="fa-solid fa-pen-to-square"></i></a>&nbsp;&nbsp;
+        </div>
+      </div>
+    </div>
+    <div class="pt-5">
+    <button type="button" class=" btn btn-primary" data-toggle="collapse" data-target="#demo">Address</button>
+  </div>
+    {% if user.address_set.all %}
+
+
+    <div id="demo" class="collapse">
+      <div class="row pt-3">
+      {%for ua in user.address_set.all %}
+      <!--Edit Modal start-->
+      <div class="modal fade" id="editmodal{{ua.id}}" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+              <h5 class="modal-title " id="">Sure U want to Edit {{ua.type}} Address</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <a href="{% url 'edit_address' ua.id %}"><button type="button"
+                  class="btn btn-primary">Confirm</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Edit Modal Ends -->
+
+      <!--Delete Modal start-->
+      <div class="modal fade" id="deletemodal{{ua.id}}" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+              <h5 class="modal-title " id="">Sure U want to Delete {{ua.type}} Address</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <a href="{% url 'delete_address' ua.id %}"><button type="button"
+                  class="btn btn-primary">Confirm</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Delete Modal Ends -->
+
+      <div class="card col-md-4">
+        <div class="h-75">
+          <ul style="list-style: none;">
+            <li class="h4" style="text-decoration: underline;">{{ua.type}}</li>
+            <li  ><strong>Address:</strong>&nbsp;{{ua.address}}</li>
+            <li><strong>District:</strong>&nbsp;{{ua.district}}</li>
+            <li><strong>Pin Code:</strong>&nbsp;{{ua.pin}}</li>
+            <li><strong>State:</strong>&nbsp;{{ua.state}}</li>
+            <li><strong>Landmark:</strong>&nbsp;{{ua.landmark}}</li>
+            <li><strong>Phone No:</strong>&nbsp;{{ua.phone_number}}</li>
+          </ul>
+        </div>
+        <div class="d-flex justify-content-end h-25">
+          <a class="" data-toggle="modal" data-target="#editmodal{{ua.id}}" href=""><i
+              class="fa-solid fa-pen-to-square"></i></a>&nbsp;&nbsp;
+          <a class="" data-toggle="modal" data-target="#deletemodal{{ua.id}}" href=""><i
+              class="fa-solid fa-trash"></i></a>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %} 
+      <div class="col-md-12 row pt-3 d-flex justify-content-start align-items-center">
+        <a style="text-decoration: none;" href="{% url 'add_address' %}"><button type="submit"
+            class="btn btn-sm btn-outline-dark my-2 my-sm-0">Add Address</button></a>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+</section>
+
+{% endblock %}

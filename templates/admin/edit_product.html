@@ -1,0 +1,118 @@
+{% extends 'admin/admindashboard.html' %}
+{% block innercontent %}
+<section>
+  <div class="pt-3 col-md-12 ml-auto">
+    <a href="{% url 'adminproduct' %}"><button type="submit" class=" btn btn-secondary text-light">Back</button></a>
+  </div>
+  <div class="container-fluid h-100">
+    <div class="row">
+      <div class="col-md-12  ">
+        <!-- form start -->
+        <form action="" id="submit-form" role="form" class=" mt-4" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label class="text-success" for="prod_name">Product Name</label>
+              <input value="{{product.product_name}}" type="text" name="prod_name" class="border-success form-control form-control-lg" id="prod_name"
+                placeholder="Product Name" onkeyup="validateProdname()">
+              <span id=prod_name-error></span>
+            </div>
+            <div class="col-md-6 form-group mt-3 mt-md-0">
+              <label class="text-success" for="prod_price">Product Price</label>
+              <input value="{{product.product_price}}" type="text" class="form-control form-control-lg border-success" name="prod_price"
+                id="prod_price" placeholder="Product Price" onkeyup="validateProdprice()">
+              <span id=prod_price-error></span>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-6 form-group">
+                <label class="text-success" for="prod_categ">Product Category</label>
+              <select class="custom-select border-success custom-select-lg" name="prod_categ" id="prod_categ">
+                {% for category in category_list %}
+                {% if category.category_name == product.category.category_name %}
+                <option value="{{category.id}}"  selected>{{category.category_name}}</option>
+                {% else %}
+                <option value="{{category.id}}">{{category.category_name}}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 form-group mt-3 mt-md-0">
+                <label class="text-success" for="prod_qty">Product Quantity</label>
+                <input value="{{product.product_qty}}" type="number" class=" border-success form-control form-control-lg" name="prod_qty"
+                placeholder="Product Quantity" id="prod_qty">
+            </div>
+          </div>
+          <div class="form-group mt-3">
+                <label class="text-success" for="prod_desc">Product Description</label>
+                <textarea class="border-success form-control form-control-lg" name="prod_desc" id="prod_desc" rows="5"
+              placeholder="Product Description" onkeyup="validateDesc()">{{product.product_description}}"</textarea>
+            <span id=prod_desc-error></span>
+          </div>
+          <div class="d-flex flex-column form-group mt-3">
+            <label class=" text-success" for="prod_img">Product Image</label>
+            {% if product.product_image %}
+            <img class="col-md-1 col-2"   src="{{product.product_image.url}}" alt="">
+            {% endif %}
+            <input name="prod_img" class="form-control form-control-sm" id="prod_img" type="file" accept="image/*" />
+          </div>
+          <div class="d-flex flex-column form-group mt-3">
+            {% if product.productimage_set.all %}
+            <label class=" text-success" for="prod_img">Extra Image</label>
+            <div class="d-flex">
+            {% for i in product.productimage_set.all %}
+            <img  style="height:75px ;" src="{{i.product_image.url}}" alt="">
+            <label  for="im" name="ide" value="{{i.id}}" >{{i.id}}</label>
+            <input name="extra_images" class="form-control"  id="im" type="file">
+            <!-- <h3>{{i.id}}</h3> -->
+            {% endfor %}
+          </div>
+            {% endif %}
+          </div>
+          <div class="text-center pt-4">
+            <button type="submit" class="btn btn-outline-success">Submit</button>
+            <span id=submit-error></span>
+          </div>
+        </form>
+
+      </div>
+    </div>
+    <!-- form end -->
+
+    <div class="row">
+      {% block messages %}
+      {% for message in messages %}
+      <div class="col-md-12 text-danger ">
+        <h3>{{message}}</h3>
+      </div>
+      {% endfor %}
+      {% endblock %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+
+{% block lowerBodyScript %}
+
+<!-- validation submit -->
+<script type="text/javascript">var jQuery_1_7_1 = $.noConflict(true);</script>
+
+<script>
+    jQuery_1_7_1(document).on("submit", "form", function (e) {
+      validateProdname()
+      validateProdprice()
+      validateDesc()
+      
+      if (validateProdname() && validateProdprice() && validateDesc() ) {
+         
+      } else {
+          e.preventDefault();
+      console.log("Fayas")
+      swal('Invalid data! Ensure You have entered correct data');
+          return true;
+      }
+  });
+</script>
+{% endblock %}

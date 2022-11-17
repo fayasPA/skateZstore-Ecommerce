@@ -1,0 +1,98 @@
+{% extends 'admin/admindashboard.html' %}
+{% load static %}
+
+
+{% block add %}
+
+{% endblock %}
+
+
+    {% block innercontent %}
+
+
+
+    <section class="pt-3">
+        <div class="container-fluid">
+          
+          <!-- Table starts here -->
+            <div class=" " style="overflow-x:auto;">
+              <table id="user_table" class=" table table-striped" style="width: 100%;">
+                  <thead class="col-md-12 col-12 text-light bg-dark">
+                    <tr>
+                      <th scope="col">Username</th>
+                      <th scope="col">First_Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Mobile No.</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody >
+                    {% for user in user_list %}
+                    <tr class="">
+                      <td>
+                      {% if user.is_superuser %}
+                        {{user.username}}*
+                        {% else %}
+                        {{user.username}}
+                      {% endif %}
+                      </td>
+                      <td>{{user.first_name}}</td>
+                      <td>{{user.email}}</td>
+                      <td>{{user.phone_number}}</td>
+                      <td>
+                      <div class="btn p-0">
+
+                      <!-- Modal start-->
+                        <div class="modal fade" id="exampleModalCenter{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header d-flex justify-content-center">
+                                <h5 class="modal-title " id="">Sure U want to Block/Unblock {{user}}</h5>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <a href="{% url 'adminblock' user.id %}"><button  type="button" class="btn btn-primary">Confirm</button></a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      <!-- Modal Ends -->
+                      {% if not user.is_superuser %}
+                        {% if user.is_active %}
+                        <button type="button"  data-toggle="modal" data-target="#exampleModalCenter{{user.id}}"  class="pl-4 pr-4 btn btn-sm btn-outline-danger">Block</button>
+                        {% else %}
+                        <button type="button" data-toggle="modal" data-target="#exampleModalCenter{{user.id}}"  class="pl-4 pr-4 btn btn-sm btn-outline-success">Unblock</button>
+                        {% endif %}
+                      {% endif %}
+                      </div>
+                    </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+              <!-- Table ends here -->
+    
+        </div>
+
+        <br>
+        <!-- <div class="container-fluid">
+          {% if user_list.has_previous %}
+            <a href="?page={{user_list.previous_page_number}}">&laquo;Prev</a>          
+          {% endif %}
+          Page {{user_list.number}} of {{user_list.paginator.num_pages}}
+          {% if user_list.has_next %}
+            <a href="?page={{user_list.next_page_number}}">Next&raquo;</a>          
+          {% endif %}
+          </div> -->
+
+    </section>
+    {% endblock %}
+
+{% block lowerBodyScript %}
+<script>
+  $(document).ready( function () {
+    $('#user_table').DataTable();
+} );
+</script>
+{% endblock %}

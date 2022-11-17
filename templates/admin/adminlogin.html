@@ -1,0 +1,41 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+
+{% block content %}
+<section class="" style="background-image: url(/static/images/same1.jpg); background-size:cover; height: 100vh;">
+    <div class=" container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="my-4 m-0 row g-0" style="background: rgba(236, 240, 236, 0.2)">
+              <div class="m-0 d-flex align-items-center ">
+                <div class=" card-body p-md-5 text-black">
+                  <div class="row  justify-content-center">
+                    <span class="navbar-brand text-light font-weight-bold">Admin</span>
+                  </div>  
+                  {% block form %}
+                  <form action="" method="POST">
+                    {%csrf_token%}
+                    <div class="form-outline mb-4">
+                      <input name="useradmin" type="text" placeholder="Username" id="form3Example90" class="form-control form-control-lg" />
+                    </div>
+                    <div class="form-outline mb-4">
+                      <input name="password" type="password" placeholder="Password" id="form3Example99" class="form-control form-control-lg" />
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-dark btn-lg ms-2">Log In</button>
+                    </div>  
+                  </form>
+                  {% endblock %}
+                  {% block messages %}
+                  {% for message in messages %}
+                        <div class="col-md-12 d-flex justify-content-center text-danger">
+                            <p class="card ">{{message}}</p>
+                        </div>
+                    {% endfor %}
+                  {% endblock %}
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

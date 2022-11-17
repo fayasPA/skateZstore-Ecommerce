@@ -1,0 +1,35 @@
+from django.urls import path,include
+from . import views
+
+urlpatterns = [
+    path('',views.index,name='index'),
+    path('signup',views.signup,name='signup'),
+    path('signupotpver',views.signupotpver,name='signupotpver'),
+    path('LogIn',views.LogIn,name='LogIn'),
+    path('otplogin',views.otplogin,name='otplogin'),
+    path('otpver',views.otpver,name='otpver'),
+    path('LogOut',views.LogOut,name='LogOut'),
+    path('user_details',views.user_details,name='user_details'),
+    path('edit_user/',views.edit_user,name='edit_user'),
+    path('add_address',views.add_address,name='add_address'),
+    path('edit_address/<int:id>/',views.edit_address,name='edit_address'),
+    path('delete_address/<int:id>/',views.delete_address,name='delete_address'),
+    path('prod_deck',views.prod_deck,name='prod_deck'),
+    path('prod_wheel',views.prod_wheel,name='prod_wheel'),
+    path('prod_trucks',views.prod_trucks,name='prod_trucks'),
+    path('prod_details/<int:id>/',views.prod_details,name='prod_details'),
+    path('add_to_cart/<int:id>/',views.add_to_cart,name='add_to_cart'),
+    path('cart',views.cart,name='cart'),
+    path('qty_minus/<int:id>/',views.qty_minus,name='qty_minus'),
+    path('qty_plus/<int:id>/',views.qty_plus,name='qty_plus'),
+    path('removeitem/<int:id>/',views.removeitem,name='removeitem'),
+    path('removeitem/<int:id>/',views.removeitem,name='removeitem'),
+    path('checkout/',views.checkout,name='checkout'),
+    path('place_order/',views.place_order,name='place_order'),
+    path('user_orders/',views.user_orders,name='user_orders'),
+    path('razorpay/',views.razorpay,name='razorpay'),
+    path('search',views.search,name='search'),
+    path('order_cancel/<int:id>/',views.order_cancel,name='order_cancel'),
+    path('orderinvoice/<int:id>/',views.orderinvoice,name='orderinvoice'),
+
+]
