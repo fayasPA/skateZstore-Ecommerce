@@ -11,11 +11,9 @@
 <section class="pt-3">
   <div class="container-fluid">
 
-
-
     <!-- Table starts here -->
     <div style="overflow-x:auto;width: 100%;">
-      <table  id="order_table"  class=" table table-striped" style="width: 100%;">
+      <table id="order_table" class=" table table-striped" style="width: 100%;">
         <thead class="col-md-12 col-12 text-light bg-dark">
           <tr>
             <th scope="col">Ordered Date</th>
@@ -25,7 +23,7 @@
             <th scope="col">Qty</th>
             <th scope="col">Payment Type</th>
             <th scope="col">Order Status</th>
-            
+
           </tr>
         </thead>
         <tbody>
@@ -33,7 +31,7 @@
 
 
           <tr class=" ">
-            <td >{{order.ordered_date}}</td>
+            <td>{{order.ordered_date}}</td>
             <td>{{order.user.username}}</td>
             <td>{{order.amount}}</td>
             <td>{{order.product.product_name}}</td>
@@ -42,19 +40,20 @@
             <td>
               <form action="" method="">
                 {% csrf_token %}
-              <select type="submit" onchange="status('{{order.id}}',this.value)" class="custom-select border-success custom-select-lg" name="prod_categ" id="prod_categ">
-                {% for c in choice %}
-                {% if c == order.status %}
-                <option value="{{order.status}}"  selected>{{order.status}}</option>
-                {% else %}
-                <option  value="{{c}}">{{c}}</option>
-                {% endif %}
-                {% endfor %}
-              </select>
-            </form>
-              </td>
+                <select type="submit" onchange="status('{{order.id}}',this.value)"
+                  class="custom-select border-success custom-select-lg" name="prod_categ" id="prod_categ">
+                  {% for c in choice %}
+                  {% if c == order.status %}
+                  <option value="{{order.status}}" selected>{{order.status}}</option>
+                  {% else %}
+                  <option value="{{c}}">{{c}}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </form>
+            </td>
 
-            </tr>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -71,25 +70,25 @@
 {% block lowerBodyScript %}
 <script>
   function status(orderid, stats) {
-   // var token = $("input[name='csrfmiddlewaretoken']").val()
-    console.log("FAYAS",orderid)
-      $.ajax({
-          type: "GET",
-          data: {
-            "orderid": orderid,
-            "stats": stats,
-          },
-          url: "status_update",
-          success: function (response) {
-          swal(response.status)
-          }
-      });
+    // var token = $("input[name='csrfmiddlewaretoken']").val()
+    console.log("FAYAS", orderid)
+    $.ajax({
+      type: "GET",
+      data: {
+        "orderid": orderid,
+        "stats": stats,
+      },
+      url: "status_update",
+      success: function (response) {
+        swal.fire(response.status)
+      }
+    });
   }
 </script>
 
 <script>
-  $(document).ready( function () {
+  $(document).ready(function () {
     $('#order_table').DataTable();
-} );
+  });
 </script>
 {% endblock %}

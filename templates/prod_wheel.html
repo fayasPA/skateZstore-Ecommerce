@@ -3,44 +3,44 @@
 
 {% block content %}
 <!-- signup form starts -->
-    <section class="h-100 pb-5">
-          <div class="d-flex justify-content-center text-dark navbar heading_container heading_center">
-            <h2 class="text-dark font-weight-bold">Wheels</h2>
+<section class="h-100 pb-5">
+  <div class="d-flex justify-content-center text-dark navbar heading_container heading_center">
+    <h2 class="text-dark font-weight-bold">Wheels</h2>
+  </div>
+
+  <div class="product container-fluid">
+    <div class="row d-flex justify-content-center">
+      {% for product in products %}
+      <div style="border-radius: 20px;" class="card col-md-4 col-5">
+        <img style="border: none;height: 15rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
+          width="auto" height="auto" />
+        <div class="card-body text-center mx-auto">
+          <div class='cvp'>
+            <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
+            <p class="card-text">₹&nbsp;{{product.product_price}}</p>
+            <a href="{% url 'prod_details' product.id %}" style="box-shadow: 0px 0px 15px #212121;"
+              class="font-weight-bold btn bg-dark text-light px-3">view details</a><br />
           </div>
-        
-          <div class="product container-fluid">
-            <div class="row d-flex justify-content-center">
-              {% for product in products %}
-              <div style="border-radius: 20px;" class="card col-md-4 col-5">
-                <img  style="border: none;height: 15rem;" class='mx-auto img-thumbnail'
-                    src="{{product.product_image.url}}"
-                    width="auto" height="auto"/>
-                <div class="card-body text-center mx-auto">
-                    <div class='cvp'>
-                        <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
-                        <p class="card-text">₹&nbsp;{{product.product_price}}</p>
-                        <a href="{% url 'prod_details' product.id %}" style="box-shadow: 0px 0px 15px #212121;" class="font-weight-bold btn bg-dark text-light px-3">view details</a><br />
-                    </div>
-                </div>
-            </div>
-        
-              {% endfor %}
-            </div>
-        
-          </div>
-<!-- Pagination  starts -->
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+
+  </div>
+  <!-- Pagination  starts -->
   <br>
   <div class="container-fluid d-flex justify-content-center">
     {% if products.has_previous %}
-      <a href="?page={{products.previous_page_number}}">&laquo;Prev</a>          
+    <a href="?page={{products.previous_page_number}}">&laquo;Prev</a>
     {% endif %}
     Page {{products.number}} of {{products.paginator.num_pages}}
     {% if products.has_next %}
-      <a href="?page={{products.next_page_number}}">Next&raquo;</a>          
+    <a href="?page={{products.next_page_number}}">Next&raquo;</a>
     {% endif %}
-    </div>
-<!-- pagination ends -->
+  </div>
+  <!-- pagination ends -->
 
-    </section>
+</section>
 <!-- signup form ends -->
 {% endblock %}

@@ -359,9 +359,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
 
-
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
   {% block lowerBodyScript %}
 
   {% endblock %}
@@ -370,11 +367,15 @@
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- sweet alert -->
 
+  <!-- Order placed MSG -->
   {% for message in messages %}
   <script>
     swal.fire('{{message}}')
   </script>
   {% endfor %}
+  <!-- Order placed MSG -->
+
+
   <!-- image zooming -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <script src="{% static '/js/zoomsl.min.js' %}"></script>
