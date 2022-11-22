@@ -370,7 +370,11 @@
   <!-- Order placed MSG -->
   {% for message in messages %}
   <script>
-    swal.fire('{{message}}')
+    swal.fire(
+      '{{message}}',
+      '',
+      'success',
+    )
   </script>
   {% endfor %}
   <!-- Order placed MSG -->

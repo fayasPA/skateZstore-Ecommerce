@@ -25,6 +25,16 @@
             <input value="{{end_date}}" name="end_date" id="end_date" type="date" placeholder="Expiry Date"
                class="border-success form-control form-control-lg" />
           </div>
+          <div class="pt-2 form-outline mb-4">
+            <label class="text-success" for="dis_amnt">Change Discount Amount</label>
+            <input value="{{single_coupon.discount_amnt}}" name="dis_amnt" id="dis_amnt" type="text" placeholder="Discount Amount"
+               class="border-success form-control form-control-lg" />
+          </div>
+          <div class="pt-2 form-outline mb-4">
+            <label class="text-success" for="min_amnt">Change Minimum Amount</label>
+            <input value="{{single_coupon.min_amnt}}" name="min_amnt" id="min_amnt" type="text" placeholder="Minimum Amount"
+               class="border-success form-control form-control-lg" />
+          </div>
           <div class="d-flex justify-content-around pt-2form-outline mb-4">
             {% if single_coupon.active %}
             <div class=" d-flex justify-content-start ">

@@ -15,13 +15,23 @@
               <div class="pt-5 form-outline mb-4">
                 <input name="coupon_code" type="text" placeholder="Coupon Code" id="form3Example90" class="border-dark form-control form-control-lg" />
               </div>
-              <div class="pt-5 form-outline mb-4">
+              <div class="pt-2 form-outline mb-4">
                 <label class="container" for="start_date" >Start Date</label>
                 <input name="start_date" type="date" placeholder="Start Date" id="start_date" class="border-dark form-control form-control-lg" />
               </div>
-              <div class="pt-5 form-outline mb-4">
+              <div class="pt-2 form-outline mb-4">
                 <label class="container" for="expiry_date" >Expiry Date</label>
                 <input name="end_date" type="date" placeholder="Expiry Date" id="expiry_date" class="border-dark form-control form-control-lg" />
+              </div>
+              <div class="pt-2 form-outline mb-4">
+                <label class="container" for="dis_amnt">Change Discount Amount</label>
+                <input  name="dis_amnt" id="dis_amnt" type="text" placeholder="Discount Amount"
+                   class="border-success form-control form-control-lg" />
+              </div>
+              <div class="pt-2 form-outline mb-4">
+                <label class="container" for="min_amnt">Change Minimum Amount</label>
+                <input  name="min_amnt" id="min_amnt" type="text" placeholder="Minimum Amount"
+                   class="border-success form-control form-control-lg" />
               </div>
               <div class="pb-5 d-flex justify-content-center">
                 <button type="submit" class="btn btn-dark btn-lg ms-2">Update</button>
@@ -48,6 +58,8 @@
             <th scope="col">Coupon</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
+            <th scope="col">Discount Amount</th>
+            <th scope="col">Minimum Amount</th>
             <th scope="col">Active</th>
             <th scope="col"></th>
           </tr>
@@ -60,7 +72,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header d-flex justify-content-center">
-                  <h5 class="modal-title " id="">Sure U want to Edit {{coupon.code}}</h5>
+                  <h5 class="modal-title " id="">Sure You want to Edit {{coupon.code}}</h5>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -73,17 +85,17 @@
           <!--Edit Modal Ends -->
 
           <!--Delete Modal start-->
-          <div class="modal fade" id="deletemodal{{product.id}}" tabindex="-1" role="dialog"
+          <div class="modal fade" id="deletemodal{{coupon.id}}" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header d-flex justify-content-center">
-                  <h5 class="modal-title " id="">Sure U want to Delete <img style="height: 40px;"
+                  <h5 class="modal-title " id="">Sure You want to Delete {{coupon.code}}<img style="height: 40px;"
                       src="" alt=""></h5>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <a href=""><button type="button"
+                  <a href="{% url 'delete_coupon' coupon.id %}"><button type="button"
                       class="btn btn-primary">Confirm</button></a>
                 </div>
               </div>
@@ -96,7 +108,9 @@
             <td>{{coupon.code}}</td>
             <td>{{coupon.valid_from}}</td>
             <td>{{coupon.valid_to}}</td>
-            <td>
+            <td>{{coupon.discount_amnt}}</td>
+            <td>{{coupon.min_amnt}}</td>
+            <td >
                 {% if coupon.active %}
                 <i class="fa fa-check" aria-hidden="true"></i>
                 {% else %}
@@ -107,7 +121,7 @@
               <div class="d-flex p-0">
                 <button type="button" data-toggle="modal" data-target="#editmodal{{coupon.id}}"
                   class="pl-4 pr-4 btn btn-sm btn-outline-success">Edit</button>
-                &nbsp;<button type="button" data-toggle="modal" data-target="#deletemodal{{product.id}}"
+                &nbsp;<button type="button" data-toggle="modal" data-target="#deletemodal{{coupon.id}}"
                   class=" btn btn-sm btn-outline-danger">Delete</button>
               </div>
             </td>

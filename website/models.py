@@ -18,7 +18,8 @@ class Cart(models.Model):
     ordered = models.BooleanField(default=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-
+    coupon_code = models.CharField(max_length=100,blank=True)
+    discounted_amnt = models.FloatField(default=0.0)
     def get_total_item_price(self):
         return self.quantity * self.product.product_price
 

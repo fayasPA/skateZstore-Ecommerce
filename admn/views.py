@@ -244,12 +244,14 @@ def status_update(request):
 @never_cache
 def coupon(request):
     if request.user.is_superuser:
-        coupons = Coupon.objects.all()
+        coupons = Coupon.objects.all().order_by('code')
         if request.method == 'POST':
             code = request.POST['coupon_code']
             start_date = request.POST['start_date']
             end_date = request.POST['end_date']
-            coupon_creation = Coupon.objects.create(code=code,valid_from=start_date,valid_to=end_date)
+            dis_amnt = request.POST['dis_amnt']
+            min_amnt = request.POST['min_amnt']
+            coupon_creation = Coupon.objects.create(code=code,valid_from=start_date,valid_to=end_date,discount_amnt=dis_amnt,min_amnt=min_amnt)
             coupon_creation.save()
         return render(request,'admin/coupon.html',{'coupons':coupons})
     return redirect(adminlogin)
@@ -270,9 +272,15 @@ def edit_coupon(request,id):
             single_coupon.valid_from = request.POST['start_date']
             single_coupon.valid_to = request.POST['end_date']
             single_coupon.active = request.POST['active_coupon']
+            single_coupon.discount_amnt = request.POST['dis_amnt']
+            single_coupon.min_amnt = request.POST['min_amnt']
             single_coupon.save()
             return redirect(coupon)
         return render(request, 'admin/edit_coupon.html',context)
     return redirect(adminlogin)
 
+@never_cache
+def delete_coupon(request,id):
+    Coupon.objects.get(id=id).delete()
+    return redirect(coupon)
 

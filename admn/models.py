@@ -35,4 +35,6 @@ class Coupon(models.Model):
     code = models.CharField(max_length=100,unique=True)
     valid_from = models.DateTimeField()
     valid_to = models.DateTimeField()
+    min_amnt = models.FloatField(default=0.0)
+    discount_amnt = models.FloatField(default=0.0)
     active = models.BooleanField(default=True)

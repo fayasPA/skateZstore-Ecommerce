@@ -110,7 +110,7 @@
                         <div>
                             <h6 class="my-0">Sub Total</h6>
                         </div>
-                        <span class="text-muted">₹.&nbsp;{{tot_amount}}</span>
+                        <span class="text-muted">₹.&nbsp;<span id="amntBeforeDiscount">{{tot_amount}}</span></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
@@ -122,7 +122,7 @@
                         <div>
                             <h6 class="my-0">Discount</h6>
                         </div>
-                        <span class="text-muted">₹.&nbsp;0.0</span>
+                        <span class="text-muted">₹.&nbsp;<span id="discountAmount">0.0</span></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between bg-light">
                         <!-- Promo code -->
@@ -145,27 +145,28 @@
                         </div>
                     </li>
                     <li class="list-group-item d-flex justify-content-between bg-light">
-
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Promo code"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <input type="text" class="form-control" placeholder="Promo code" name=""
+                            id="coupon_code"    aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <div class="input-group-append">
-                                <button class="btn btn-secondary btn-md waves-effect m-0" type="button">Redeem</button>
+                                <button class="btn btn-secondary btn-md waves-effect m-0" onclick="dis_coupon()" type="button">Redeem</button>
                             </div>
                         </div>
                         <!-- Promo code -->
                     </li>
+                    <li class="list-group-item d-flex justify-content-start bg-light">
+                    <span id="message"></span>
+                    <span id="errormessage"></span>
+                    </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Total (Rs)</span>
-                        <strong>₹&nbsp;{{tot_amount}}</strong>
+                        <strong >₹&nbsp;<span id="amntAfterDiscount">{{tot_amount}}</span></strong>
                     </li>
                 </ul>
                 <!-- Cart -->
                 <div class="p-3 d-flex justify-content-center">
                     <button type="submit" class="btn btn-outline-success btn-lg ms-2">Continue To Checkout</button>
                 </div>
-
-
 
             </div>
             <!--Grid column-->
@@ -191,10 +192,31 @@
         document.getElementById('state').value = state
         document.getElementById('landmark').value = landmark
         document.getElementById('phone').value = phone
+    }
 
+    function dis_coupon() {
+        a = document.getElementById('coupon_code').value
+        console.log(a)
+        $.ajax({
+            url: "/discount_coupon/" + a ,
+            success: function (response) {
+                console.log(response)
+            if(response.message){
+                document.getElementById('amntBeforeDiscount').innerHTML = response.tot_amnt;
+                document.getElementById('discountAmount').innerHTML = response.coupon_amnt;
+                document.getElementById('amntAfterDiscount').innerHTML = response.new_tot_amnt;
+                document.getElementById('message').innerHTML = response.message;
+                document.getElementById('message').style.color = "green";
+            }
+            else{
+                document.getElementById('errormessage').innerHTML = response.errormessage;
+                document.getElementById('errormessage').style.color = "Red";
+            }
+                
+            
+        }
+        })
     }
 
 </script>
-
-
 {% endblock %}

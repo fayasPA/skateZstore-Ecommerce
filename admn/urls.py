@@ -18,5 +18,6 @@ urlpatterns = [
     path('/status_update',views.status_update,name='status_update'),
     path('/coupon',views.coupon,name='coupon'),
     path('/edit_coupon/<int:id>/',views.edit_coupon,name='edit_coupon'),
+    path('/delete_coupon/<int:id>/',views.delete_coupon,name='delete_coupon'),
 
 ]

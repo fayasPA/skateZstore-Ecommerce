@@ -31,5 +31,6 @@ urlpatterns = [
     path('search',views.search,name='search'),
     path('order_cancel/<int:id>/',views.order_cancel,name='order_cancel'),
     path('orderinvoice/<int:id>/',views.orderinvoice,name='orderinvoice'),
+    path('discount_coupon/<str:code>/',views.discount_coupon,name='discount_coupon'),
 
 ]

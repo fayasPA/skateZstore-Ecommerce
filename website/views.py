@@ -185,7 +185,6 @@ def edit_address(request,id):
         return render(request,'edit_address.html',{'adrs':adrs})
     return redirect(LogIn)
 
-
 @never_cache
 def delete_address(request,id):
     if request.user.is_authenticated:
@@ -319,7 +318,7 @@ def checkout(request):
         tot_amount = 0
         for order in orders:
             tot_amount = tot_amount + order.get_final_price()
-        return render(request,'checkout.html',{'tot_amount':tot_amount,'count':count})
+        return render(request,'checkout.html',{'tot_amount':tot_amount,'count':count,})
     return redirect(index)
 
 @never_cache
@@ -333,12 +332,13 @@ def place_order(request):
             address = Address.objects.get(id=address_id)
             for single_order in orders:
                 p = Product.objects.get(id=single_order.product.id)
-                tot_amnt = tot_amnt + single_order.get_final_price()
+                tot_amnt = tot_amnt + single_order.discounted_amnt
                 qty = single_order.quantity
                 p.product_qty = p.product_qty - qty
+                coupon = single_order.coupon_code
                 p.save()
-                amnt = single_order.get_final_price()
-                HistoryOrder.objects.create(user=request.user,is_ordered=True,method=method,product=single_order.product,quantity=qty,amount=amnt,address=address)
+                amnt = single_order.discounted_amnt
+                HistoryOrder.objects.create(coupon_code=coupon,user=request.user,is_ordered=True,method=method,product=single_order.product,quantity=qty,amount=amnt,address=address)
             orders.delete()
             if method == "COD":
                 messages.error(request, 'Order has been placed')
@@ -384,8 +384,38 @@ def user_orders(request):
 def order_cancel(request,id):
     order = HistoryOrder.objects.filter(id=id).update(status="Cancel")
     return redirect(user_orders)
-    
+
+
 @never_cache
 def orderinvoice(request,id):
     order = HistoryOrder.objects.get(id=id)
     return render(request,'orderinvoice.html',{'order':order})
+
+@never_cache
+def discount_coupon(request,code):
+    orders = Cart.objects.filter(user=request.user)
+    tot_amnt = 0
+    try:
+        coupon = Coupon.objects.get(Q(code__icontains=code) )
+    except:
+        coupon = None
+    for single_order in orders:
+        tot_amnt = tot_amnt + single_order.get_final_price()
+    if coupon == None or (tot_amnt < coupon.min_amnt):
+        for single_order in orders:
+            single_order.discounted_amnt = single_order.get_final_price()
+            single_order.save()
+        if tot_amnt < coupon.min_amnt:
+            remaining_amnt = coupon.min_amnt - tot_amnt
+            print(remaining_amnt)
+            return JsonResponse({'errormessage':"Purchase for Rs." + str(remaining_amnt) + " more to apply this coupon"})
+        return JsonResponse({'errormessage':"Coupon is not VALID"})
+    else:
+        new_tot_amnt = tot_amnt - coupon.discount_amnt
+        dis_amnt = coupon.discount_amnt / orders.count()
+        for single_order in orders:
+            single_order.discounted_amnt = single_order.get_final_price() - dis_amnt
+            single_order.coupon_code = coupon.code
+            single_order.save() 
+        return JsonResponse({'tot_amnt':tot_amnt,'new_tot_amnt':new_tot_amnt,'message':"Coupon has been applied",'coupon_amnt':coupon.discount_amnt})
+
