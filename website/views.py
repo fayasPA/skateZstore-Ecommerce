@@ -227,7 +227,19 @@ def prod_trucks(request):
 @never_cache
 def prod_details(request,id):
     prod_detail = Product.objects.get(id=id)
-    return render(request,'prod_details.html',{'prod_detail':prod_detail})
+    prod_img_count = range(1,prod_detail.productimage_set.all().count() + 2)
+    prod_img = []
+    prod_img.append(prod_detail.product_image)
+    prod_imgs = ProductImage.objects.filter(product=prod_detail.id)
+    for i in prod_imgs:
+        prod_img.append(i.product_image)
+    print(prod_img)
+    print(prod_img_count)
+    context = {'prod_detail':prod_detail,
+    'prod_img_count' : prod_img_count,
+    'prod_img':prod_img,
+    }
+    return render(request,'prod_details.html',context)
 
 @never_cache
 def add_to_cart(request,id):

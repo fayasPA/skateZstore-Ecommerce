@@ -72,17 +72,33 @@
   function status(orderid, stats) {
     // var token = $("input[name='csrfmiddlewaretoken']").val()
     console.log("FAYAS", orderid)
-    $.ajax({
-      type: "GET",
-      data: {
-        "orderid": orderid,
-        "stats": stats,
-      },
-      url: "status_update",
-      success: function (response) {
-        swal.fire(response.status)
+    Swal.fire({
+      title: 'Order Status!',
+      text: 'Do you want to change the status of the order',
+      icon: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'change status',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed){            //checks whether we have confirmed for status change
+        $.ajax({
+          type: "GET",
+          data: {
+            "orderid": orderid,
+            "stats": stats,
+          },
+          url: "status_update",
+          success: function (response) {
+            //swal.fire(response.status)
+          }
+        });
       }
-    });
+      else{
+        location.reload()
+      }
+    })
+    console.log("result=")
+    console.log("swal.response=")
   }
 </script>
 

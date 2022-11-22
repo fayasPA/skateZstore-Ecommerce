@@ -1,0 +1,133 @@
+{% extends 'admin/admindashboard.html' %}
+{% load static %}
+
+{% block style %}
+{% endblock %}
+
+{% block add %}
+<!-- Add Category modal -->
+    <div class=" modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class=" modal-dialog  modal-lg">
+      <div class=" modal-content">
+        <div class="rounded bg-secondary container">
+          <form class="" action="" method="POST" >
+            {% csrf_token %}
+              <div class="pt-5 form-outline mb-4">
+                <input name="coupon_code" type="text" placeholder="Coupon Code" id="form3Example90" class="border-dark form-control form-control-lg" />
+              </div>
+              <div class="pt-5 form-outline mb-4">
+                <label class="container" for="start_date" >Start Date</label>
+                <input name="start_date" type="date" placeholder="Start Date" id="start_date" class="border-dark form-control form-control-lg" />
+              </div>
+              <div class="pt-5 form-outline mb-4">
+                <label class="container" for="expiry_date" >Expiry Date</label>
+                <input name="end_date" type="date" placeholder="Expiry Date" id="expiry_date" class="border-dark form-control form-control-lg" />
+              </div>
+              <div class="pb-5 d-flex justify-content-center">
+                <button type="submit" class="btn btn-dark btn-lg ms-2">Update</button>
+              </div>
+          </form>
+        </div>
+      </div>
+  </div>
+    </div>
+<!-- modal ends -->
+    <li class="d-flex justify-content-center align-items-center nav-item">
+        <a data-toggle="modal" data-target=".bd-example-modal-lg" style="text-decoration: none;" href=""><button  type="submit" class="btn btn-sm btn-outline-light my-2 my-sm-0" >Add Coupon</button></a>
+    </li>
+{% endblock %}
+{% block innercontent %}
+<section class="pt-3">
+  <div class="container-fluid">
+
+    <!-- Table starts here -->
+    <div style="overflow-x:scroll;">
+      <table  id="product_table"  class=" table table-striped" >
+        <thead class="col-md-12 col-12 text-light bg-dark">
+          <tr>
+            <th scope="col">Coupon</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Active</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for coupon in coupons %}
+          <!--Edit Modal start-->
+          <div class="modal fade" id="editmodal{{coupon.id}}" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                  <h5 class="modal-title " id="">Sure U want to Edit {{coupon.code}}</h5>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <a href="{% url 'edit_coupon' coupon.id %}"><button type="button"
+                    class="btn btn-primary">Confirm</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Edit Modal Ends -->
+
+          <!--Delete Modal start-->
+          <div class="modal fade" id="deletemodal{{product.id}}" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                  <h5 class="modal-title " id="">Sure U want to Delete <img style="height: 40px;"
+                      src="" alt=""></h5>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <a href=""><button type="button"
+                      class="btn btn-primary">Confirm</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Delete Modal Ends -->
+
+
+          <tr >
+            <td>{{coupon.code}}</td>
+            <td>{{coupon.valid_from}}</td>
+            <td>{{coupon.valid_to}}</td>
+            <td>
+                {% if coupon.active %}
+                <i class="fa fa-check" aria-hidden="true"></i>
+                {% else %}
+                <i class="fa-sharp fa-solid fa-ban"></i>
+                {% endif %}
+            </td>
+            <td>
+              <div class="d-flex p-0">
+                <button type="button" data-toggle="modal" data-target="#editmodal{{coupon.id}}"
+                  class="pl-4 pr-4 btn btn-sm btn-outline-success">Edit</button>
+                &nbsp;<button type="button" data-toggle="modal" data-target="#deletemodal{{product.id}}"
+                  class=" btn btn-sm btn-outline-danger">Delete</button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- Table ends here -->
+
+  </div>
+
+
+</section>
+
+
+{% endblock %}
+
+{% block lowerBodyScript %}
+
+
+
+{% endblock %}

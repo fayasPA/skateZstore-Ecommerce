@@ -30,3 +30,9 @@ class Product(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_image = models.ImageField(upload_to='products/',null=True,blank=True)
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=100,unique=True)
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
+    active = models.BooleanField(default=True)

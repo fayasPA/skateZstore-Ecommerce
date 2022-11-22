@@ -6,7 +6,7 @@ from django.utils import timezone
 class Address(models.Model):
     user = models.ForeignKey(myUser, on_delete=models.CASCADE)
     type = models.CharField(max_length=20)
-    phone_number = models.CharField(max_length=20)         #Adding column phone no.
+    phone_number = models.CharField(max_length=20)                                      #Adding column phone no.
     address = models.CharField(max_length=100)
     pin = models.IntegerField()
     district = models.CharField(max_length=20)
@@ -42,9 +42,10 @@ class HistoryOrder(models.Model):
     amount = models.FloatField(default=0)
     address = models.ForeignKey(Address, on_delete=models.DO_NOTHING,default='')
     status = models.CharField(max_length=100, choices = choices, default="Order Placed",blank=True,null=True)
+    updated_date =models.DateTimeField(auto_now=True)
+    coupon_code = models.CharField(max_length=100,blank=True)
 
-
-    def get_order_id(self):                  #   strftime converts date to string
+    def get_order_id(self):                                                             #   strftime converts date to string
         order_id_no = self.ordered_date.strftime('PAYTOME%Y%m%dODR') + str(self.id)
         return order_id_no
 

@@ -6,6 +6,8 @@ from django.views.decorators.cache import never_cache
 from .models import Category,Product, ProductImage
 from website.models import *
 from django.http import JsonResponse,HttpResponse
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 import os
 # paginator stuff
@@ -37,18 +39,28 @@ def admindashboard(request):
         category = Category.objects.all()
         user_count = myUser.objects.all().count()
         order_count = HistoryOrder.objects.all().count()
-        delivery_count = HistoryOrder.objects.filter(status="Delivery").count()
+        delivery_count = HistoryOrder.objects.filter(status="Delivered").count()
         cat_count = []
         for c in category:
             cat_count.append(Product.objects.filter(category=c.id).count())
         
-        ordered_dates = orders.order_by('ordered_date').distinct()         #get pythonic way of ordered dates in distinct ascending order
-        for i in ordered_dates:
-            print(i.ordered_date.strftime('%Y-%m-%d'))
-            print(i.ordered_date)
-        
-        # for od in ordered_dates:
 
+# 1 week sales report:
+        orders2 = orders.order_by('-ordered_date')         #get pythonic way of ordered dates in distinct ascending order
+        first_date = datetime.now().date()
+        last_date = first_date - timedelta(days=6)
+        print(last_date)
+        amntperday_list = []
+        date_list = []
+        for i in range(1,8):
+            tot_amnt_per_day = 0
+            for order in orders2:
+                if(order.ordered_date.date() == first_date):
+                    tot_amnt_per_day = tot_amnt_per_day + order.amount
+            amntperday_list.append(tot_amnt_per_day)
+            date_list.append(first_date)
+            first_date = first_date - timedelta(days=1)
+        
         context = {
             'products' : products,
             "category" : category,
@@ -57,6 +69,9 @@ def admindashboard(request):
             "cat_count" : cat_count,
             "order_count" : order_count,
             "delivery_count" : delivery_count,
+            "amntperday_list" : amntperday_list,
+            "date_list" : date_list,
+
         }
         return render(request,'admin/admindashboard.html',context)
     return redirect(adminlogin)
@@ -174,7 +189,8 @@ def edit_product(request,id):
             product.product_price = request.POST['prod_price']
             cat_id = request.POST['prod_categ']
             product.category = Category.objects.get(id=cat_id)
-                    # os.remove(product.product_image.path)         # Removing Path
+            product.product_qty = request.POST['prod_qty']
+            # os.remove(product.product_image.path)         # Removing Path
             product.product_image = request.FILES.get('prod_img',product.product_image)
             # EXTRA IMAGES
             ei = ProductImage.objects.filter(product_id=id)
@@ -188,7 +204,7 @@ def edit_product(request,id):
                 print(im.product_image)
                 count = count-1
                 i = i+1
-                im.save()           
+                im.save()
             # EXTRA IMAGES
             product.save()
             return redirect(adminproduct)
@@ -222,5 +238,41 @@ def status_update(request):
     if request.method == 'GET':
         id = request.GET['orderid']
         status = request.GET['stats']
-        HistoryOrder.objects.filter(id=id).update(status=status)
+        HistoryOrder.objects.filter(id=id).update(status=status,updated_date=datetime.now())
         return JsonResponse({'status':"Status has been changed"})
+
+@never_cache
+def coupon(request):
+    if request.user.is_superuser:
+        coupons = Coupon.objects.all()
+        if request.method == 'POST':
+            code = request.POST['coupon_code']
+            start_date = request.POST['start_date']
+            end_date = request.POST['end_date']
+            coupon_creation = Coupon.objects.create(code=code,valid_from=start_date,valid_to=end_date)
+            coupon_creation.save()
+        return render(request,'admin/coupon.html',{'coupons':coupons})
+    return redirect(adminlogin)
+
+@never_cache
+def edit_coupon(request,id):
+    if request.user.is_superuser:
+        single_coupon = Coupon.objects.get(id=id)
+        start_date = single_coupon.valid_from.strftime("%Y-%m-%d")
+        end_date = single_coupon.valid_to.strftime("%Y-%m-%d")
+        context = {
+              'single_coupon':single_coupon,
+            'start_date':start_date,
+            'end_date':end_date
+            }
+        if request.method == 'POST':
+            single_coupon.code = request.POST['coupon_name']
+            single_coupon.valid_from = request.POST['start_date']
+            single_coupon.valid_to = request.POST['end_date']
+            single_coupon.active = request.POST['active_coupon']
+            single_coupon.save()
+            return redirect(coupon)
+        return render(request, 'admin/edit_coupon.html',context)
+    return redirect(adminlogin)
+
+
