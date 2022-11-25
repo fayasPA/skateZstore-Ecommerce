@@ -27,6 +27,11 @@ class Product(models.Model):
     product_image = models.ImageField(upload_to='products/',null=True,blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
+    product_offer=models.IntegerField(default=0)
+    product_offer_price=models.IntegerField(default=0)
+    category_offer=models.IntegerField(default=0)
+    category_offer_price=models.IntegerField(default=0)
+
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_image = models.ImageField(upload_to='products/',null=True,blank=True)
@@ -38,3 +43,17 @@ class Coupon(models.Model):
     min_amnt = models.FloatField(default=0.0)
     discount_amnt = models.FloatField(default=0.0)
     active = models.BooleanField(default=True)
+
+class ProductOffer(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    offer = models.IntegerField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+class CategoryOffer(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    offer = models.IntegerField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=True)

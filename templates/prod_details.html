@@ -273,7 +273,7 @@ img{
           <h2>Description: </h2>
           <p>{{prod_detail.product_description}}</p>
           <ul>
-            <li>Available: 
+            <li class="wrong">Available: 
                 {% if prod_detail.product_qty <= 5 and prod_detail.product_qty >= 1 %}
                 <span class="font-weight-bold">Only {{prod_detail.product_qty}} stocks!</span> 
                 {% elif prod_detail.product_qty == 0 %}

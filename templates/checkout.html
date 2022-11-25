@@ -196,7 +196,6 @@
 
     function dis_coupon() {
         a = document.getElementById('coupon_code').value
-        console.log(a)
         $.ajax({
             url: "/discount_coupon/" + a ,
             success: function (response) {

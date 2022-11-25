@@ -1,0 +1,123 @@
+{% extends 'admin/admindashboard.html' %}
+{% load static %}
+{%block innercontent%}
+<style>
+    .insert_button{
+  
+      margin-right: 120px;
+      
+  
+    }
+    .headding{
+      position: relative;
+      left:125px;
+      width: 400px;
+      height: 39px;
+      border-bottom: 5px solid rgb(36, 42, 48);
+      overflow: hidden;
+      
+    }
+    .headding span{
+     
+     font-size: 23px;
+     font-family: Arial, Helvetica, sans-serif;
+     line-height: 31px;
+     background-color: rgb(36, 42, 48);
+     display: inline-block;
+     padding: 2px 20px;
+     overflow: hidden;
+     color: #ffffff;
+  
+    }
+    .headding span:before{
+      position: absolute;
+      content: "";
+      width: 75%;
+      height: 100%;
+      background: rgb(36, 42, 48);
+      z-index: -1;
+      transform: rotate(45deg);
+    }
+  
+    
+    
+    .buttons{
+      background-color:  rgb(36, 42, 48); 
+      color: white;
+      border-radius: 15px;
+    }
+
+  </style>
+    <nav class="navbar mb-4 mt-3 d-flex justify-content-center">
+      <div class="">
+        <h2>Sales Report</h2>
+      </div>
+    </nav>
+
+  <!--Table Begning-->
+
+  
+
+  <section >
+    <div class="container">
+      <div class="row justify-content-center">
+        
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-wrap">
+            <table class="table" id="myTable" >
+              <thead class="thead-primary text-center">
+                <tr class="">
+                  <th>Order ID</th>
+                  <th>Order Date</th>
+                  <th>Customer</th>
+                  <th>Quantity</th>
+                  <th>Amount</th>
+                  <th>Payment Method</th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                {%for o in orders%}
+                <tr class="alert" role="alert">
+                  <td>{{o.id}}</td>
+                  <td>{{o.ordered_date}}</td>
+                  <td>{{o.user.first_name}}</td>
+                  <td>{{o.quantity}}</td>
+                  <td>₹ {{o.get_final_price}}</td>
+                  <td>{{o.method}}</td>
+                  
+                </tr>
+                {%endfor%}
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+{%endblock%}
+{%block lowerBodyScript %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#myTable').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>
+{%endblock%}

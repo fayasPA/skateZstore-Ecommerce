@@ -21,7 +21,22 @@ class Cart(models.Model):
     coupon_code = models.CharField(max_length=100,blank=True)
     discounted_amnt = models.FloatField(default=0.0)
     def get_total_item_price(self):
-        return self.quantity * self.product.product_price
+
+        if self.product.product_offer_price < 1 and self.product.category_offer_price < 1:
+            return self.quantity * self.product.product_price
+        elif self.product.product_offer_price > 1 and self.product.category_offer_price is 0:
+            return self.quantity * self.product.product_offer_price
+        elif self.product.product_offer_price < 1 and self.product.category_offer_price > 1:
+            return self.quantity * self.product.category_offer_price
+        elif self.product.product_offer_price < self.product.category_offer_price and self.product.category_offer_price > 1:
+            return self.quantity * self.product.category_offer_price
+        elif self.product.category_offer_price < self.product.product_offer_price and self.product.product_offer_price > 1:
+            return self.quantity * self.product.product_offer_price
+        elif self.product.product_offer_price == self.product.category_offer_price and self.product.product_offer_price > 1 and self.product.category_offer_price > 1:
+            return self.quantity * self.product.category_offer_price
+        
+
+        # return self.quantity * self.product.product_price
 
     def get_final_price(self):
         return self.get_total_item_price()

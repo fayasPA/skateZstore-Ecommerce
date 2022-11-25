@@ -201,7 +201,7 @@ def LogOut(request):
 
 @never_cache
 def prod_deck(request):
-    # products = Product.objects.all()
+    # p = Product.objects.all()
     p = Paginator(Product.objects.filter(category__category_name__contains="Decks").order_by('product_name'),2)          #set up pagination
     page = request.GET.get('page')
     products = p.get_page(page)
@@ -375,7 +375,7 @@ def search(request):
 @never_cache
 def user_orders(request):
     if request.user.is_authenticated:
-        orders = HistoryOrder.objects.filter(user=request.user).order_by('id')
+        orders = HistoryOrder.objects.filter(user=request.user).order_by('-id')
         return render(request,'user_orders.html',{'orders':orders})
     return redirect(index)
 

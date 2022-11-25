@@ -12,15 +12,79 @@
     <div class="row d-flex justify-content-center">
       {% for product in products %}
       <div style="border-radius: 20px;" class="card col-md-4 col-5">
-        <img style="border: none;height: 15rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
+        <div class="d-flex justify-content-center">
+          <img style="border: none;height: 15rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
           width="auto" height="auto" />
+          {% if product.product_offer > 0 and product.category_offer > 0 %}
+          {% if product.product_offer > product.category_offer %}
+          <div>
+          <button class="btn btn-success">{{product.product_offer}}&nbsp;% Off</button>
+        </div>
+          {% else %}
+          <div>
+            <button class="btn btn-success">{{product.category_offer}}&nbsp;% Off</button>
+          </div>
+          {% endif %}
+          {% elif product.product_offer > 0 and product.category_offer is 0 %}
+          <div>
+          <button class="btn btn-success">{{product.product_offer}}&nbsp;% Off</button>
+        </div>
+        {% elif product.product_offer is 0 and product.category_offer > 0 %}
+          <div>
+          <button class="btn btn-success">{{product.category_offer}}&nbsp;% Off</button>
+        </div>
+        
+          {% endif %}
+        </div>
         <div class="card-body text-center mx-auto">
           <div class='cvp'>
             <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
-            <p class="card-text">₹&nbsp;{{product.product_price}}</p>
+                          
+                          {%if product.product_offer_price < 1 and product.category_offer_price < 1  %}
+                            <span class="stext-105 cl3">
+                                ₹{{product.product_price}}
+                            </span>
+
+                            {%elif product.product_offer_price > 1 and product.category_offer_price is 0 %}
+                            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                                ₹{{product.product_offer_price}} &nbsp;
+                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+                            </span>
+
+                            {%elif product.product_offer_price < 1 and product.category_offer_price > 1 %}
+                            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                                ₹{{product.category_offer_price}} &nbsp;
+                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+                            </span>
+
+                            {%elif product.product_offer_price < product.category_offer_price and product.category_offer_price > 1 %}
+                            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                                ₹{{product.product_offer_price}} &nbsp;
+                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+                            </span>
+
+                            {%elif product.category_offer_price < product.product_offer_price and product.product_offer_price > 1 %}
+                            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                                ₹{{product.category_offer_price}} &nbsp;
+                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+                            </span>
+
+                            {%elif product.category_offer_price == product.product_offer_price and product.product_offer_price > 1 and product.category_offer_price > 1 %}
+                            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                                ₹{{product.product_offer_price}} &nbsp;
+                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+                            </span>
+                            {%else%}
+                            {%endif%}
+
+
+            <!-- <p class="card-text">₹&nbsp;{{product.product_price}}</p> -->
+            
+            <div>
             <a href="{% url 'prod_details' product.id %}" style="box-shadow: 0px 0px 15px #212121;"
               class="font-weight-bold btn bg-dark text-light px-3">view details</a><br />
-          </div>
+            </div>
+            </div>
         </div>
       </div>
 
@@ -30,13 +94,25 @@
   </div>
   <!-- Pagination  starts -->
   <br>
-  <div class="container-fluid d-flex justify-content-center">
+  <!-- <div class="container-fluid d-flex justify-content-center">
     {% if products.has_previous %}
     <a href="?page={{products.previous_page_number}}">&laquo;Prev</a>
     {% endif %}
     Page {{products.number}} of {{products.paginator.num_pages}}
     {% if products.has_next %}
     <a href="?page={{products.next_page_number}}">Next&raquo;</a>
+    {% endif %}
+  </div> -->
+
+  <div class="container-fluid d-flex justify-content-center">
+    {% if products.has_previous %}
+    <a href="?page={{products.previous_page_number}}"><button
+        class="btn btn-dark">{{products.previous_page_number}}</button></a>
+    {% endif %}
+    &nbsp;<button disabled class="btn btn-light">{{products.number}}</button>
+    {% if products.has_next %}
+    <a href="?page={{products.next_page_number}}">&nbsp;<button
+        class="btn btn-dark">{{products.next_page_number}}</button></a>
     {% endif %}
   </div>
   <!-- pagination ends -->

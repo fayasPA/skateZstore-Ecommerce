@@ -19,5 +19,13 @@ urlpatterns = [
     path('/coupon',views.coupon,name='coupon'),
     path('/edit_coupon/<int:id>/',views.edit_coupon,name='edit_coupon'),
     path('/delete_coupon/<int:id>/',views.delete_coupon,name='delete_coupon'),
+    path('/offer',views.offer,name='offer'),
+    path('/edit_productoffer/<int:id>/',views.edit_productoffer,name='edit_productoffer'),
+    path('/removePoffer/<int:id>/',views.removePoffer,name='removePoffer'),
+    path('/add_category_offer',views.add_category_offer,name='add_category_offer'),
+    path('/edit_categoryoffer/<int:id>/',views.edit_categoryoffer,name='edit_categoryoffer'),   
+    path('/removeCoffer/<int:id>/',views.removeCoffer,name='removeCoffer'),
+    path('/salesreport',views.salesreport,name='salesreport'),
+    path('/dailysaleschart',views.dailysaleschart,name='dailysaleschart'),
 
 ]
