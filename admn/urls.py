@@ -27,5 +27,6 @@ urlpatterns = [
     path('/removeCoffer/<int:id>/',views.removeCoffer,name='removeCoffer'),
     path('/salesreport',views.salesreport,name='salesreport'),
     path('/dailysaleschart',views.dailysaleschart,name='dailysaleschart'),
+    path('/block_coupon/<int:id>/',views.block_coupon,name='block_coupon'),
 
 ]

@@ -4,17 +4,21 @@
     {% block add %}
     <!-- Add Category modal -->
         <div class=" modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class=" modal-dialog  modal-lg">
-          <div class=" modal-content">
-            <div class="rounded bg-secondary container">  
-              <form class="" action="" method="POST" enctype="multipart/form-data">
+          <div class="card modal-dialog  modal-md">
+            <div class="modal-header text-center">
+              <h4 class="modal-title w-100 font-weight-bold">Add New Category</h4>
+            </div>
+            <div class=" modal-content">
+            <div class="rounded  container">  
+              <form id="addForm" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                   <div class="pt-5 form-outline mb-4">
-                    <input name="categ_name" type="text" placeholder="CategoryName" id="form3Example90" class="border-dark form-control form-control-lg" />
+                    <input name="categ_name" type="text" placeholder="CategoryName" id="categ_name" onkeyup="validateCategname()" class="border-dark form-control form-control-lg" />
+                    <span id=categ_name-error></span>
                   </div>
                   <div class="form-outline mb-4">
-                  <label class="container" for="form3Example90" >Add Category Images</label>
-                    <input name="categ_image" type="file" id="form3Example90" accept="image/*" class="border-dark form-control form-control-lg" />
+                  <label class="container" for="form3Example90" >Add Category Image</label>
+                    <input name="categ_image"  type="file" id="categ_img" accept="image/*" class="border-dark form-control form-control-lg" />
                   </div>
                   <div class="pb-5 d-flex justify-content-center">
                     <button type="submit" class="btn btn-dark btn-lg ms-2">Update</button>
@@ -25,15 +29,11 @@
       </div>
         </div>
     <!-- modal ends -->
-    
-
-   
-
-
         <li class="d-flex justify-content-center align-items-center nav-item">
             <a data-toggle="modal" data-target=".bd-example-modal-lg" style="text-decoration: none;" href=""><button  type="submit" class="btn btn-sm btn-outline-light my-2 my-sm-0" >Add Category</button></a>
         </li>
     {% endblock %}
+
     {% block innercontent %}
     <section class=" categ_section">
         <div class="container-fluid">
@@ -75,9 +75,13 @@
       </div>
       <!--Delete Modal Ends -->
 
-            <div class="p-3 col-md-4  px-0">
+            <div class="p-3 col-md-4 col-6 px-0">
               <div class="card  " style="background-color: rgba(0, 0, 0, 0.10);">
-                <img class=" p-2" style="height: 20rem;" src="{{category.category_image.url}}" alt="">
+                {% if not category.category_image %}
+                <img class="card-img-top p-2" style="height: 20rem;" src="{% static '/images/category&products/No_image_available.svg.png' %}" alt="No Image">
+                {% else %}
+                <img class="card-img-top p-2" style="height: 20rem;" src="{{category.category_image.url}}" alt="No Image">
+                {% endif %}
                 <div class="d-flex ">
                   <div class="col-md-6">
                   <h2>{{category.category_name}}</h2>
@@ -96,3 +100,43 @@
       </section>
       
     {% endblock %}
+
+  {% block lowerBodyScript %}
+ <script>
+  var categ_nameError = document.getElementById('categ_name-error');
+  var categ_imgError = document.getElementById('categ_img-error');
+
+  function validateCategname() {
+    console.log("name")
+    var categ_name = document.getElementById('categ_name').value.trim();
+    if (categ_name.length == 0 || categ_name.length < 3) {
+      categ_nameError.innerHTML = 'Enter min 3 characters';
+      categ_nameError.style.color = 'red'
+      return false;
+    }
+
+    if (!categ_name.match(/^[A-Za-z]*$/)) {
+      categ_nameError.innerHTML = 'Name is incorrect';
+      categ_nameError.style.color = 'red'
+      return false;
+    }
+
+    categ_nameError.innerHTML = 'Name is valid';
+    categ_nameError.style.color = 'green'
+    return true;
+  }
+  $('#addForm').submit(function(e){
+    e.preventDefault();                             //This is used to prevent window from submitting the form
+    validateCategname()
+    console.log("submitted",validateCategname()); 
+    if (validateCategname()) {
+      $(this).unbind('submit').submit()             //This is used to undo preventDefault
+    } else {
+    e.preventDefault();
+    console.log("WRTONG")
+    swal.fire('Invalid data! Ensure You have entered correct data');
+    }
+});
+  
+ </script>
+  {% endblock %}

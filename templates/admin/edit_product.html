@@ -95,6 +95,59 @@
 
 
 {% block lowerBodyScript %}
+<script>
+  var prod_nameError = document.getElementById('prod_name-error');
+  var prod_priceError = document.getElementById('prod_price-error');
+  var prod_descError = document.getElementById('prod_desc-error');
+  function validateProdname(){
+    var prod_name = document.getElementById('prod_name').value.trim();
+    if (prod_name.length==0 || prod_name.length<3) {
+      prod_nameError.innerHTML='Enter min 3 characters';
+      prod_nameError.style.color='red'
+      return false;
+  }
+
+  if (!prod_name.match(/^[A-Za-z0-9]*$/)){
+    prod_nameError.innerHTML='Write Correct Name';
+    prod_nameError.style.color='red'
+      return false;
+  }
+  
+  prod_nameError.innerHTML='Name is valid';
+  prod_nameError.style.color='green'
+  return true;
+  } 
+  function validateProdprice(){
+    var prod_price = document.getElementById('prod_price').value;
+    if(prod_price.match(/^[0-9.]+$/))
+        {
+          prod_priceError.innerHTML='Price is valid';
+          prod_priceError.style.color='green'
+            return true;
+        }
+
+        else{
+            prod_priceError.innerHTML ='Only Positive Numbers are to be entered';
+            prod_priceError.style.color='red'
+            return false;
+        }
+  }
+  function validateDesc(){
+    var prod_desc = document.getElementById('prod_desc').value;
+    if (prod_desc.length==0) {
+      prod_descError.innerHTML='This field is Required';
+      prod_descError.style.color='red'
+      return false;
+    }
+    else{
+      prod_descError.innerHTML='Description is valid';
+      prod_descError.style.color='green'
+      return true;
+    }
+  }
+
+</script>
+
 
 <!-- validation submit -->
 <script type="text/javascript">var jQuery_1_7_1 = $.noConflict(true);</script>

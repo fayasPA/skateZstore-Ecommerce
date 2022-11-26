@@ -22,7 +22,7 @@
           </div>
           <div class="pt-2 form-outline mb-4">
             <label class="text-success" for="end_date">Change Expiry Date</label>
-            <input value="{{end_date}}" name="end_date" id="end_date" type="date" placeholder="Expiry Date"
+            <input value="{{end_date}}" name="end_date" id="end_date" type="date" placeholder="Expiry Date" onclick="onchangeEnd()"
                class="border-success form-control form-control-lg" />
           </div>
           <div class="pt-2 form-outline mb-4">
@@ -35,7 +35,7 @@
             <input value="{{single_coupon.min_amnt}}" name="min_amnt" id="min_amnt" type="text" placeholder="Minimum Amount"
                class="border-success form-control form-control-lg" />
           </div>
-          <div class="d-flex justify-content-around pt-2form-outline mb-4">
+          <div class="d-flex justify-content-around pt-2 form-outline mb-4">
             {% if single_coupon.active %}
             <div class=" d-flex justify-content-start ">
               <label class="text-success" for="active_coupon">Activate</label>
@@ -81,5 +81,31 @@
 
 
 {% block lowerBodyScript %}
+<script>
+  $(document).ready(function () {
+      let today = new Date()
+      var dd = today.getDate();
+      var mm = today.getMonth() + 1;
 
+      var yyyy = today.getFullYear();
+      if (dd < 10) {
+          dd = '0' + dd;
+      }
+      if (mm < 10) {
+          mm = '0' + mm;
+      }
+      today = yyyy + '-' + mm + '-' + dd;
+
+      $('#start_date').attr('min', today)
+      $('#start_date').change(function () {
+          let date = document.getElementById('start_date').value
+          $('#start_date').attr('min', date)
+      })
+  })
+
+  function onchangeEnd(){
+    start_date = document.getElementById('start_date').value
+    document.getElementById('end_date').setAttribute("min", start_date);
+  }
+</script>
 {% endblock %}

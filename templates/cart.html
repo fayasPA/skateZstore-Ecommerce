@@ -37,7 +37,7 @@
                                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex text-center">
 
                                             <button onclick="minus('{{order_item.id}}','{{order_item.quantity}}','{{order_item.get_final_price}}')"
-                                                style="text-decoration: none;" class="btn change_qty btn-link px-2 input-group-text">
+                                               disabled style="text-decoration: none;" id="minusbtn{{order_item.id}}" class="btn change_qty btn-link px-2 input-group-text">
                                                 <i class="fas fa-minus"></i></button>
 
                                             <span id="{{order_item.id}}" class="input-group-text bg-light">{{order_item.quantity}}</span>
@@ -84,9 +84,6 @@
                                             <option value="100">Superfast-Delivery</option>
                                         </select>
                                     </div> -->
-
-                                    
-
                                     <hr class="my-4">
 
                                     <div class="d-flex justify-content-between mb-5">
@@ -110,45 +107,43 @@
 {% endblock %}
 
 {% block lowerBodyScript %}
-
+{% for message in messages %}
+<script>
+    swal.fire(message)
+</script>
+{% endfor %}
 <script>
     function minus(orderid, qty, item_tot_price) {
+        console.log("FAYAS")
         $.ajax({
             type: "GET",
             url: "qty_minus/" + orderid,
             success: function (response) {
-                if (response.qty == 0) {
-                    $.ajax({
-                        type: "GET",
-                        url: "removeitem/" + orderid,
-                        success: function () {
-                            console.log("hi")
-                            swal.fire("Item removed").then(() => {
-                                location.reload()
-                            })
-                        }
-                    });
+                if (response.qty == 1) {
+                    $("#minusbtn" + orderid).attr("disabled", true);
+                    document.getElementById(orderid).innerHTML = response.qty;
+                    document.getElementById(item_tot_price).innerHTML = response.updated_price;
+                    document.getElementById('total').innerHTML = response.tot_amount;
                 }
                 else {
                     document.getElementById(orderid).innerHTML = response.qty;
                     document.getElementById(item_tot_price).innerHTML = response.updated_price;
                     document.getElementById('total').innerHTML = response.tot_amount;
-                    item_tot_price
                 }
             }
         });
     }
 
     function plus(orderid, qty, item_tot_price) {
+        console.log("plus",orderid,qty)
         $.ajax({
             type: "GET",
             url: "qty_plus/" + orderid,
             success: function (response) {
-                console.log(response)
-
                 document.getElementById(orderid).innerHTML = response.qty;
                 document.getElementById(item_tot_price).innerHTML = response.updated_price;
                 document.getElementById('total').innerHTML = response.tot_amount;
+                $("#minusbtn" + orderid).attr("disabled", false);
             }
         })
     }

@@ -39,7 +39,7 @@
                       <td>{{user.first_name}}</td>
                       <td>{{user.email}}</td>
                       <td>{{user.phone_number}}</td>
-                      <td>
+                      <td class="d-flex justify-content-center" >
                       <div class="btn p-0">
 
                       <!-- Modal start-->
@@ -47,7 +47,11 @@
                           <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                               <div class="modal-header d-flex justify-content-center">
-                                <h5 class="modal-title " id="">Sure U want to Block/Unblock {{user}}</h5>
+                                {% if user.is_active %}
+                                <h5 class="modal-title " id="">Sure You want to Block {{user}}</h5>
+                                {% else %}
+                                <h5 class="modal-title " id="">Sure You want to Unblock {{user}}</h5>
+                                {% endif %}
                               </div>
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -75,16 +79,6 @@
     
         </div>
 
-        <br>
-        <!-- <div class="container-fluid">
-          {% if user_list.has_previous %}
-            <a href="?page={{user_list.previous_page_number}}">&laquo;Prev</a>          
-          {% endif %}
-          Page {{user_list.number}} of {{user_list.paginator.num_pages}}
-          {% if user_list.has_next %}
-            <a href="?page={{user_list.next_page_number}}">Next&raquo;</a>          
-          {% endif %}
-          </div> -->
 
     </section>
     {% endblock %}

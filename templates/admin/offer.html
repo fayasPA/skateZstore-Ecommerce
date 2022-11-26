@@ -12,312 +12,314 @@
 <section>
   <div class="container-fluid">
     <div class="row">
-    <div class="pt-3 col-md-6">
-      <nav class="navbar mt-3 mb-4 ">
-      <div class="headding ">
-        <span>Product Offer</span>
-      </div>
-      <div class="insert_button"><button type="button" class="btn btn-secondary  buttons" data-toggle="modal"
-          data-target="#modalForm1"><b> Add Product Offer </b></button></div>
-      </nav>
+      <div class="pt-3 col-md-6">
+        <nav class="navbar mt-3 mb-4 ">
+          <div class="headding ">
+            <span>Product Offer</span>
+          </div>
+          <div class="insert_button"><button type="button" class="btn btn-secondary  buttons" data-toggle="modal"
+              data-target="#modalForm1"><b> Add Product Offer </b></button></div>
+        </nav>
 
-      <!-- add product offer modal -->
+        <!-- add product offer modal -->
 
-      <div class="modal fade" id="modalForm1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true" style="left: 0%;top: 16%;">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <form action="" method="POST">
-              {% csrf_token%}
-              <div class="modal-header text-center">
-                <h4 class="modal-title w-100 font-weight-bold">Add Product Offer</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -48px;">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body mx-3">
-                <div class="md-form mb-3">
-                  <label for="product">Product</label>
-                  <select required class="custom-select tm-select-accounts" id="product" name="product">
+        <div class="modal fade" id="modalForm1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true" style="left: 0%;top: 16%;">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form action="" method="POST">
+                {% csrf_token%}
+                <div class="modal-header text-center">
+                  <h4 class="modal-title w-100 font-weight-bold">Add Product Offer</h4>
+                  
+                </div>
+                <div class="modal-body mx-3">
+                  <div class="md-form mb-3">
+                    <label for="product">Product</label>
+                    <select required class="custom-select tm-select-accounts" id="product" name="product">
 
-                    {%for product in products %}
+                      {%for product in products %}
 
-                    <option value="{{product.id}}">{{product.product_name | truncatewords:4}}
-                    </option>
-                    {%endfor%}
-                  </select>
+                      <option value="{{product.id}}">{{product.product_name | truncatewords:4}}
+                      </option>
+                      {%endfor%}
+                    </select>
+                  </div>
+                  <div class="md-form mb-3">
+                    <label data-error="wrong" data-success="right" for="start">Start date</label>
+                    <input required type="date" id="start" class="form-control" value="" name="start_date">
+                  </div>
+                  <div class="md-form mb-3">
+                    <label data-error="wrong" data-success="right" for="end">End date</label>
+                    <input required type="date" id="end" class="form-control" value="" name="expiry_date">
+                  </div>
+                  <div class="md-form  mt-3">
+                    <label data-error="wrong" data-success="right" for="offer">Offer % </label>
+                    <input type="range" name="offer" id="range_weight" value="5" min="1" max="50"
+                      oninput="range_weight_disp.value = range_weight.value">
+                    <output id="range_weight_disp"></output>
+                  </div>
                 </div>
-                <div class="md-form mb-3">
-                  <label data-error="wrong" data-success="right" for="start">Start date</label>
-                  <input type="date" id="start" class="form-control" value="" name="start_date">
+                <div class="modal-footer d-flex justify-content-center">
+                  <button type="submit" class="btn btn-secondary">Add</button>
                 </div>
-                <div class="md-form mb-3">
-                  <label data-error="wrong" data-success="right" for="end">End date</label>
-                  <input type="date" id="end" class="form-control" value="" name="expiry_date">
-                </div>
-                <div class="md-form  mt-3">
-                  <label data-error="wrong" data-success="right" for="offer">Offer % </label>
-                  <input type="range" name="offer" id="range_weight" value="5" min="1" max="50"
-                    oninput="range_weight_disp.value = range_weight.value">
-                  <output id="range_weight_disp"></output>
-                </div>
-              </div>
-              <div class="modal-footer d-flex justify-content-center">
-                <button type="submit" class="btn btn-secondary">Add</button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-              <!-- modal end -->
-      
+        <!-- modal end -->
+
 
         <div class="row">
-        <div class="col-md-12">
+          <div class="col-md-12">
 
-          <div class="table-wrap">
-            <table class="table" id="myTable">
-              <thead class="bg-dark text-light thead-primary text-center">
-                <tr>
-                  <th>Product</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Offer</th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody class="text-center">
-                {%for po in product_offers%}
-                <tr class="alert" role="alert">
-                  <td>{{po.product.product_name |truncatewords:3}}</td>
-                  <td>{{po.start_date}}</td>
-                  <td>{{po.end_date}}</td>
-                  <td>{{po.offer}}%</td>
-                  <td><a data-toggle="modal" class="text-dark" href="#modalEditOffer{{po.id}}"><i class="fa fa-pencil"></i></a></td>
-                  <td><a onclick=remove_p_offer(event) class="text-dark" href="removePoffer/{{po.id}}"><i class="fa fa-trash-o"></i></a></td>
-                </tr>
-                <!-- edit offer modal -->
-                <div class="modal fade" id="modalEditOffer{{po.id}}" tabindex="-1" role="dialog"
-                  aria-labelledby="myModalLabel" aria-hidden="true" style="left: 0%;top: 16%;">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <form action="{% url 'edit_productoffer' po.id %}" method="POST">
-                        {%csrf_token%}
-                        <div class="modal-header text-center">
-                          <h4 class="modal-title w-100 font-weight-bold">Edit Product Offer
-                          </h4>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                            style="margin-top: -48px;">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body mx-3">
-                          <div class="md-form mb-3">
-                            <label for="product">Product</label>
-                            <select required class="custom-select tm-select-accounts" id="product" name="product">
-                              {%for product in products%}
-                              {% if po.product_id == product.id %}
-                              <option selected value="{{product.id}}">{{product.product_name | truncatewords:4}}</option>
+            <div class="table-wrap">
+              <table class="table" id="myTable">
+                <thead class="bg-dark text-light thead-primary text-center">
+                  <tr>
+                    <th>Product</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Offer</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  {%for po in product_offers%}
+                  <tr class="alert" role="alert">
+                    <td>{{po.product.product_name |truncatewords:3}}</td>
+                    <td>{{po.start_date}}</td>
+                    <td>{{po.end_date}}</td>
+                    <td>{{po.offer}}%</td>
+                    <td><a data-toggle="modal" class="text-dark" href="#modalEditOffer{{po.id}}"><i class="fa fa-pencil"></i></a></td>
+                    <td><a onclick=remove_p_offer(event) class="text-dark" href="removePoffer/{{po.id}}"><i class="fa fa-trash-o"></i></a></td>
+                  </tr>
+                  <!-- edit offer modal -->
+                  <div class="modal fade" id="modalEditOffer{{po.id}}" tabindex="-1" role="dialog"
+                    aria-labelledby="myModalLabel" aria-hidden="true" style="left: 0%;top: 16%;">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <form action="{% url 'edit_productoffer' po.id %}" method="POST">
+                          {%csrf_token%}
+                          <div class="modal-header text-center">
+                            <h4 class="modal-title w-100 font-weight-bold">Edit Product Offer
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                              style="margin-top: -48px;">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body mx-3">
+                            <div class="md-form mb-3">
+                              <label for="product">Product</label>
+                              <select required class="custom-select tm-select-accounts" id="product" name="product">
+                                {%for product in products%}
+                                {% if po.product_id == product.id %}
+                                <option selected value="{{product.id}}">{{product.product_name | truncatewords:4}}
+                                </option>
                                 {% else %}
                                 <option value="{{product.id}}">{{product.product_name | truncatewords:4}}</option>
-                              {% endif %}
+                                {% endif %}
                                 {%endfor%}
-                            </select>
-                          </div>
+                              </select>
+                            </div>
 
-                          <div class="md-form mb-3">
-                            <label data-error="wrong" data-success="right" for="start">Start date</label>
-                            <input type="date" id="start" class="form-control" value="" name="start_date">
+                            <div class="md-form mb-3">
+                              <label data-error="wrong" data-success="right" for="start">Start date</label>
+                              <input type="date" id="start" class="form-control" value="" name="start_date">
+                            </div>
+                            <div class="md-form mb-3">
+                              <label data-error="wrong" data-success="right" for="end">End date</label>
+                              <input type="date" id="end" class="form-control" value="" name="end_date">
+                            </div>
+                            <div class="md-form  mt-3">
+                              <label data-error="wrong" data-success="right" for="offer">Offer % </label>
+                              <input type="range" name="offer" id="range_weight" value="{{po.offer}}" min="1" max="50"
+                                oninput="range_weight_disp.value = range_weight.value">
+                              <output id="range_weight_disp"></output>
+                            </div>
                           </div>
-                          <div class="md-form mb-3">
-                            <label data-error="wrong" data-success="right" for="end">End date</label>
-                            <input type="date" id="end" class="form-control" value="" name="end_date">
+                          <div class="modal-footer d-flex justify-content-center">
+                            <button class="btn btn-secondary">Add</button>
                           </div>
-                          <div class="md-form  mt-3">
-                            <label data-error="wrong" data-success="right" for="offer">Offer % </label>
-                            <input type="range" name="offer" id="range_weight" value="{{po.offer}}" min="1" max="50"
-                              oninput="range_weight_disp.value = range_weight.value">
-                            <output id="range_weight_disp"></output>
-                          </div>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-center">
-                          <button class="btn btn-secondary">Add</button>
-                        </div>
-                      </form>
+                        </form>
 
+                      </div>
                     </div>
                   </div>
-                </div>
-                <!-- edit offer modal -->
-                {%endfor%}
+                  <!-- edit offer modal -->
+                  {%endfor%}
 
 
-              </tbody>
-            </table>
+                </tbody>
+              </table>
 
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  <!-- </div> -->
-  
-  <!-- <div class="container"> -->
-    <div class="pt-3 col-md-6">
-      <nav class="navbar mt-3 mb-4 ">
-      <div class="headding ">
-        <span>Category Offer</span>
-      </div>
-      <div class="insert_button"><button type="button" class="btn btn-secondary  buttons" data-toggle="modal"
-          data-target="#modalForm2"><b> Add Category Offer </b></button></div>
-    </nav>
+      <!-- </div> -->
 
-      <!-- add Category offer modal -->
+      <!-- <div class="container"> -->
+      <div class="pt-3 col-md-6">
+        <nav class="navbar mt-3 mb-4 ">
+          <div class="headding ">
+            <span>Category Offer</span>
+          </div>
+          <div class="insert_button"><button type="button" class="btn btn-secondary  buttons" data-toggle="modal"
+              data-target="#modalForm2"><b> Add Category Offer </b></button></div>
+        </nav>
 
-      <div class="modal fade" id="modalForm2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true" style="left: 0%;top: 16%;">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <form action="{% url 'add_category_offer' %}" method="POST">
-              {% csrf_token%}
-              <div class="modal-header text-center">
-                <h4 class="modal-title w-100 font-weight-bold">Add Category Offer</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -48px;">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body mx-3">
-                <div class="md-form mb-3">
-                  <label for="category">Category</label>
-                  <select required class="custom-select tm-select-accounts" id="category" name="categ">
+        <!-- add Category offer modal -->
 
-                    {%for c in category %}
-
-                    <option value="{{c.id}}">{{c.category_name| truncatewords:4}}
-
-                    </option>
-                    {%endfor%}
-                  </select>
+        <div class="modal fade" id="modalForm2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true" style="left: 0%;top: 16%;">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <form action="{% url 'add_category_offer' %}" method="POST">
+                {% csrf_token%}
+                <div class="modal-header text-center">
+                  <h4 class="modal-title w-100 font-weight-bold">Add Category Offer</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    style="margin-top: -48px;">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
-                <div class="md-form mb-3">
-                  <label data-error="wrong" data-success="right" for="start">Start date</label>
-                  <input type="date" id="start" class="form-control" value="" name="start_date">
+                <div class="modal-body mx-3">
+                  <div class="md-form mb-3">
+                    <label for="category">Category</label>
+                    <select required class="custom-select tm-select-accounts" id="category" name="categ">
+
+                      {%for c in category %}
+
+                      <option value="{{c.id}}">{{c.category_name| truncatewords:4}}
+
+                      </option>
+                      {%endfor%}
+                    </select>
+                  </div>
+                  <div class="md-form mb-3">
+                    <label data-error="wrong" data-success="right" for="start">Start date</label>
+                    <input required type="date" id="start" class="form-control" value="" name="start_date">
+                  </div>
+                  <div class="md-form mb-3">
+                    <label data-error="wrong" data-success="right" for="end">End date</label>
+                    <input required type="date" id="end" class="form-control" value="" name="end_date">
+                  </div>
+                  <div class="md-form  mt-3">
+                    <label data-error="wrong" data-success="right" for="offer">Offer % </label>
+                    <input type="range" name="offer" id="range_weight" value="5" min="1" max="50"
+                      oninput="range_weight_disp.value = range_weight.value">
+                    <output id="range_weight_disp"></output>
+                  </div>
                 </div>
-                <div class="md-form mb-3">
-                  <label data-error="wrong" data-success="right" for="end">End date</label>
-                  <input type="date" id="end" class="form-control" value="" name="end_date">
+                <div class="modal-footer d-flex justify-content-center">
+                  <button type="submit" class="btn btn-secondary">Add</button>
                 </div>
-                <div class="md-form  mt-3">
-                  <label data-error="wrong" data-success="right" for="offer">Offer % </label>
-                  <input type="range" name="offer" id="range_weight" value="5" min="1" max="50"
-                    oninput="range_weight_disp.value = range_weight.value">
-                  <output id="range_weight_disp"></output>
-                </div>
-              </div>
-              <div class="modal-footer d-flex justify-content-center">
-                <button type="submit" class="btn btn-secondary">Add</button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
         <!--Add Category Offer modal end -->
 
-      <div class="row">
-        <div class="col-md-12">
-          <div class="table-wrap">
-            <table class="table" id="myTable">
-              <thead class="bg-dark text-light thead-primary text-center">
-                <tr>
-                  <th>Category</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Offer</th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody class="text-center">
-                {%for co in category_offers%}
-                <tr class="alert" role="alert">
-                  <td>{{co.category.category_name |truncatewords:3}}</td>
-                  <td>{{co.start_date}}</td>
-                  <td>{{co.end_date}}</td>
-                  <td>{{co.offer}}%</td>
-                  <td><a data-toggle="modal" class="text-dark" href="#modalEditCategoryOffer{{co.id}}"><i class="fa fa-pencil"></i></a></td>
-                  <td><a onclick=remove_c_offer(event) class="text-dark" href="removeCoffer/{{co.id}}"><i class="fa fa-trash-o"></i></a></td>
-                </tr>
-                <!-- Edit CAtegory offer modal -->
-                <div class="modal fade" id="modalEditCategoryOffer{{co.id}}" tabindex="-1" role="dialog"
-                  aria-labelledby="myModalLabel" aria-hidden="true" style="left: 0%;top: 16%;">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <form action="{% url 'edit_categoryoffer' co.id %}" method="POST">
-                        {%csrf_token%}
-                        <div class="modal-header text-center">
-                          <h4 class="modal-title w-100 font-weight-bold">Edit Category Offer
-                          </h4>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                            style="margin-top: -48px;">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body mx-3">
-                          <div class="md-form mb-3">
-                            <label for="category">Category</label>
-                            <select required class="custom-select tm-select-accounts" id="category" name="category">
-                              {%for c in category %}
-                              {% if co.category_id == c.id %}
-                              <option selected value="{{c.id}}">{{c.category_name | truncatewords:4}}
-                                {% else %}
-                              <option value="{{c.id}}">{{c.category_name | truncatewords:4}}
-                                {% endif %}
-                              </option>
-                              {%endfor%}
-                            </select>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-wrap">
+              <table class="table" id="myTable">
+                <thead class="bg-dark text-light thead-primary text-center">
+                  <tr>
+                    <th>Category</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Offer</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  {%for co in category_offers%}
+                  <tr class="alert" role="alert">
+                    <td>{{co.category.category_name |truncatewords:3}}</td>
+                    <td>{{co.start_date}}</td>
+                    <td>{{co.end_date}}</td>
+                    <td>{{co.offer}}%</td>
+                    <td><a data-toggle="modal" class="text-dark" href="#modalEditCategoryOffer{{co.id}}"><i
+                          class="fa fa-pencil"></i></a></td>
+                    <td><a onclick=remove_c_offer(event) class="text-dark" href="removeCoffer/{{co.id}}"><i
+                          class="fa fa-trash-o"></i></a></td>
+                  </tr>
+                  <!-- Edit CAtegory offer modal -->
+                  <div class="modal fade" id="modalEditCategoryOffer{{co.id}}" tabindex="-1" role="dialog"
+                    aria-labelledby="myModalLabel" aria-hidden="true" style="left: 0%;top: 16%;">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <form action="{% url 'edit_categoryoffer' co.id %}" method="POST">
+                          {%csrf_token%}
+                          <div class="modal-header text-center">
+                            <h4 class="modal-title w-100 font-weight-bold">Edit Category Offer
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                              style="margin-top: -48px;">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
                           </div>
-                          <div class="md-form mb-3">
-                            <label data-error="wrong" data-success="right" for="start">Start
-                              date</label>
-                            <input type="date" id="start" class="form-control" value="{{o.start_date}}"
-                              name="start_date">
-                          </div>
-                          <div class="md-form mb-3">
-                            <label data-error="wrong" data-success="right" for="end">End
-                              date</label>
-                            <input type="date" id="end" class="form-control" value="{{o.end_date}}" name="end_date">
-                          </div>
-                          <div class="md-form  mt-3">
-                            <label data-error="wrong" data-success="right" for="offer">Offer
-                              %
-                            </label>
-                            <input type="range" name="offer" id="range_weight" value="{{o.offer}}" min="1" max="50"
-                              oninput="range_weight_disp.value = range_weight.value">
-                            <output id="range_weight_disp"></output>
-                          </div>
+                          <div class="modal-body mx-3">
+                            <div class="md-form mb-3">
+                              <label for="category">Category</label>
+                              <select required class="custom-select tm-select-accounts" id="category" name="category">
+                                {%for c in category %}
+                                {% if co.category_id == c.id %}
+                                <option selected value="{{c.id}}">{{c.category_name | truncatewords:4}}
+                                  {% else %}
+                                <option value="{{c.id}}">{{c.category_name | truncatewords:4}}
+                                  {% endif %}
+                                </option>
+                                {%endfor%}
+                              </select>
+                            </div>
+                            <div class="md-form mb-3">
+                              <label data-error="wrong" data-success="right" for="start">Start
+                                date</label>
+                              <input type="date" id="start" class="form-control" value="{{o.start_date}}"
+                                name="start_date">
+                            </div>
+                            <div class="md-form mb-3">
+                              <label data-error="wrong" data-success="right" for="end">End
+                                date</label>
+                              <input type="date" id="end" class="form-control" value="{{o.end_date}}" name="end_date">
+                            </div>
+                            <div class="md-form  mt-3">
+                              <label data-error="wrong" data-success="right" for="offer">Offer
+                                %
+                              </label>
+                              <input type="range" name="offer" id="range_weight" value="{{o.offer}}" min="1" max="50"
+                                oninput="range_weight_disp.value = range_weight.value">
+                              <output id="range_weight_disp"></output>
+                            </div>
 
 
-                        </div>
-                        <div class="modal-footer d-flex justify-content-center">
-                          <button class="btn btn-secondary">Add</button>
-                        </div>
-                      </form>
+                          </div>
+                          <div class="modal-footer d-flex justify-content-center">
+                            <button class="btn btn-secondary">Add</button>
+                          </div>
+                        </form>
 
+                      </div>
                     </div>
                   </div>
-                </div>
-                {%endfor%}
+                  {%endfor%}
 
 
-              </tbody>
-            </table>
+                </tbody>
+              </table>
 
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </section>
 
 
@@ -327,8 +329,8 @@
 {% for message in messages %}
 <script>
   swal.fire('{{message}}',
-  '',
-  'success'
+    '',
+    'success'
   )
 </script>
 {% endfor %}

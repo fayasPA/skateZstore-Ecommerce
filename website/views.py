@@ -1,31 +1,34 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib import messages
-from django.contrib.auth import get_user_model,login,logout
+from django.contrib.auth import get_user_model, login, logout
 from django.views.decorators.cache import never_cache
 from website.mixins import messageHandler
 from admn.models import *
 from .models import *
 # from django.utils import timezone
 from django.contrib import messages
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator
 from django.db.models import Q
+from datetime import datetime, timedelta
 
 
 # Create your views here.
 User = get_user_model()
 
+
 @never_cache
 def index(request):
-    return render(request,'index.html')
+    return render(request, 'index.html')
+
 
 @never_cache
 def signup(request):
     if request.user.is_authenticated:
         return redirect(index)
-    if request.method=='POST':
-        global phNo,username,email,first_name,password1
+    if request.method == 'POST':
+        global phNo, username, email, first_name, password1
         username = request.POST['username']
         email = request.POST['email']
         first_name = request.POST['first_name']
@@ -34,47 +37,54 @@ def signup(request):
         phNo = request.POST['phone_number']
         country_code = request.POST['country_code']
 
-        if len(username)<3 or len(username)>10:
-            messages.error(request,'Username must be atleast 3 and less than 10 characters ')
+        if len(username) < 3 or len(username) > 10:
+            messages.error(
+                request, 'Username must be atleast 3 and less than 10 characters ')
             return redirect(signup)
         if not username.isalnum():
-            messages.error(request,'Username must contain only numbers and letters')
+            messages.error(
+                request, 'Username must contain only numbers and letters')
             return redirect(signup)
         if not first_name.isalpha():
-            messages.error(request,'Only letters are to be entered in name')
+            messages.error(request, 'Only letters are to be entered in name')
             return redirect(signup)
-        if len(phNo)<10 or len(phNo)>12:
-            messages.error(request,'Mobile Or Phone number is wrong')
+        if len(phNo) < 10 or len(phNo) > 12:
+            messages.error(request, 'Mobile Or Phone number is wrong')
             return redirect(signup)
         if password1 != password2:
-            messages.error(request,'Passwords does not match')
+            messages.error(request, 'Passwords does not match')
             return redirect(signup)
-        
+
         if User.objects.filter(username=username).exists() or User.objects.filter(phone_number=phNo).exists():
-            messages.error(request,'Already taken user')
+            messages.error(request, 'Already taken user')
             return redirect(signup)
-        
+
         else:
-            global mobsignup,credentials
+            global mobsignup, credentials
             mobsignup = country_code+phNo
             messageHandler(mobsignup).send_otp_on_phone()
             return redirect(signupotpver)
-    return render(request,'signup.html')
+    return render(request, 'signup.html')
+
 
 never_cache
+
+
 def signupotpver(request):
-    if request.user.is_authenticated :
+    if request.user.is_authenticated:
         return redirect(index)
-    if request.method=='POST' and request.POST['otp']:
+    if request.method == 'POST' and request.POST['otp']:
         otp = request.POST['otp']
         validation = messageHandler(mobsignup).validate(otp)
-        if validation=='approved':
-            credentials=User.objects.create_user(username=username,email=email,password=password1,first_name=first_name,phone_number=phNo)      #creating user in database
+        if validation == 'approved':
+            credentials = User.objects.create_user(
+                username=username, email=email, password=password1, first_name=first_name, phone_number=phNo)  # creating user in database
             credentials.save()              # Saving user details in Database
             return redirect(LogIn)
         else:
             messages.error(request, 'OTP is Incorrect')
-    return render(request,'signupotpver.html')
+    return render(request, 'signupotpver.html')
+
 
 @never_cache
 def LogIn(request):
@@ -83,24 +93,25 @@ def LogIn(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        user = auth.authenticate(username=username,password=password)
+        user = auth.authenticate(username=username, password=password)
         if user is not None:
-            login(request,user)
+            login(request, user)
             return redirect(index)
         else:
             messages.error(request, 'Username or Password is Incorrect')
-    return render(request,'LogIn.html')
+    return render(request, 'LogIn.html')
+
 
 @never_cache
 def otplogin(request):
     if request.user.is_authenticated:
         return redirect(index)
-    if request.method=='POST' and request.POST['phone_number']:
+    if request.method == 'POST' and request.POST['phone_number']:
         global phone_number
         phone_number = request.POST['phone_number']
         country_code = request.POST['country_code']
 
-        try:                                                        #User with No phone no is present thus error will show up
+        try:  # User with No phone no is present thus error will show up
             user = User.objects.get(phone_number=phone_number)
         except User.DoesNotExist:
             user = None
@@ -111,49 +122,53 @@ def otplogin(request):
             return redirect(otpver)
         else:
             messages.error(request, 'Phone Number is not registered with us')
-    return render(request,'otplogin.html')
+    return render(request, 'otplogin.html')
+
 
 @never_cache
 def otpver(request):
     if request.user.is_authenticated:
         return redirect(index)
-    if request.method=='POST' and request.POST['otp']:
+    if request.method == 'POST' and request.POST['otp']:
         otp = request.POST['otp']
         validation = messageHandler(mob).validate(otp)
-        if validation=='approved':
+        if validation == 'approved':
             user = User.objects.get(phone_number=phone_number)
-            login(request,user)
-            return render(request,'index.html')
+            login(request, user)
+            return render(request, 'index.html')
         else:
             messages.error(request, 'OTP is Incorrect')
-    return render(request,'otpver.html')
+    return render(request, 'otpver.html')
+
 
 @never_cache
 def user_details(request):
     if request.user.is_authenticated:
-        
-        return render(request,'user_details.html')
+
+        return render(request, 'user_details.html')
     return redirect(LogIn)
+
 
 @never_cache
 def edit_user(request):
     if request.user.is_authenticated:
-        if request.method=='POST':
+        if request.method == 'POST':
             username = request.POST['username']
             firstname = request.POST['firstname']
             email = request.POST['email']
             phonenumber = request.POST['phonenumber']
             password = request.POST['password']
-            User.objects.filter(id=request.user.id).update(username=username,first_name=firstname,email=email,phone_number=phonenumber,password=password)
+            User.objects.filter(id=request.user.id).update(
+                username=username, first_name=firstname, email=email, phone_number=phonenumber, password=password)
             return redirect(user_details)
-        return render(request,'edit_user.html')
+        return render(request, 'edit_user.html')
     return redirect(index)
-        
+
 
 @never_cache
 def add_address(request):
     if request.user.is_authenticated:
-        if request.method=='POST':
+        if request.method == 'POST':
             type = request.POST['type']
             address = request.POST['address']
             pin = request.POST['pin']
@@ -161,18 +176,20 @@ def add_address(request):
             state = request.POST['state']
             landmark = request.POST['landmark']
             phone_number = request.POST['phone_number']
-            new_address = Address.objects.create(user=request.user,type=type,address=address,pin=pin,district=district,state=state,landmark=landmark,phone_number=phone_number)
+            new_address = Address.objects.create(user=request.user, type=type, address=address,
+                                                 pin=pin, district=district, state=state, landmark=landmark, phone_number=phone_number)
             new_address.save()
             return redirect(user_details)
-        return render(request,'add_address.html')
+        return render(request, 'add_address.html')
 
     return redirect(LogIn)
 
+
 @never_cache
-def edit_address(request,id):
+def edit_address(request, id):
     if request.user.is_authenticated:
         adrs = Address.objects.get(id=id)
-        if request.method=='POST':
+        if request.method == 'POST':
             type = request.POST['type']
             address = request.POST['address']
             pin = request.POST['pin']
@@ -180,53 +197,63 @@ def edit_address(request,id):
             state = request.POST['state']
             landmark = request.POST['landmark']
             phone_number = request.POST['phone_number']
-            new_address = Address.objects.filter(id=id).update(type=type,address=address,pin=pin,district=district,state=state,landmark=landmark,phone_number=phone_number)
+            new_address = Address.objects.filter(id=id).update(
+                type=type, address=address, pin=pin, district=district, state=state, landmark=landmark, phone_number=phone_number)
             return redirect(user_details)
-        return render(request,'edit_address.html',{'adrs':adrs})
+        return render(request, 'edit_address.html', {'adrs': adrs})
     return redirect(LogIn)
 
+
 @never_cache
-def delete_address(request,id):
+def delete_address(request, id):
     if request.user.is_authenticated:
         address = Address.objects.get(id=id)
         address.delete()
         return redirect(user_details)
     return redirect(index)
 
+
 @never_cache
 def LogOut(request):
     if request.user.is_authenticated:
-        logout(request)    
+        logout(request)
     return redirect(LogIn)
+
 
 @never_cache
 def prod_deck(request):
     # p = Product.objects.all()
-    p = Paginator(Product.objects.filter(category__category_name__contains="Decks").order_by('product_name'),2)          #set up pagination
+    p = Paginator(Product.objects.filter(category__category_name__contains="Decks").order_by(
+        'product_name'), 2)  # set up pagination
     page = request.GET.get('page')
     products = p.get_page(page)
-    return render(request,'prod_deck.html',{'products':products})
+    return render(request, 'prod_deck.html', {'products': products})
+
 
 @never_cache
-def prod_wheel(request):    
+def prod_wheel(request):
     # products = Product.objects.filter(category__category_name__contains="Wheels")
-    p = Paginator(Product.objects.filter(category__category_name__contains="Wheels").order_by('product_name'),10)          #set up pagination
+    p = Paginator(Product.objects.filter(category__category_name__contains="Wheels").order_by(
+        'product_name'), 10)  # set up pagination
     page = request.GET.get('page')
     products = p.get_page(page)
-    return render(request,'prod_wheel.html',{'products':products})
+    return render(request, 'prod_wheel.html', {'products': products})
+
 
 @never_cache
 def prod_trucks(request):
     # products = Product.objects.filter(category__category_name__contains="Trucks")
-    p = Paginator(Product.objects.filter(category__category_name__contains="Trucks").order_by('product_name'),10)          #set up pagination
+    p = Paginator(Product.objects.filter(category__category_name__contains="Trucks").order_by(
+        'product_name'), 10)  # set up pagination
     page = request.GET.get('page')
     products = p.get_page(page)
-    return render(request,'prod_trucks.html',{'products':products})
+    return render(request, 'prod_trucks.html', {'products': products})
+
 
 @never_cache
-def prod_details(request,id):
+def prod_details(request, id):
     prod_detail = Product.objects.get(id=id)
-    prod_img_count = range(1,prod_detail.productimage_set.all().count() + 2)
+    prod_img_count = range(1, prod_detail.productimage_set.all().count() + 2)
     prod_img = []
     prod_img.append(prod_detail.product_image)
     prod_imgs = ProductImage.objects.filter(product=prod_detail.id)
@@ -234,32 +261,35 @@ def prod_details(request,id):
         prod_img.append(i.product_image)
     print(prod_img)
     print(prod_img_count)
-    context = {'prod_detail':prod_detail,
-    'prod_img_count' : prod_img_count,
-    'prod_img':prod_img,
-    }
-    return render(request,'prod_details.html',context)
+    context = {'prod_detail': prod_detail,
+               'prod_img_count': prod_img_count,
+               'prod_img': prod_img,
+               }
+    return render(request, 'prod_details.html', context)
+
 
 @never_cache
-def add_to_cart(request,id):
+def add_to_cart(request, id):
     if request.user.is_authenticated:
-        #get product of given id
+        # get product of given id
         product = Product.objects.get(id=id)
 
-        #Check whether this user has same order or not
-        if Cart.objects.filter(user=request.user,product=product):
-            item = Cart.objects.get(user=request.user,product=product)
-            item.quantity = item.quantity + 1               #if user has same order that order item's quantity is increased
-            item.save() 
-            return redirect(prod_details,id=id)             
+        # Check whether this user has same order or not
+        if Cart.objects.filter(user=request.user, product=product):
+            item = Cart.objects.get(user=request.user, product=product)
+            # if user has same order that order item's quantity is increased
+            item.quantity = item.quantity + 1
+            item.save()
+            return redirect(prod_details, id=id)
 
         # if user has no similar order creates a new order
         else:
-            Cart.objects.create(user=request.user,product=product)
-            return redirect(prod_details,id=id)
+            Cart.objects.create(user=request.user, product=product)
+            return redirect(prod_details, id=id)
 
     return redirect(index)
- 
+
+
 @never_cache
 def cart(request):
     if request.user.is_authenticated:
@@ -269,12 +299,13 @@ def cart(request):
             tot_amount = 0
             for order in orders:
                 tot_amount = tot_amount + order.get_final_price()
-            return render(request,'cart.html',{'orders':orders,'tot_amount':tot_amount,'count':count})
-        return render(request,'cart.html',{'message':"Your cart is empty"})
+            return render(request, 'cart.html', {'orders': orders, 'tot_amount': tot_amount, 'count': count})
+        return render(request, 'cart.html', {'message': "Your cart is empty"})
     return redirect(index)
 
+
 @never_cache
-def qty_minus(request,id):
+def qty_minus(request, id):
     if request.user.is_authenticated:
         order_item = Cart.objects.get(id=id)
         qty = order_item.quantity-1
@@ -284,11 +315,12 @@ def qty_minus(request,id):
         tot_amount = 0
         for order in orders:
             tot_amount = tot_amount + order.get_final_price()
-        return JsonResponse({'qty':qty,'tot_amount':tot_amount,'updated_price':updated_price})
+        return JsonResponse({'qty': qty, 'tot_amount': tot_amount, 'updated_price': updated_price})
     return redirect(index)
 
+
 @never_cache
-def qty_plus(request,id):
+def qty_plus(request, id):
     if request.user.is_authenticated:
         order_item = Cart.objects.get(id=id)
         qty = order_item.quantity+1
@@ -298,18 +330,21 @@ def qty_plus(request,id):
         tot_amount = 0
         for order in orders:
             tot_amount = tot_amount + order.get_final_price()
-        return JsonResponse({'qty':qty,'tot_amount':tot_amount,'updated_price':updated_price})
+        return JsonResponse({'qty': qty, 'tot_amount': tot_amount, 'updated_price': updated_price})
     return redirect(index)
 
+
 @never_cache
-def removeitem(request,id):
+def removeitem(request, id):
     if request.user.is_authenticated:
         print(id)
         order_item = Cart.objects.get(id=id)
         order_item.delete()
+        messages.info(request,"Your item has been removed")
         return redirect(cart)
     return redirect(index)
-    
+
+
 @never_cache
 def checkout(request):
     if request.user.is_authenticated:
@@ -318,8 +353,42 @@ def checkout(request):
         tot_amount = 0
         for order in orders:
             tot_amount = tot_amount + order.get_final_price()
-        return render(request,'checkout.html',{'tot_amount':tot_amount,'count':count,})
+        return render(request, 'checkout.html', {'tot_amount': tot_amount, 'count': count, })
     return redirect(index)
+
+@never_cache
+def discount_coupon(request, code):
+    now = datetime.now()
+    orders = Cart.objects.filter(user=request.user)
+    tot_amnt = 0
+    try:
+        coupon = Coupon.objects.get(Q(code__icontains=code))
+    except:
+        coupon = None
+    for single_order in orders:
+        tot_amnt = tot_amnt + single_order.get_final_price()
+    # print(coupon.code)
+    if (coupon == None) or (tot_amnt < coupon.min_amnt) or (not coupon.active) or (now.date() < coupon.valid_from.date() or now.date() > coupon.valid_to.date()):
+        # for single_order in orders:
+        #     single_order.discounted_amnt = single_order.get_final_price()
+        #     single_order.save()
+        if coupon == None:
+            return JsonResponse({'errormessage': "INVALID coupon",'coupon': None})
+        elif (now.date() < coupon.valid_from.date() and now.date() > coupon.valid_to.date()):
+            return JsonResponse({'errormessage': "Coupon Has Expired",'coupon': None})
+        elif tot_amnt < coupon.min_amnt:
+            remaining_amnt = coupon.min_amnt - tot_amnt
+            return JsonResponse({'errormessage': "Purchase for Rs." + str(remaining_amnt) + " more to apply this coupon",'coupon': None})
+        return JsonResponse({'errormessage': "Coupon is not VALID",'coupon': None})
+    else:
+        new_tot_amnt = tot_amnt - coupon.discount_amnt
+        dis_amnt = coupon.discount_amnt / orders.count()
+        # for single_order in orders:
+        #     single_order.discounted_amnt = single_order.get_final_price() - dis_amnt
+        #     single_order.coupon_code = coupon.code
+            # single_order.save()
+        return JsonResponse({'tot_amnt': tot_amnt, 'new_tot_amnt': new_tot_amnt, 'message': "Coupon has been applied", 'coupon_amnt': coupon.discount_amnt,'dis_amnt':dis_amnt,'coupon':coupon.id})
+
 
 @never_cache
 def place_order(request):
@@ -329,6 +398,8 @@ def place_order(request):
             orders = Cart.objects.filter(user=request.user)
             method = request.POST['paymentmethod']
             address_id = request.POST['address_chose']
+            coupon_id = request.POST['couponid']
+            print(coupon_id)
             address = Address.objects.get(id=address_id)
             for single_order in orders:
                 p = Product.objects.get(id=single_order.product.id)
@@ -338,84 +409,60 @@ def place_order(request):
                 coupon = single_order.coupon_code
                 p.save()
                 amnt = single_order.discounted_amnt
-                HistoryOrder.objects.create(coupon_code=coupon,user=request.user,is_ordered=True,method=method,product=single_order.product,quantity=qty,amount=amnt,address=address)
+                HistoryOrder.objects.create(coupon_code=coupon, user=request.user, is_ordered=True,
+                                            method=method, product=single_order.product, quantity=qty, amount=amnt, address=address)
             orders.delete()
             if method == "COD":
                 messages.error(request, 'Order has been placed')
                 return redirect(index)
             elif method == "paypal":
-                return render(request,'paypal.html',{'tot_amnt':tot_amnt})
+                return render(request, 'paypal.html', {'tot_amnt': tot_amnt})
             else:
-                return render(request,'razorpay.html',{'tot_amnt':tot_amnt})
+                return render(request, 'razorpay.html', {'tot_amnt': tot_amnt})
     return redirect(index)
+
 
 @never_cache
 def razorpay(request):
     if request.method == 'GET':
         transaction_id = request.GET['trans_id']
-        print("Transaction=",transaction_id)
-        return JsonResponse({'status':"Thank you for purchasing...pls Check My Orders for updates."})
-
+        print("Transaction=", transaction_id)
+        return JsonResponse({'status': "Thank you for purchasing...pls Check My Orders for updates."})
 
 
 @never_cache
 def search(request):
-    if request.method=='GET':
+    if request.method == 'GET':
         q = request.GET['search']
-        query_list = Product.objects.filter(Q(product_name__icontains=q) ) 
-        
+        query_list = Product.objects.filter(Q(product_name__icontains=q))
+
         if query_list is not None and query_list.count() != 0:
-            p = Paginator(Product.objects.filter(product_name__icontains=q).order_by('product_name'),10)          #set up pagination
+            p = Paginator(Product.objects.filter(product_name__icontains=q).order_by(
+                'product_name'), 10)  # set up pagination
             page = request.GET.get('page')
             queries = p.get_page(page)
-            return render(request,'search.html',{'queries':queries,'q':q})
+            return render(request, 'search.html', {'queries': queries, 'q': q})
         else:
-            return render(request,'search.html',{'message':"No result found",'q':q})
+            return render(request, 'search.html', {'message': "No result found", 'q': q})
+
 
 @never_cache
 def user_orders(request):
     if request.user.is_authenticated:
         orders = HistoryOrder.objects.filter(user=request.user).order_by('-id')
-        return render(request,'user_orders.html',{'orders':orders})
+        return render(request, 'user_orders.html', {'orders': orders})
     return redirect(index)
 
 
 @never_cache
-def order_cancel(request,id):
+def order_cancel(request, id):
     order = HistoryOrder.objects.filter(id=id).update(status="Cancel")
     return redirect(user_orders)
 
 
 @never_cache
-def orderinvoice(request,id):
+def orderinvoice(request, id):
     order = HistoryOrder.objects.get(id=id)
-    return render(request,'orderinvoice.html',{'order':order})
+    return render(request, 'orderinvoice.html', {'order': order})
 
-@never_cache
-def discount_coupon(request,code):
-    orders = Cart.objects.filter(user=request.user)
-    tot_amnt = 0
-    try:
-        coupon = Coupon.objects.get(Q(code__icontains=code) )
-    except:
-        coupon = None
-    for single_order in orders:
-        tot_amnt = tot_amnt + single_order.get_final_price()
-    if coupon == None or (tot_amnt < coupon.min_amnt):
-        for single_order in orders:
-            single_order.discounted_amnt = single_order.get_final_price()
-            single_order.save()
-        if tot_amnt < coupon.min_amnt:
-            remaining_amnt = coupon.min_amnt - tot_amnt
-            print(remaining_amnt)
-            return JsonResponse({'errormessage':"Purchase for Rs." + str(remaining_amnt) + " more to apply this coupon"})
-        return JsonResponse({'errormessage':"Coupon is not VALID"})
-    else:
-        new_tot_amnt = tot_amnt - coupon.discount_amnt
-        dis_amnt = coupon.discount_amnt / orders.count()
-        for single_order in orders:
-            single_order.discounted_amnt = single_order.get_final_price() - dis_amnt
-            single_order.coupon_code = coupon.code
-            single_order.save() 
-        return JsonResponse({'tot_amnt':tot_amnt,'new_tot_amnt':new_tot_amnt,'message':"Coupon has been applied",'coupon_amnt':coupon.discount_amnt})
 

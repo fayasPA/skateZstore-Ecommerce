@@ -32,6 +32,7 @@
                                         <!-- Form start -->
                                         <form class="" action="{% url 'place_order' %}" id="addressform" method="POST"
                                             enctype="multipart/form-data">
+                        {% csrf_token %}
                                             <div class=" ">
                                                 <input value="{{ua.id}}" id="{{ua.type}}"
                                                     onclick="selectAddress('{{ua.type}}','{{ua.address}}','{{ua.district}}','{{ua.pin}}','{{ua.state}}','{{ua.landmark}}','{{ua.phone_number}}')"
@@ -47,7 +48,6 @@
 
                     </div>
                     <div class="container pb-3">
-                        {% csrf_token %}
                         <div class="pt-5 form-outline mb-4">
                             <input disabled name="type" type="text" placeholder="Type (Eg.Home, Office)" id="type"
                                 class=" form-control form-control-lg" onkeyup="validateType()" />
@@ -86,6 +86,8 @@
                             <span id=phone-error></span>
                         </div>
 
+                        <input type="hidden" id="couponid" value="">
+                        <!-- <input type="hidden" id="couponid" value=""> -->
 
                     </div>
 
@@ -127,17 +129,17 @@
                     <li class="list-group-item d-flex justify-content-between bg-light">
                         <!-- Promo code -->
                         <div class=" my-3">
-                            <div class="pb-3    custom-control custom-radio">
+                            <div class="pb-3 custom-control custom-radio">
                                 <input id="cod" value="COD" name="paymentmethod" type="radio"
                                     class="custom-control-input" required>
                                 <label class="custom-control-label" for="cod">Cash on Delivery</label>
                             </div>
-                            <div class="pb-3    custom-control custom-radio">
+                            <div class="pb-3 custom-control custom-radio">
                                 <input id="paypal" value="paypal" name="paymentmethod" type="radio"
                                     class="custom-control-input" required>
                                 <label class="custom-control-label" for="paypal">PayPal</label>
                             </div>
-                            <div class="pb-3    custom-control custom-radio">
+                            <div class="pb-3 custom-control custom-radio">
                                 <input id="razorpay" value="razorpay" name="paymentmethod" type="radio"
                                     class="custom-control-input" required>
                                 <label class="custom-control-label" for="razorpay">Razor Pay</label>
@@ -183,7 +185,7 @@
 
 {% block lowerBodyScript %}
 <script>
-
+    
     function selectAddress(type, address, district, pin, state, landmark, phone) {
         document.getElementById('type').value = type
         document.getElementById('address').value = address
@@ -199,17 +201,19 @@
         $.ajax({
             url: "/discount_coupon/" + a ,
             success: function (response) {
-                console.log(response)
             if(response.message){
                 document.getElementById('amntBeforeDiscount').innerHTML = response.tot_amnt;
                 document.getElementById('discountAmount').innerHTML = response.coupon_amnt;
                 document.getElementById('amntAfterDiscount').innerHTML = response.new_tot_amnt;
                 document.getElementById('message').innerHTML = response.message;
                 document.getElementById('message').style.color = "green";
+                console.log(response.coupon)
+                document.getElementById('couponid').innerHTML = response.coupon;
             }
             else{
                 document.getElementById('errormessage').innerHTML = response.errormessage;
                 document.getElementById('errormessage').style.color = "Red";
+                console.log(response.coupon)
             }
                 
             

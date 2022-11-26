@@ -140,10 +140,12 @@ def adminblock(request, id):
 def admincategory(request):
     if request.user.is_superuser:
         categories = Category.objects.all().order_by('category_name')
+        for c in categories:
+            print(c.category_image)
         if request.method == 'POST':
             single_category = Category()
             single_category.category_name = request.POST['categ_name']
-            single_category.category_image = request.FILES['categ_image']
+            single_category.category_image = request.FILES.get('categ_image',"")
             single_category.save()
             return redirect(admincategory)
         return render(request, 'admin/admincategory.html', {'categories': categories})
@@ -293,7 +295,6 @@ def coupon(request):
         return render(request, 'admin/coupon.html', {'coupons': coupons})
     return redirect(adminlogin)
 
-
 @never_cache
 def edit_coupon(request, id):
     if request.user.is_superuser:
@@ -317,19 +318,28 @@ def edit_coupon(request, id):
         return render(request, 'admin/edit_coupon.html', context)
     return redirect(adminlogin)
 
-
 @never_cache
 def delete_coupon(request, id):
     Coupon.objects.get(id=id).delete()
     return redirect(coupon)
 
+@never_cache
+def block_coupon(request, id):
+    c = Coupon.objects.get(id=id)
+    print(c)
+    if c.active:
+        c.active = False
+    else:
+        c.active = True
+    c.save()
+    return redirect(coupon)
 
 @never_cache
 def offer(request):
     products = Product.objects.all()
     category = Category.objects.all()
-    product_offers = ProductOffer.objects.all()
-    category_offers = CategoryOffer.objects.all()
+    product_offers = ProductOffer.objects.all().order_by("id")
+    category_offers = CategoryOffer.objects.all().order_by("id")
     for po in product_offers:
         # print(po.product_id)
         for p in products:
