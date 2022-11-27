@@ -337,10 +337,9 @@ def qty_plus(request, id):
 @never_cache
 def removeitem(request, id):
     if request.user.is_authenticated:
-        print(id)
         order_item = Cart.objects.get(id=id)
         order_item.delete()
-        messages.info(request,"Your item has been removed")
+        messages.info(request, "Item has been removed")
         return redirect(cart)
     return redirect(index)
 
@@ -356,6 +355,7 @@ def checkout(request):
         return render(request, 'checkout.html', {'tot_amount': tot_amount, 'count': count, })
     return redirect(index)
 
+
 @never_cache
 def discount_coupon(request, code):
     now = datetime.now()
@@ -367,66 +367,138 @@ def discount_coupon(request, code):
         coupon = None
     for single_order in orders:
         tot_amnt = tot_amnt + single_order.get_final_price()
-    # print(coupon.code)
     if (coupon == None) or (tot_amnt < coupon.min_amnt) or (not coupon.active) or (now.date() < coupon.valid_from.date() or now.date() > coupon.valid_to.date()):
-        # for single_order in orders:
-        #     single_order.discounted_amnt = single_order.get_final_price()
-        #     single_order.save()
         if coupon == None:
-            return JsonResponse({'errormessage': "INVALID coupon",'coupon': None})
+            return JsonResponse({'errormessage': "INVALID coupon", 'coupon': None})
         elif (now.date() < coupon.valid_from.date() and now.date() > coupon.valid_to.date()):
-            return JsonResponse({'errormessage': "Coupon Has Expired",'coupon': None})
+            return JsonResponse({'errormessage': "Coupon Has Expired", 'coupon': None})
         elif tot_amnt < coupon.min_amnt:
             remaining_amnt = coupon.min_amnt - tot_amnt
-            return JsonResponse({'errormessage': "Purchase for Rs." + str(remaining_amnt) + " more to apply this coupon",'coupon': None})
-        return JsonResponse({'errormessage': "Coupon is not VALID",'coupon': None})
+            return JsonResponse({'errormessage': "Purchase for Rs." + str(remaining_amnt) + " more to apply this coupon", 'coupon': None})
+        return JsonResponse({'errormessage': "Coupon is not VALID", 'coupon': None})
     else:
         new_tot_amnt = tot_amnt - coupon.discount_amnt
         dis_amnt = coupon.discount_amnt / orders.count()
-        # for single_order in orders:
-        #     single_order.discounted_amnt = single_order.get_final_price() - dis_amnt
-        #     single_order.coupon_code = coupon.code
-            # single_order.save()
-        return JsonResponse({'tot_amnt': tot_amnt, 'new_tot_amnt': new_tot_amnt, 'message': "Coupon has been applied", 'coupon_amnt': coupon.discount_amnt,'dis_amnt':dis_amnt,'coupon':coupon.id})
+        return JsonResponse({'tot_amnt': tot_amnt, 'new_tot_amnt': new_tot_amnt, 'message': "Coupon has been applied", 'coupon_amnt': coupon.discount_amnt, 'dis_amnt': dis_amnt, 'coupon': coupon.id})
 
 
 @never_cache
 def place_order(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            tot_amnt = 0
             orders = Cart.objects.filter(user=request.user)
             method = request.POST['paymentmethod']
             address_id = request.POST['address_chose']
             coupon_id = request.POST['couponid']
-            print(coupon_id)
+            if len(coupon_id) == 0:
+                coupon = ""
+            else:
+                coupon = Coupon.objects.get(id=coupon_id)
             address = Address.objects.get(id=address_id)
-            for single_order in orders:
-                p = Product.objects.get(id=single_order.product.id)
-                tot_amnt = tot_amnt + single_order.discounted_amnt
-                qty = single_order.quantity
-                p.product_qty = p.product_qty - qty
-                coupon = single_order.coupon_code
-                p.save()
-                amnt = single_order.discounted_amnt
-                HistoryOrder.objects.create(coupon_code=coupon, user=request.user, is_ordered=True,
-                                            method=method, product=single_order.product, quantity=qty, amount=amnt, address=address)
-            orders.delete()
+            tot_amnt = 0
+            if coupon == "":                                                   # if condition to pass correct amnt
+                for single_order in orders:
+                    tot_amnt = tot_amnt + single_order.get_final_price()
+            else:                                                              # else condition to pass discounted amnt
+                dis_amnt = coupon.discount_amnt / orders.count()
+                for single_order in orders:
+                    tot_amnt = tot_amnt + \
+                        (single_order.get_final_price() - dis_amnt)
+                print("tot_amnt", tot_amnt)
+            context = {
+                "address_id": address_id,
+                "coupon_id": coupon_id,
+                "tot_amnt": tot_amnt,
+            }
+
             if method == "COD":
+                if coupon == "":
+                    for single_order in orders:
+                        p = Product.objects.get(id=single_order.product.id)
+                        p.product_qty = p.product_qty - single_order.quantity
+                        p.save()
+                        HistoryOrder.objects.create(coupon_code=coupon, user=request.user, is_ordered=True,
+                                                    method=method, product=single_order.product, quantity=single_order.quantity, amount=single_order.get_final_price(), address=address)
+                else:
+                    print("dis_amnt", dis_amnt)
+                    for single_order in orders:
+                        p = Product.objects.get(id=single_order.product.id)
+                        tot_amnt = single_order.get_final_price() - dis_amnt
+                        p.product_qty = p.product_qty - single_order.quantity
+                        p.save()
+                        HistoryOrder.objects.create(coupon_code=coupon.code, user=request.user, is_ordered=True,
+                                                    method=method, product=single_order.product, quantity=single_order.quantity, amount=tot_amnt, address=address)
+                orders.delete()
                 messages.error(request, 'Order has been placed')
                 return redirect(index)
             elif method == "paypal":
-                return render(request, 'paypal.html', {'tot_amnt': tot_amnt})
+                return render(request, 'paypal.html', context)
             else:
-                return render(request, 'razorpay.html', {'tot_amnt': tot_amnt})
+                return render(request, 'razorpay.html', context)
     return redirect(index)
 
 
 @never_cache
 def razorpay(request):
     if request.method == 'GET':
+        address_id = request.GET['address_id']
+        coupon_id = request.GET['coupon_id']
         transaction_id = request.GET['trans_id']
-        print("Transaction=", transaction_id)
+        orders = Cart.objects.filter(user=request.user)
+        address = Address.objects.get(id=address_id)
+        if len(coupon_id) == 0:
+            coupon = ""
+        else:
+            coupon = Coupon.objects.get(id=coupon_id)
+        if coupon == "":
+            for single_order in orders:
+                p = Product.objects.get(id=single_order.product.id)
+                p.product_qty = p.product_qty - single_order.quantity
+                p.save()
+                HistoryOrder.objects.create(coupon_code=coupon, user=request.user, is_ordered=True,
+                                            method="razorpay", product=single_order.product, quantity=single_order.quantity, amount=single_order.get_final_price(), address=address)
+        else:
+            dis_amnt = coupon.discount_amnt / orders.count()
+            for single_order in orders:
+                p = Product.objects.get(id=single_order.product.id)
+                tot_amnt = single_order.get_final_price() - dis_amnt
+                p.product_qty = p.product_qty - single_order.quantity
+                p.save()
+                HistoryOrder.objects.create(coupon_code=coupon.code, user=request.user, is_ordered=True,
+                                            method="razorpay", product=single_order.product, quantity=single_order.quantity, amount=tot_amnt, address=address)
+        orders.delete()
+        return JsonResponse({'status': "Thank you for purchasing...pls Check My Orders for updates."})
+
+
+@never_cache
+def paypal(request):
+    if request.method == 'GET':
+        address_id = request.GET['address_id']
+        coupon_id = request.GET['coupon_id']
+        orderid = request.GET['orderid']
+        orders = Cart.objects.filter(user=request.user)
+        address = Address.objects.get(id=address_id)
+        if len(coupon_id) == 0:
+            coupon = ""
+        else:
+            coupon = Coupon.objects.get(id=coupon_id)
+        if coupon == "":
+            for single_order in orders:
+                p = Product.objects.get(id=single_order.product.id)
+                p.product_qty = p.product_qty - single_order.quantity
+                p.save()
+                HistoryOrder.objects.create(coupon_code=coupon, user=request.user, is_ordered=True,
+                                            method="razorpay", product=single_order.product, quantity=single_order.quantity, amount=single_order.get_final_price(), address=address)
+        else:
+            dis_amnt = coupon.discount_amnt / orders.count()
+            for single_order in orders:
+                p = Product.objects.get(id=single_order.product.id)
+                tot_amnt = single_order.get_final_price() - dis_amnt
+                p.product_qty = p.product_qty - single_order.quantity
+                p.save()
+                HistoryOrder.objects.create(coupon_code=coupon.code, user=request.user, is_ordered=True,
+                                            method="razorpay", product=single_order.product, quantity=single_order.quantity, amount=tot_amnt, address=address)
+        orders.delete()
         return JsonResponse({'status': "Thank you for purchasing...pls Check My Orders for updates."})
 
 
@@ -464,5 +536,3 @@ def order_cancel(request, id):
 def orderinvoice(request, id):
     order = HistoryOrder.objects.get(id=id)
     return render(request, 'orderinvoice.html', {'order': order})
-
-

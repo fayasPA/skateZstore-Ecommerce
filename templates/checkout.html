@@ -30,8 +30,7 @@
                                 <ul class="d-flex" style="list-style: none;">
                                     <li>
                                         <!-- Form start -->
-                                        <form class="" action="{% url 'place_order' %}" id="addressform" method="POST"
-                                            enctype="multipart/form-data">
+                                        <form class="" action="{% url 'place_order' %}" id="addressform" method="POST" >
                         {% csrf_token %}
                                             <div class=" ">
                                                 <input value="{{ua.id}}" id="{{ua.type}}"
@@ -86,8 +85,7 @@
                             <span id=phone-error></span>
                         </div>
 
-                        <input type="hidden" id="couponid" value="">
-                        <!-- <input type="hidden" id="couponid" value=""> -->
+                        <input type="hidden" name="couponid" id="couponid" value="">
 
                     </div>
 
@@ -176,9 +174,6 @@
 
         </div>
         <!--Grid row-->
-
-
-
     </div>
 </section>
 {% endblock %}
@@ -208,7 +203,7 @@
                 document.getElementById('message').innerHTML = response.message;
                 document.getElementById('message').style.color = "green";
                 console.log(response.coupon)
-                document.getElementById('couponid').innerHTML = response.coupon;
+                document.getElementById('couponid').value = response.coupon;
             }
             else{
                 document.getElementById('errormessage').innerHTML = response.errormessage;

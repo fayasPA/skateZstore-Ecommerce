@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block index %}
-
-
 <section>
   <div class=" w-100" style="height:90vh;">
     <div class="h-100 row d-flex justify-content-center align-items-center">
       <div class="card ">
         <div class="d-flex justify-content-center">
+          <input type="hidden" name="address_id" id="address_id" value="{{address_id}}">
+          <input type="hidden" name="coupon_id" id="couponid" value="{{coupon_id}}">
           <span>Amount to be paid=</span>
           <h5 id="tot_amnt">{{tot_amnt}}</h5>
         </div>
@@ -18,15 +17,6 @@
     </div>
   </div>
 </section>
-
-
-
-
-
-
-
-
-
 {% endblock %}
 
 {% block lowerBodyScript %}
@@ -36,8 +26,9 @@
   $(document).ready(function () {
     $("#rzp-button1").click(function (e) {
       var total = $("#tot_amnt").text();      //Get Total amnt
-      var token = $("input[name='csrfmiddlewaretoken']").val()  //Taking value of CSRF token by name
-      console.log(token)
+      //var token = $("input[name='csrfmiddlewaretoken']").val();  //Taking value of CSRF token by name
+      var coupon_id = document.getElementById('couponid').value;
+      var address_id = document.getElementById('address_id').value;
       var options = {
         "key": "rzp_test_8SI81tn60Ec0O4", // Enter the Key ID generated from the Dashboard
         "amount": total, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -45,21 +36,20 @@
         "name": "SkateBuddy",
         "description": "Thank You for Supporting SkateBuddy",
         //"image": "https://example.com/your_logo",
-        //"order_id": "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         "handler": function (response) {
           /* alert(response.razorpay_payment_id);
           alert(response.razorpay_order_id);
           alert(response.razorpay_signature)  */
           data = {
             "trans_id": response.razorpay_payment_id,
-            //'csrfmiddlewaretoken': token
+            "coupon_id": coupon_id,
+            "address_id": address_id
           }
           $.ajax({
             type: "GET",
             url: "/razorpay",
             data: data,
             success: function (response) {
-              console.log(response.status)
               swal.fire({
                 title: "Payment Successful",
                 text: response.status,
@@ -89,6 +79,5 @@
     })
 
   })
-
 </script>
 {% endblock %}

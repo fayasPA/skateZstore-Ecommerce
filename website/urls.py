@@ -27,6 +27,7 @@ urlpatterns = [
     path('checkout/',views.checkout,name='checkout'),
     path('place_order/',views.place_order,name='place_order'),
     path('user_orders/',views.user_orders,name='user_orders'),
+    path('paypal/',views.paypal,name='paypal'),
     path('razorpay/',views.razorpay,name='razorpay'),
     path('search',views.search,name='search'),
     path('order_cancel/<int:id>/',views.order_cancel,name='order_cancel'),
