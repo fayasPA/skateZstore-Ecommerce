@@ -63,9 +63,9 @@
                       <!-- Modal Ends -->
                       {% if not user.is_superuser %}
                         {% if user.is_active %}
-                        <button type="button"  data-toggle="modal" data-target="#exampleModalCenter{{user.id}}"  class="pl-4 pr-4 btn btn-sm btn-outline-danger">Block</button>
+                        <button type="button"  data-toggle="modal" data-target="#exampleModalCenter{{user.id}}"  class="pl-4 pr-4 btn btn-sm btn-outline-dark">Block</button>
                         {% else %}
-                        <button type="button" data-toggle="modal" data-target="#exampleModalCenter{{user.id}}"  class="pl-4 pr-4 btn btn-sm btn-outline-success">Unblock</button>
+                        <button type="button" data-toggle="modal" data-target="#exampleModalCenter{{user.id}}"  class="pl-4 pr-4 btn btn-sm btn-outline-dark">Unblock</button>
                         {% endif %}
                       {% endif %}
                       </div>

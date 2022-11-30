@@ -13,70 +13,65 @@
       {% for product in products %}
       <div style="border-radius: 20px;" class="card col-md-4 col-5">
         <div class="d-flex justify-content-center">
-          <img style="border: none;height: 15rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
+          <img style="border: none;height: 12rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
           width="auto" height="auto" />
+          <div style="position: absolute;right: 3%;top: 2%;">
           {% if product.product_offer > 0 and product.category_offer > 0 %}
           {% if product.product_offer > product.category_offer %}
           <div>
-          <button class="btn btn-success">{{product.product_offer}}&nbsp;% Off</button>
+          <button class="btn btn-sm btn-success">{{product.product_offer}}&nbsp;% Off</button>
         </div>
           {% else %}
           <div>
-            <button class="btn btn-success">{{product.category_offer}}&nbsp;% Off</button>
+            <button class="btn btn-sm btn-success">{{product.category_offer}}&nbsp;% Off</button>
           </div>
           {% endif %}
           {% elif product.product_offer > 0 and product.category_offer is 0 %}
           <div>
-          <button class="btn btn-success">{{product.product_offer}}&nbsp;% Off</button>
+          <button class="btn btn-sm btn-success">{{product.product_offer}}&nbsp;% Off</button>
         </div>
         {% elif product.product_offer is 0 and product.category_offer > 0 %}
           <div>
-          <button class="btn btn-success">{{product.category_offer}}&nbsp;% Off</button>
+          <button class="btn btn-sm btn-success">{{product.category_offer}}&nbsp;% Off</button>
         </div>
-        
           {% endif %}
+        </div>
         </div>
         <div class="card-body text-center mx-auto">
           <div class='cvp'>
             <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
                           
-                          {%if product.product_offer_price < 1 and product.category_offer_price < 1  %}
-                            <span class="stext-105 cl3">
-                                ₹{{product.product_price}}
-                            </span>
-
-                            {%elif product.product_offer_price > 1 and product.category_offer_price is 0 %}
-                            <span class="stext-105" style="color:rgb(52, 151, 52);">
-                                ₹{{product.product_offer_price}} &nbsp;
-                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
-                            </span>
-
-                            {%elif product.product_offer_price < 1 and product.category_offer_price > 1 %}
-                            <span class="stext-105" style="color:rgb(52, 151, 52);">
-                                ₹{{product.category_offer_price}} &nbsp;
-                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
-                            </span>
-
-                            {%elif product.product_offer_price < product.category_offer_price and product.category_offer_price > 1 %}
-                            <span class="stext-105" style="color:rgb(52, 151, 52);">
-                                ₹{{product.product_offer_price}} &nbsp;
-                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
-                            </span>
-
-                            {%elif product.category_offer_price < product.product_offer_price and product.product_offer_price > 1 %}
-                            <span class="stext-105" style="color:rgb(52, 151, 52);">
-                                ₹{{product.category_offer_price}} &nbsp;
-                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
-                            </span>
-
-                            {%elif product.category_offer_price == product.product_offer_price and product.product_offer_price > 1 and product.category_offer_price > 1 %}
-                            <span class="stext-105" style="color:rgb(52, 151, 52);">
-                                ₹{{product.product_offer_price}} &nbsp;
-                                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
-                            </span>
-                            {%else%}
-                            {%endif%}
-
+            {%if product.product_offer_price < 1 and product.category_offer_price < 1  %}
+            <span class="stext-105 cl3">
+                ₹{{product.product_price}}
+            </span>
+            {%elif product.product_offer_price > 1 and product.category_offer_price is 0 %}
+            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                ₹{{product.product_offer_price}} &nbsp;
+                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+            </span>
+            {%elif product.product_offer_price < 1 and product.category_offer_price > 1 %}
+            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                ₹{{product.category_offer_price}} &nbsp;
+                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+            </span>
+            {%elif product.product_offer_price < product.category_offer_price and product.category_offer_price > 1 %}
+            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                ₹{{product.product_offer_price}} &nbsp;
+                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+            </span>
+            {%elif product.category_offer_price < product.product_offer_price and product.product_offer_price > 1 %}
+            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                ₹{{product.category_offer_price}} &nbsp;
+                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+            </span>
+            {%elif product.category_offer_price == product.product_offer_price and product.product_offer_price > 1 and product.category_offer_price > 1 %}
+            <span class="stext-105" style="color:rgb(52, 151, 52);">
+                ₹{{product.product_offer_price}} &nbsp;
+                <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
+            </span>
+            {%else%}
+            {%endif%}
 
             <!-- <p class="card-text">₹&nbsp;{{product.product_price}}</p> -->
             

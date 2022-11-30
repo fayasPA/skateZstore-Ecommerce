@@ -23,13 +23,10 @@
             <th scope="col">Qty</th>
             <th scope="col">Payment Type</th>
             <th scope="col">Order Status</th>
-
           </tr>
         </thead>
         <tbody>
           {% for order in orders %}
-
-
           <tr class=" ">
             <td>{{order.ordered_date}}</td>
             <td>{{order.user.username}}</td>
@@ -42,13 +39,20 @@
                 {% csrf_token %}
                 <select type="submit" onchange="status('{{order.id}}',this.value)"
                   class="custom-select border-success custom-select-lg" name="prod_categ" id="prod_categ">
-                  {% for c in choice %}
-                  {% if c == order.status %}
                   <option value="{{order.status}}" selected>{{order.status}}</option>
-                  {% else %}
-                  <option value="{{c}}">{{c}}</option>
-                  {% endif %}
-                  {% endfor %}
+                {% if order.status == 'Order Placed' %}
+                <option value="Shipped">Shipped</option>
+                <option value="Out For Delivery">Out For Delivery</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Delivered">Cancel</option>
+                {% elif order.status == 'Shipped' %}
+                <option value="Out For Delivery">Out For Delivery</option>
+                <option value="Delivered">Delivered</option>
+                {% elif order.status == 'Out For Delivery' %}
+                <option value="Delivered">Delivered</option>
+                {% else %}
+
+                {% endif %}
                 </select>
               </form>
             </td>
@@ -69,6 +73,7 @@
 
 {% block lowerBodyScript %}
 <script>
+  //Order status fn
   function status(orderid, stats) {
     // var token = $("input[name='csrfmiddlewaretoken']").val()
     console.log("FAYAS", orderid)
@@ -100,11 +105,15 @@
     console.log("result=")
     console.log("swal.response=")
   }
-</script>
+  //Order status fn end
 
-<script>
+  //datatable start
   $(document).ready(function () {
-    $('#order_table').DataTable();
+    $('#order_table').DataTable({
+      order: [[0, 'desc']],
+    });
   });
+  //datatable end
+
 </script>
 {% endblock %}

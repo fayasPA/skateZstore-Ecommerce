@@ -21,7 +21,8 @@
         </div>
         <!-- navBar starts -->
         <nav class=" navbar navbar-expand-lg navbar-light bg-light  ">
-            <a class="navbar-brand text-dark font-weight-bold" href="#">SkateBuddy</a>
+            <a class="navbar-brand text-dark font-weight-bold" href="#">skateZstore</a>
+
             <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,14 +36,14 @@
                   <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                     Products
                   </a>
-                  <div class="dropdown-menu">
+                  <div class="dropdown-menu prod-dropdown">
                     <a class="dropdown-item" href="/prod_deck">Deck</a>
                     <a class="dropdown-item" href="/prod_wheel">Wheels</a>
                     <a class="dropdown-item" href="/prod_trucks">Trucks</a>
                   </div>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link text-dark" href="#">Blogs</a>
+                  <a class="nav-link text-dark" href="/#blog">Blogs</a>
                 </li>
               </ul>
               <form class="form-inline my-2 my-lg-0 mr-auto" method="" action="{% url 'search' %}">
@@ -58,17 +59,18 @@
                     {% endif %}
                   </a>
                   <!-- <a class="nav-link text-light" href=""><i class="fa fa-heart" aria-hidden="true"></i></a> -->
-                  {% if user.is_authenticated %}
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/cart"><i class="fa fa-shopping-cart" aria-hidden="true">
                     {% if user.cart_set.count > 0 %}
-                    <div class="badge badge-warning">{{user.cart_set.count}}</div></i></a>
+                    <div class="badge badge-warning">{{user.cart_set.count}}</div>
                     {% else %}
-                    <div class="badge badge-warning"></div></i></a>
+                    <div class="badge badge-warning"></div>
                     {% endif %}
+                  </i></a>
                 </li>
-                <li class="nav-item dropdown">
+                  {% if user.is_authenticated %}
+                  <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-gears"></i>
                   </a>

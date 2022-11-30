@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class myUser(AbstractUser):                                             #Editing auth_user which is built-in django user
-    phone_number = models.CharField(max_length=20, unique=True)         #Adding column phone no.
+    phone_number = models.CharField(max_length=200, unique=True)         #Adding column phone no.
 
     def __str__(self):
         return self.username

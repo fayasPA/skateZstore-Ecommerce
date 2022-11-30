@@ -1,64 +1,75 @@
 {% extends 'admin/admindashboard.html' %}
 {% load static %}
-{%block innercontent%}
-<style>
-    .insert_button{
-  
-      margin-right: 120px;
-      
-  
-    }
-    .headding{
-      position: relative;
-      left:125px;
-      width: 400px;
-      height: 39px;
-      border-bottom: 5px solid rgb(36, 42, 48);
-      overflow: hidden;
-      
-    }
-    .headding span{
-     
-     font-size: 23px;
-     font-family: Arial, Helvetica, sans-serif;
-     line-height: 31px;
-     background-color: rgb(36, 42, 48);
-     display: inline-block;
-     padding: 2px 20px;
-     overflow: hidden;
-     color: #ffffff;
-  
-    }
-    .headding span:before{
-      position: absolute;
-      content: "";
-      width: 75%;
-      height: 100%;
-      background: rgb(36, 42, 48);
-      z-index: -1;
-      transform: rotate(45deg);
-    }
-  
-    
-    
-    .buttons{
-      background-color:  rgb(36, 42, 48); 
-      color: white;
-      border-radius: 15px;
-    }
 
-  </style>
-    <nav class="navbar mb-4 mt-3 d-flex justify-content-center">
+{% block style %}
+<!-- salesreport -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- salesreport -->
+{% endblock %}
+
+{%block innercontent%}
+
+  <nav class="navbar mb-4 mt-3 d-flex justify-content-center">
       <div class="">
         <h2>Sales Report</h2>
       </div>
-    </nav>
+  </nav>
+
+    <div class="container ">
+      <div class="row mb-3">
+        <div class="p-3 card col-md-12">
+        <form action="{% url 'salesreport' %}" method="POST" class="d-flex ">
+          {% csrf_token %}
+          <div class="col-md-4">
+            <label class="" for="start">Start Date</label>
+            <input name="start" type="date" class="form-control mb-2" id="start" >
+          </div>
+          <div class="col-md-4">
+            <label class="" for="end">End Date</label>
+            <input name="end" type="date" class="form-control mb-2" id="end" >
+          </div>
+          <div class="col-md-4 d-flex align-items-center justify-content-center">
+              <button type="submit" class="btn btn-lg btn-secondary ">Filter</button>
+          </div>
+        </form>
+      </div>
+      </div>
+      <div class="row">
+      <div class="p-3 mb-5 col-md-6 col-6 card">
+        <form action="{% url 'yearly_sales' %}" method="POST" class="">
+          {% csrf_token %}
+          <div class="">
+              <label class="d-flex justify-content-center" for="inlineFormInput"><h5>Yearly Sales</h5></label>
+              <input name="year" type="number" min="2020" id="inlineFormInput" class="form-control mb-2" max="2025" step="1" value="2022" />
+            </div>
+              <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-secondary mb-2">Submit</button>
+            </div>
+        </form>
+      </div>
+      <div class="p-3 mb-5 col-md-6 col-6 card">
+        <form action="{% url 'monthly_sales' %}" method="POST" class="">
+          {% csrf_token %}
+          <div class="">
+              <label class="d-flex justify-content-center" for="month"><h5>Monthly Sales</h5></label>
+              <input name="month" type="month" value="2022-01" class="form-control mb-2" id="month" >
+            </div>
+              <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-secondary mb-2">Submit</button>
+            </div>
+        </form>
+      </div>
+    </div>
+    </div>
 
   <!--Table Begning-->
-
-  
-
   <section >
+    <div class="container">
+      {% for message in messages  %}
+      <p class="font-weight-bold">{{message}}</p>
+      {% endfor %}
+    </div>
     <div class="container">
       <div class="row justify-content-center">
         
@@ -67,26 +78,27 @@
         <div class="col-md-12">
           <div class="table-wrap">
             <table class="table" id="myTable" >
-              <thead class="thead-primary text-center">
-                <tr class="">
+              <thead class="thead-primary ">
+                <tr class="align-items-center">
                   <th>Order ID</th>
                   <th>Order Date</th>
                   <th>Customer</th>
+                  <th>Product</th>
                   <th>Quantity</th>
                   <th>Amount</th>
                   <th>Payment Method</th>
                 </tr>
               </thead>
-              <tbody class="text-center">
+              <tbody class="text-start">
                 {%for o in orders%}
                 <tr class="alert" role="alert">
                   <td>{{o.id}}</td>
-                  <td>{{o.ordered_date}}</td>
+                  <td>{{o.ordered_date.date}}</td>
                   <td>{{o.user.first_name}}</td>
+                  <td>{{o.product.product_name}}</td>
                   <td>{{o.quantity}}</td>
                   <td>₹ {{o.get_final_price}}</td>
                   <td>{{o.method}}</td>
-                  
                 </tr>
                 {%endfor%}
                 
@@ -97,9 +109,8 @@
       </div>
     </div>
   </section>
-
-  
 {%endblock%}
+
 {%block lowerBodyScript %}
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
@@ -113,6 +124,7 @@
 <script>
   $(document).ready(function() {
     $('#myTable').DataTable( {
+      order: [[1, 'desc']],
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'

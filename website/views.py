@@ -17,11 +17,13 @@ from datetime import datetime, timedelta
 # Create your views here.
 User = get_user_model()
 
-
 @never_cache
 def index(request):
+    try:
+        guestuser = User.objects.get(username=request.COOKIES['cart'])
+    except:
+        guestuser = None
     return render(request, 'index.html')
-
 
 @never_cache
 def signup(request):
@@ -66,10 +68,7 @@ def signup(request):
             return redirect(signupotpver)
     return render(request, 'signup.html')
 
-
-never_cache
-
-
+@never_cache
 def signupotpver(request):
     if request.user.is_authenticated:
         return redirect(index)
@@ -85,7 +84,6 @@ def signupotpver(request):
             messages.error(request, 'OTP is Incorrect')
     return render(request, 'signupotpver.html')
 
-
 @never_cache
 def LogIn(request):
     if request.user.is_authenticated:
@@ -95,12 +93,30 @@ def LogIn(request):
         password = request.POST['password']
         user = auth.authenticate(username=username, password=password)
         if user is not None:
+            try:
+                guestuser = User.objects.get(username=request.COOKIES['cart'])
+            except:
+                guestuser = None
+            print("usersCookie",guestuser)
+            if guestuser is not None:
+                guestcart = Cart.objects.filter(user=guestuser)
+                for item in guestcart:
+                    print(item.user.username,"item.product_idGusest",item.product_id)
+                    usercart_count = Cart.objects.filter(user=user,product=item.product).count()
+                    if Cart.objects.filter(user=user,product=item.product):
+                        user_item = Cart.objects.get(user=user, product=item.product)
+                        user_item.quantity = user_item.quantity + item.quantity                               # if user has same order that order item's quantity is increased
+                        user_item.save()
+                        item.delete()
+                    else:
+                        item.user_id = user.id
+                        item.save()
+                guestuser.delete()
             login(request, user)
             return redirect(index)
         else:
             messages.error(request, 'Username or Password is Incorrect')
     return render(request, 'LogIn.html')
-
 
 @never_cache
 def otplogin(request):
@@ -124,7 +140,6 @@ def otplogin(request):
             messages.error(request, 'Phone Number is not registered with us')
     return render(request, 'otplogin.html')
 
-
 @never_cache
 def otpver(request):
     if request.user.is_authenticated:
@@ -140,14 +155,12 @@ def otpver(request):
             messages.error(request, 'OTP is Incorrect')
     return render(request, 'otpver.html')
 
-
 @never_cache
 def user_details(request):
     if request.user.is_authenticated:
 
         return render(request, 'user_details.html')
     return redirect(LogIn)
-
 
 @never_cache
 def edit_user(request):
@@ -163,7 +176,6 @@ def edit_user(request):
             return redirect(user_details)
         return render(request, 'edit_user.html')
     return redirect(index)
-
 
 @never_cache
 def add_address(request):
@@ -184,7 +196,6 @@ def add_address(request):
 
     return redirect(LogIn)
 
-
 @never_cache
 def edit_address(request, id):
     if request.user.is_authenticated:
@@ -203,7 +214,6 @@ def edit_address(request, id):
         return render(request, 'edit_address.html', {'adrs': adrs})
     return redirect(LogIn)
 
-
 @never_cache
 def delete_address(request, id):
     if request.user.is_authenticated:
@@ -212,43 +222,35 @@ def delete_address(request, id):
         return redirect(user_details)
     return redirect(index)
 
-
 @never_cache
 def LogOut(request):
     if request.user.is_authenticated:
         logout(request)
     return redirect(LogIn)
 
-
 @never_cache
 def prod_deck(request):
-    # p = Product.objects.all()
     p = Paginator(Product.objects.filter(category__category_name__contains="Decks").order_by(
-        'product_name'), 2)  # set up pagination
+        'product_name'), 10)  # set up pagination
     page = request.GET.get('page')
     products = p.get_page(page)
     return render(request, 'prod_deck.html', {'products': products})
 
-
 @never_cache
 def prod_wheel(request):
-    # products = Product.objects.filter(category__category_name__contains="Wheels")
     p = Paginator(Product.objects.filter(category__category_name__contains="Wheels").order_by(
         'product_name'), 10)  # set up pagination
     page = request.GET.get('page')
     products = p.get_page(page)
     return render(request, 'prod_wheel.html', {'products': products})
 
-
 @never_cache
 def prod_trucks(request):
-    # products = Product.objects.filter(category__category_name__contains="Trucks")
     p = Paginator(Product.objects.filter(category__category_name__contains="Trucks").order_by(
         'product_name'), 10)  # set up pagination
     page = request.GET.get('page')
     products = p.get_page(page)
     return render(request, 'prod_trucks.html', {'products': products})
-
 
 @never_cache
 def prod_details(request, id):
@@ -267,82 +269,83 @@ def prod_details(request, id):
                }
     return render(request, 'prod_details.html', context)
 
-
 @never_cache
 def add_to_cart(request, id):
+    product = Product.objects.get(id=id)                                # get product of given id
     if request.user.is_authenticated:
-        # get product of given id
-        product = Product.objects.get(id=id)
-
-        # Check whether this user has same order or not
-        if Cart.objects.filter(user=request.user, product=product):
-            item = Cart.objects.get(user=request.user, product=product)
-            # if user has same order that order item's quantity is increased
-            item.quantity = item.quantity + 1
-            item.save()
-            return redirect(prod_details, id=id)
-
-        # if user has no similar order creates a new order
+        user = request.user    
+    else:
+        device = request.COOKIES['cart']
+        print(device)
+        if User.objects.filter(username=request.COOKIES['cart']):
+            user = User.objects.get(username=request.COOKIES['cart'])
         else:
-            Cart.objects.create(user=request.user, product=product)
-            return redirect(prod_details, id=id)
-
-    return redirect(index)
-
+            user = User.objects.create_user(username=request.COOKIES['cart'],phone_number=request.COOKIES['cart'])
+    if Cart.objects.filter(user=user, product=product):         # Check whether this user has same order or not
+        item = Cart.objects.get(user=user, product=product)
+        item.quantity = item.quantity + 1                               # if user has same order that order item's quantity is increased
+        item.save()
+        return redirect(prod_details, id=id)
+    else:                                                               # if user has no similar order creates a new order
+        Cart.objects.create(user=user, product=product)
+        return redirect(prod_details, id=id)
 
 @never_cache
 def cart(request):
     if request.user.is_authenticated:
-        if Cart.objects.filter(user=request.user):
-            orders = Cart.objects.filter(user=request.user).order_by('id')
-            count = orders.count()
-            tot_amount = 0
-            for order in orders:
-                tot_amount = tot_amount + order.get_final_price()
-            return render(request, 'cart.html', {'orders': orders, 'tot_amount': tot_amount, 'count': count})
-        return render(request, 'cart.html', {'message': "Your cart is empty"})
-    return redirect(index)
-
-
-@never_cache
-def qty_minus(request, id):
-    if request.user.is_authenticated:
-        order_item = Cart.objects.get(id=id)
-        qty = order_item.quantity-1
-        Cart.objects.filter(id=id).update(quantity=qty)
-        updated_price = Cart.objects.get(id=id).get_final_price()
-        orders = Cart.objects.filter(user=request.user)
+        user = request.user    
+    else:
+        device = request.COOKIES['cart']
+        try:
+            user = User.objects.get(username=request.COOKIES['cart'],phone_number=request.COOKIES['cart'])
+        except:
+            user=None
+    if Cart.objects.filter(user=user):
+        orders = Cart.objects.filter(user=user).order_by('id')
+        count = orders.count()
         tot_amount = 0
         for order in orders:
             tot_amount = tot_amount + order.get_final_price()
-        return JsonResponse({'qty': qty, 'tot_amount': tot_amount, 'updated_price': updated_price})
-    return redirect(index)
-
+        return render(request, 'cart.html', {'orders': orders, 'tot_amount': tot_amount, 'count': count})
+    return render(request, 'cart.html', {'message': "Your cart is empty"})
+@never_cache
+def qty_minus(request, id):
+    if request.user.is_authenticated:
+        user = request.user
+    else:
+        user = User.objects.get(username=request.COOKIES['cart'])
+    order_item = Cart.objects.get(id=id)
+    qty = order_item.quantity-1
+    Cart.objects.filter(id=id).update(quantity=qty)
+    updated_price = Cart.objects.get(id=id).get_final_price()
+    orders = Cart.objects.filter(user=user)
+    tot_amount = 0
+    for order in orders:
+        tot_amount = tot_amount + order.get_final_price()
+    return JsonResponse({'qty': qty, 'tot_amount': tot_amount, 'updated_price': updated_price})
 
 @never_cache
 def qty_plus(request, id):
     if request.user.is_authenticated:
-        order_item = Cart.objects.get(id=id)
-        qty = order_item.quantity+1
-        Cart.objects.filter(id=id).update(quantity=qty)
-        updated_price = Cart.objects.get(id=id).get_final_price()
-        orders = Cart.objects.filter(user=request.user)
-        tot_amount = 0
-        for order in orders:
-            tot_amount = tot_amount + order.get_final_price()
-        return JsonResponse({'qty': qty, 'tot_amount': tot_amount, 'updated_price': updated_price})
-    return redirect(index)
-
+        user = request.user
+    else:
+        user = User.objects.get(username=request.COOKIES['cart'])
+    order_item = Cart.objects.get(id=id)
+    qty = order_item.quantity+1
+    Cart.objects.filter(id=id).update(quantity=qty)
+    updated_price = Cart.objects.get(id=id).get_final_price()
+    orders = Cart.objects.filter(user=user)
+    tot_amount = 0
+    for order in orders:
+        tot_amount = tot_amount + order.get_final_price()
+    return JsonResponse({'qty': qty, 'tot_amount': tot_amount, 'updated_price': updated_price})
 
 @never_cache
 def removeitem(request, id):
-    if request.user.is_authenticated:
-        order_item = Cart.objects.get(id=id)
-        order_item.delete()
-        messages.info(request, "Item has been removed")
-        return redirect(cart)
-    return redirect(index)
-
+    order_item = Cart.objects.get(id=id)
+    order_item.delete()
+    messages.info(request, "Item has been removed")
+    return redirect(cart)
 
 @never_cache
 def checkout(request):
@@ -354,7 +357,6 @@ def checkout(request):
             tot_amount = tot_amount + order.get_final_price()
         return render(request, 'checkout.html', {'tot_amount': tot_amount, 'count': count, })
     return redirect(index)
-
 
 @never_cache
 def discount_coupon(request, code):
@@ -381,7 +383,6 @@ def discount_coupon(request, code):
         dis_amnt = coupon.discount_amnt / orders.count()
         return JsonResponse({'tot_amnt': tot_amnt, 'new_tot_amnt': new_tot_amnt, 'message': "Coupon has been applied", 'coupon_amnt': coupon.discount_amnt, 'dis_amnt': dis_amnt, 'coupon': coupon.id})
 
-
 @never_cache
 def place_order(request):
     if request.user.is_authenticated:
@@ -400,7 +401,7 @@ def place_order(request):
                 for single_order in orders:
                     tot_amnt = tot_amnt + single_order.get_final_price()
             else:                                                              # else condition to pass discounted amnt
-                dis_amnt = coupon.discount_amnt / orders.count()
+                dis_amnt = round(coupon.discount_amnt / orders.count(),3)
                 for single_order in orders:
                     tot_amnt = tot_amnt + \
                         (single_order.get_final_price() - dis_amnt)
@@ -410,7 +411,6 @@ def place_order(request):
                 "coupon_id": coupon_id,
                 "tot_amnt": tot_amnt,
             }
-
             if method == "COD":
                 if coupon == "":
                     for single_order in orders:
@@ -437,7 +437,6 @@ def place_order(request):
                 return render(request, 'razorpay.html', context)
     return redirect(index)
 
-
 @never_cache
 def razorpay(request):
     if request.method == 'GET':
@@ -458,7 +457,7 @@ def razorpay(request):
                 HistoryOrder.objects.create(coupon_code=coupon, user=request.user, is_ordered=True,
                                             method="razorpay", product=single_order.product, quantity=single_order.quantity, amount=single_order.get_final_price(), address=address)
         else:
-            dis_amnt = coupon.discount_amnt / orders.count()
+            dis_amnt = round(coupon.discount_amnt / orders.count(),3)
             for single_order in orders:
                 p = Product.objects.get(id=single_order.product.id)
                 tot_amnt = single_order.get_final_price() - dis_amnt
@@ -468,7 +467,6 @@ def razorpay(request):
                                             method="razorpay", product=single_order.product, quantity=single_order.quantity, amount=tot_amnt, address=address)
         orders.delete()
         return JsonResponse({'status': "Thank you for purchasing...pls Check My Orders for updates."})
-
 
 @never_cache
 def paypal(request):
@@ -501,7 +499,6 @@ def paypal(request):
         orders.delete()
         return JsonResponse({'status': "Thank you for purchasing...pls Check My Orders for updates."})
 
-
 @never_cache
 def search(request):
     if request.method == 'GET':
@@ -517,7 +514,6 @@ def search(request):
         else:
             return render(request, 'search.html', {'message': "No result found", 'q': q})
 
-
 @never_cache
 def user_orders(request):
     if request.user.is_authenticated:
@@ -525,12 +521,10 @@ def user_orders(request):
         return render(request, 'user_orders.html', {'orders': orders})
     return redirect(index)
 
-
 @never_cache
 def order_cancel(request, id):
     order = HistoryOrder.objects.filter(id=id).update(status="Cancel")
     return redirect(user_orders)
-
 
 @never_cache
 def orderinvoice(request, id):

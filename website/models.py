@@ -61,7 +61,7 @@ class HistoryOrder(models.Model):
     updated_date =models.DateTimeField(auto_now=True)
     coupon_code = models.CharField(max_length=100,blank=True)
 
-    def get_order_id(self):                                                             #   strftime converts date to string
+    def get_order_id(self):                                           #   strftime converts date to string
         order_id_no = self.ordered_date.strftime('PAYTOME%Y%m%dODR') + str(self.id)
         return order_id_no
 

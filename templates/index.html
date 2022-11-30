@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkateBuddy</title>
+  <title>skateZstore</title>
   <link rel="icon" href="{% static 'images/logo1.jpg' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
@@ -16,6 +16,11 @@
 {%block style %}{% endblock %}
 
 <body>
+  <style>
+    .dropdown:hover .prod-dropdown {
+      display: block;
+    }
+  </style>
   {% block index %}
   <div style="background-image: url(/static/images/bg.jpg); background-size:cover;">
     <header>
@@ -39,34 +44,30 @@
       <!-- navBar starts -->
       <div class="container">
         <nav class=" navbar navbar-expand-lg navbar-light ">
-          <a class="navbar-brand text-light font-weight-bold" href="#">SkateBuddy</a>
+          <a class="navbar-brand text-light font-weight-bold" href="#">skateZstore</a>
           <button class="bg-dark navbar-toggler " type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
             aria-label="Toggle navigation">
             <span class=" navbar-toggler-icon"></span>
           </button>
-
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class=" navbar-nav mr-auto">
               <li class="nav-item active ">
                 <a class="nav-link text-light" href="#">Home <span class="sr-only">(current)</span></a>
               </li>
-              <!-- <li class="nav-item">
-                  <a class="nav-link text-light" href="#">SkateBoards</a>
-                </li> -->
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-toggle="dropdown"
                   aria-expanded="false">
                   Products
                 </a>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="{% url 'prod_deck' %}">Deck</a>
+                <div class="dropdown-menu prod-dropdown ">
+                  <a class="dropdown-item " href="{% url 'prod_deck' %}">Deck</a>
                   <a class="dropdown-item" href="{% url 'prod_wheel' %}">Wheels</a>
                   <a class="dropdown-item" href="{% url 'prod_trucks' %}">Trucks</a>
                 </div>
               </li>
               <li class="nav-item">
-                <a class="nav-link text-light" href="#">Blogs</a>
+                <a class="nav-link text-light" href="#blog">Blogs</a>
               </li>
             </ul>
             <form class="form-inline my-2 my-lg-0 mr-auto" method="" action="{% url 'search' %}">
@@ -82,25 +83,25 @@
                   {% endif %}
                 </a>
                 <!-- <a class="nav-link text-light" href=""><i class="fa fa-heart" aria-hidden="true"></i></a> -->
-                {% if user.is_authenticated %}
               </li>
               <li class="nav-item">
-                <a class="nav-link text-light" href="/cart"><i class="fa fa-shopping-cart" aria-hidden="true">
+                <a class="d-sm-none d-xs-none d-md-block nav-link text-light" href="/cart"><i class="fa fa-shopping-cart" aria-hidden="true">
                     {% if user.cart_set.count > 0 %}
                     <div class="badge badge-warning">{{user.cart_set.count}}</div>
+                    {% else %}
+                    <div class="badge badge-warning"></div>
+                    {% endif %}
                   </i></a>
-                {% else %}
-                <div class="badge badge-warning"></div></i></a>
-                {% endif %}
               </li>
+              {% if user.is_authenticated %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-toggle="dropdown"
                   aria-expanded="false">
                   <i class="fa-solid fa-gears"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{% url 'user_orders' %}">Orders</a>
-                    <a class="dropdown-item" href="{% url 'LogOut' %}">LogOut</a>
+                  <a class="dropdown-item" href="{% url 'user_orders' %}">Orders</a>
+                  <a class="dropdown-item" href="{% url 'LogOut' %}">LogOut</a>
                 </div>
               </li>
               {% endif %}
@@ -247,7 +248,7 @@
     <!-- product section ends -->
 
     <!-- blog section -->
-    <section class="pb-4 pt-4 blog_section layout_padding">
+    <section id="blog" class="pb-4 pt-4 blog_section layout_padding">
       <div class="container">
         <div class="text-light heading_container heading_center">
           <h2>Our Blog</h2>
@@ -349,8 +350,53 @@
   <!-- footer end -->
 
 
-
   {% endblock %}
+  <!-- GUEST USER -->
+  <!-- setting a cookie -->
+  <script>
+    //Get current cookie
+    function getCookie(name) {
+      //split all cookie and split all name=value pairs in array
+      var cookieArr = document.cookie.split(";");
+
+      //loop through array elements
+      for (var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split("=");
+
+        //removing whitespaces at beginning of cookiename and comparing it with given string
+        if (name == cookiePair[0].trim()) {
+          //decode the cookie value and return
+          return decodeURIComponent(cookiePair[1]);
+        }
+      }
+      //return null if not found
+      return null;
+    }
+    //Getting current cookie script ends
+
+    //unique ID generator
+    function uuidGen() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+    //unique ID generator ends
+
+    var cart = JSON.parse(getCookie('cart'))
+    console.log("cart", cart)
+
+    //creating a unique id if new user enters homepage
+    if (cart == undefined || cart == null) {
+      cart = uuidGen()
+      console.log("cart", cart)
+      console.log('cart was created')
+      document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    }
+  </script>
+  <!-- setting a cookie -->
+  <!-- GUEST USER ENDS-->
+
 
 
   <script src="{% static '/js/validation.js' %}"></script>

@@ -9,6 +9,8 @@ from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.utils.dateparse import parse_date
+from django.db.models import Q
+
 
 import os
 # paginator stuff
@@ -45,7 +47,7 @@ def admindashboard(request):
         order_count = HistoryOrder.objects.all().count()
         delivery_count = HistoryOrder.objects.filter(
             status="Delivered").count()
-        cat_count = []
+        cat_count  = []
         for c in category:
             cat_count.append(Product.objects.filter(category=c.id).count())
 
@@ -112,8 +114,7 @@ def adminuser(request):
         # user_list = p.get_page(page)
         return render(request, 'admin/adminuser.html', {'user_list': user_list})
     return redirect(adminlogin)
-
-
+    
 @never_cache
 def adminlogout(request):
     if request.user.is_superuser:
@@ -180,10 +181,7 @@ def delete_category(request, id):
 @never_cache
 def adminproduct(request):
     if request.user.is_superuser:
-        products = Product.objects.all()
-        # p = Paginator(Product.objects.all().order_by('product_name'),3)          #set up pagination
-        # page = request.GET.get('page')
-        # products = p.get_page(page)
+        products = Product.objects.all().order_by('product_name')
         return render(request, 'admin/adminproduct.html', {'products': products})
     return redirect(adminlogin)
 
@@ -212,7 +210,7 @@ def admin_addproduct(request):
         return render(request, 'admin/admin_addproduct.html', {'category_list': category_list})
     return redirect(adminlogin)
 
-
+@never_cache
 def edit_product(request, id):
     if request.user.is_superuser:
         product = Product.objects.get(pk=id)
@@ -255,19 +253,17 @@ def delete_product(request, id):
         return redirect(adminproduct)
     return redirect(adminlogin)
 
-
 @never_cache
 def order_list(request):
     if request.user.is_superuser:
-        orders = HistoryOrder.objects.all()
-        choices = HistoryOrder.status.field.choices
-        choice = []
-        i = 0
-        for i in choices:
-            choice.append(i[0])
-        return render(request, 'admin/order_list.html', {'orders': orders, 'choice': choice})
+        orders = HistoryOrder.objects.all().order_by('ordered_date')
+        # choices = HistoryOrder.status.field.choices
+        # choice = []
+        # i = 0
+        # for i in choices:
+        #     choice.append(i[0])
+        return render(request, 'admin/order_list.html', {'orders': orders})
     return redirect(adminlogin)
-
 
 @never_cache
 def status_update(request):
@@ -275,7 +271,9 @@ def status_update(request):
         id = request.GET['orderid']
         status = request.GET['stats']
         HistoryOrder.objects.filter(id=id).update(
-            status=status, updated_date=datetime.now())
+            status=status)
+            #       HistoryOrder.objects.filter(id=id).update(
+            # status=status, updated_date=datetime.now())
         return JsonResponse({'status': "Status has been changed"})
 
 
@@ -432,11 +430,54 @@ def edit_categoryoffer(request, id):
         messages.info(request, "Offer Updated")
     return redirect(offer)
 
-
 @never_cache
 def salesreport(request):
     if request.user.is_superuser:
+        orders = HistoryOrder.objects.all()
+        if request.method == 'POST':
+            start = request.POST['start']
+            end = request.POST['end']
+            print("type",type(start))
+            orders = HistoryOrder.objects.all().filter(ordered_date__range=[start,end])
+            m = "Showing results B/W " + start + ' and ' + end + " Dates"
+            messages.info(request,m)
         print("FAYAS")
-        order = HistoryOrder.objects.all()
-        return render(request, "admin/salesreport.html", {'orders': order})
+        return render(request, "admin/salesreport.html", {'orders': orders})
     return redirect(adminlogin)
+
+@never_cache
+def yearly_sales(request):
+    orders = HistoryOrder.objects.all()
+    if request.method == 'POST':
+        print("FAYAS")
+        year = request.POST['year']
+        print("type",type(year))
+        orders = orders.filter(Q(ordered_date__year=year))
+        # for o in orders:
+        #     print("DATE",o.ordered_date)
+        print(len(orders))
+        m = "Showing results for sales in " + year
+        m1 = "No results found for '" + year + "'"
+        if len(orders) == 0:
+            messages.info(request,m1)
+        else:
+            messages.info(request,m)
+    return render(request, "admin/salesreport.html", {'orders': orders})
+
+@never_cache
+def monthly_sales(request):
+    orders = HistoryOrder.objects.all()
+    if request.method == 'POST':
+        month = request.POST['month']
+        m = str(month).split('-')                           #splitting str value to take only month value
+        orders = orders.filter(Q(ordered_date__month=m[1])) #searching for the month query
+        month_names = ['Jan','Feb','March','April','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+        month_name = month_names[int(m[1])-1]
+        print(month_name)
+        m = "Showing results for sales in " + month_name
+        m1 = "No results found for '" + month_name + "'"
+        if len(orders) == 0:
+            messages.info(request,m1)
+        else:
+            messages.info(request,m)
+    return render(request, "admin/salesreport.html", {'orders': orders})

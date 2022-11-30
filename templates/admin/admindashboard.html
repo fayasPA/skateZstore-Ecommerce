@@ -5,10 +5,6 @@
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
 
-<!-- salesreport -->
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 {% endblock %}
 
 
@@ -24,35 +20,34 @@
             <div class=" collapse navbar-collapse"  id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto ">
                 <li class="d-flex justify-content-center nav-item active ">
-                  <a style="color: skyblue;" class=" nav-link " href="{% url 'admindashboard' %}"><u>DashBoard</u> </a>
+                  <a style="color: skyblue;" class="btn nav-link " href="{% url 'admindashboard' %}"><u class="btn">DashBoard</u> </a>
                 </li>
                 <li class="d-flex justify-content-center nav-item">
-                  <a style="color: skyblue;" class=" nav-link " href="{% url 'adminproduct' %}"><u>Products</u></a>
+                  <a style="color: skyblue;" class=" nav-link " href="{% url 'adminproduct' %}"><u class="btn">Products</u></a>
                 </li>
                 <li class="d-flex justify-content-center nav-item">
-                  <a style="color: skyblue;" class=" nav-link " href="{% url 'admincategory' %}"><u>Category</u></a>
+                  <a style="color: skyblue;" class=" nav-link " href="{% url 'admincategory' %}"><u class="btn">Category</u></a>
                 </li>
                 <li class="d-flex justify-content-center nav-item">
-                    <a style="color: skyblue;" class=" nav-link " href="{% url 'adminuser' %}"><u>Users</u></a>
+                    <a style="color: skyblue;" class=" nav-link " href="{% url 'adminuser' %}"><u class="btn">Users</u></a>
                 </li>
                 <li class="d-flex justify-content-center nav-item">
-                    <a style="color: skyblue;" class=" nav-link " href="{% url 'order_list' %}"><u>Orders</u></a>
+                    <a style="color: skyblue;" class=" nav-link " href="{% url 'order_list' %}"><u class="btn">Orders</u></a>
                 </li>
                 <li class="d-flex justify-content-center nav-item">
-                  <a style="color: skyblue;" class=" nav-link " href="{% url 'coupon' %}"><u>Coupons</u></a>
+                  <a style="color: skyblue;" class=" nav-link " href="{% url 'coupon' %}"><u class="btn">Coupons</u></a>
                 </li>
                 <li class="d-flex justify-content-center nav-item">
-                  <a style="color: skyblue;" class=" nav-link " href="{% url 'offer' %}"><u>Offers</u></a>
+                  <a style="color: skyblue;" class=" nav-link " href="{% url 'offer' %}"><u class="btn">Offers</u></a>
                 </li>
                 <li class="d-flex justify-content-center nav-item">
-                  <a style="color: skyblue;" class=" nav-link " href="{% url 'salesreport' %}"><u>Salesreport</u></a>
+                  <a style="color: skyblue;" class=" nav-link " href="{% url 'salesreport' %}"><u class="btn">Salesreport</u></a>
                 </li>
-                
               </ul>
               <ul class=" navbar-nav ">
-                {% block add %}
+
+                {% block add %} {% endblock %}
                 
-                {% endblock %}
                 <li class="d-flex justify-content-center nav-item">
                   <a class="nav-link text-light" href=""><i class="fa-solid fa-user"></i><span>  {{user}}</span></a>
                 </li>
@@ -69,7 +64,6 @@
           </nav>
         <!-- navBar ends -->
     </header>
-
 
     {% block innercontent %}
     <section class="bg-dark pt-5">

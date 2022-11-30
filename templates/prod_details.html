@@ -114,7 +114,7 @@ img{
 .product-detail ul li{
     margin: 0;
     list-style: none;
-    background: url(https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/checked.png) left center no-repeat;
+    background: url(/static/images/tick.png) left center no-repeat;
     background-size: 18px;
     padding-left: 1.7rem;
     margin: 0.4rem 0;
@@ -275,9 +275,9 @@ img{
           <ul>
             <li class="wrong">Available: 
                 {% if prod_detail.product_qty <= 5 and prod_detail.product_qty >= 1 %}
-                <span class="font-weight-bold">Only {{prod_detail.product_qty}} stocks!</span> 
+                <span class="font-weight-bold text-danger">Only {{prod_detail.product_qty}} stocks!</span> 
                 {% elif prod_detail.product_qty == 0 %}
-                <span class="text-danger font-weight-bold">OUT OF STOCK</span>
+                <span class="text-danger font-weight-bold">OUT OF STOCK!</span>
                 {% else %}
                 <span>in stock</span>
                 {% endif %}
@@ -288,17 +288,13 @@ img{
           </ul>
         </div>
   
-        <div class = "purchase-info">
+        <div class = "purchase-info ">
             {% if prod_detail.product_qty == 0 %}
-            <button onclick="outofstock()" type = "button" class = "btn">
-                Out of Stock <i class = "fas fa-shopping-cart"></i>
-              </button>
               {% else %}
-            <a class="" href="{% url 'add_to_cart' prod_detail.id %}"><button type = "button" class = "btn">
+            <a href="{% url 'add_to_cart' prod_detail.id %}"><button type = "button" class = "btn bg-dark">
             Add to Cart <i class = "fas fa-shopping-cart"></i>
           </button></a>
           {% endif %}
-        
         </div>
       </div>
     </div>
