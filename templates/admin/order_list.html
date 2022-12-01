@@ -42,8 +42,6 @@
                   <option value="{{order.status}}" selected>{{order.status}}</option>
                 {% if order.status == 'Order Placed' %}
                 <option value="Shipped">Shipped</option>
-                <option value="Out For Delivery">Out For Delivery</option>
-                <option value="Delivered">Delivered</option>
                 <option value="Delivered">Cancel</option>
                 {% elif order.status == 'Shipped' %}
                 <option value="Out For Delivery">Out For Delivery</option>

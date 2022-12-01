@@ -269,11 +269,10 @@ def order_list(request):
 def status_update(request):
     if request.method == 'GET':
         id = request.GET['orderid']
-        status = request.GET['stats']
-        HistoryOrder.objects.filter(id=id).update(
-            status=status)
-            #       HistoryOrder.objects.filter(id=id).update(
-            # status=status, updated_date=datetime.now())
+        s = request.GET['stats']
+        order = HistoryOrder.objects.get(id=id)
+        order.status = s
+        order.save()
         return JsonResponse({'status': "Status has been changed"})
 
 

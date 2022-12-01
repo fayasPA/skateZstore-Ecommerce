@@ -31,6 +31,7 @@ urlpatterns = [
     path('razorpay/',views.razorpay,name='razorpay'),
     path('search',views.search,name='search'),
     path('order_cancel/<int:id>/',views.order_cancel,name='order_cancel'),
+    path('order_return/<int:id>/',views.order_return,name='order_return'),
     path('orderinvoice/<int:id>/',views.orderinvoice,name='orderinvoice'),
     path('discount_coupon/<str:code>/',views.discount_coupon,name='discount_coupon'),
 

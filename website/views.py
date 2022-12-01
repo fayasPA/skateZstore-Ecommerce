@@ -523,9 +523,19 @@ def user_orders(request):
 
 @never_cache
 def order_cancel(request, id):
-    order = HistoryOrder.objects.filter(id=id).update(status="Cancel")
+    order = HistoryOrder.objects.get(id=id)
+    order.status = "Cancel"
+    order.amount = 0
+    p = Product.objects.get(id=order.product_id)
+    p.product_qty = p.product_qty + order.quantity
+    p.save()
+    order.save()
     return redirect(user_orders)
 
+@never_cache
+def order_return(request, id):
+    order = HistoryOrder.objects.filter(id=id).update(status="Return")
+    return redirect(user_orders)
 @never_cache
 def orderinvoice(request, id):
     order = HistoryOrder.objects.get(id=id)

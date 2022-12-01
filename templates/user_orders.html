@@ -12,19 +12,27 @@
         <div class="row ">
           <div class="col">
             {% for order in orders %}
-
             <!--product cancel modal -->
             <div class="modal fade" id="cancel_modal{{order.id}}" tabindex="-1" role="dialog"
               aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header d-flex justify-content-center">
-                    <h5 class="modal-title " id="">Sure You want to Cancel {{order.product.product_name}}</h5>
+                    {% if order.status == 'Delivered' %}
+                    <h5 class="modal-title " id="">Sure You want to Return {{order.product.product_name}}</h5>
+                    {% else %}
+                    <h5 class="modal-title " id="">Sure You want to Cancel Order {{order.product.product_name}}</h5>
+                    {% endif %}
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="{% url 'order_cancel' order.id  %}"><button type="button"
+                        {% if order.status == 'Delivered' %}
+                        <a href="{% url 'order_return' order.id  %}"><button type="button"
                         class="btn btn-primary">Confirm</button></a>
+                        {% else %}
+                        <a href="{% url 'order_cancel' order.id  %}"><button type="button"
+                          class="btn btn-primary">Confirm</button></a>
+                        {% endif %}
                   </div>
                 </div>
               </div>
@@ -66,21 +74,34 @@
                         class="font-weight-bold">Invoice</small></a> <small class="d-flex "> Track Order <span><i
                           class=" ml-2 fa fa-refresh" aria-hidden="true"></i></span></small>
                   </div>
+                  
                   <div class="col mt-auto">
+<!-- dates -->
+<div class="media row justify-content-between ">
+  <div class="col-auto text-right"><span> <small class="text-right mr-sm-2"></small>{{order.ordered_date}}</span></div>
+  <div class="col"> <span> <small class="text-right mr-sm-2"></small><i
+        class="fa fa-circle"></i><small>{{order.ordered_date}}</small></span></div>
+  <div class="col"> <span> <small class="text-right mr-sm-2"></small><i
+        class="fa fa-circle"></i>{{order.ordered_date}}</span></div>
+  <div class="col-auto col-auto">
+    <smallclass="text-right mr-sm-2"></small><span> <i class="fa fa-circle"></i>{{order.ordered_date}}</span>
+  </div>
+</div>
 
-                    {% if order.status == 'Order Placed' %}
+<!-- dates -->
+                    {% if order.status == 'Order Placed' or order.status == 'Return' %}
                     <div class="progress">
-                      <div class="progress-bar progress-bar  rounded" style="width: 2%" role="progressbar"
+                      <div class="progress-bar  progress-bar  bg-dark rounded" style="width: 2%" role="progressbar"
                         aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     {% elif order.status == 'Shipped' %}
                     <div class="progress">
-                      <div class="progress-bar progress-bar  rounded" style="width: 35%" role="progressbar"
+                      <div class="progress-bar progress-bar bg-dark rounded" style="width: 35%" role="progressbar
                         aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     {% elif order.status == 'Out For Delivery' %}
                     <div class="progress">
-                      <div class="progress-bar progress-bar  rounded" style="width: 70%" role="progressbar"
+                      <div class="progress-bar progress-bar bg-dark rounded" style="width: 70%" role="progressbar"
                         aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     {% elif order.status == 'Delivered' %}
@@ -100,6 +121,18 @@
                       <div class="col-auto  flex-col-auto ">
                         <smallclass="text-right mr-sm-2"></small><span> <i class="fa fa-circle"></i>Order Has Been
                             Cancelled</span>
+                      </div>
+                    </div>
+                    {% elif order.status == 'Return' %}
+                    <div class="media row justify-content-between ">
+                      <div class="col-auto text-right"><span> <small class="text-right mr-sm-2"></small> <i
+                            class="fa fa-circle active"></i> </span></div>
+                      <div class="flex-col"> <span> <small class="text-right mr-sm-2">Picked Up</small><i
+                            class="fa fa-circle"></i></span></div>
+                      <div class="flex-col"> <span> <small class="text-right mr-sm-2">Shipped</small><i
+                            class="fa fa-circle"></i></span></div>
+                      <div class="col-auto flex-col-auto">
+                        <smallclass="text-right mr-sm-2">Returned</small><span> <i class="fa fa-circle"></i></span>
                       </div>
                     </div>
                     {% else %}

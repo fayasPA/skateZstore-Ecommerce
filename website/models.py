@@ -1,6 +1,6 @@
 from django.db import models
 from admn.models import *
-from django.utils import timezone
+from datetime import datetime, timedelta
 # Create your models here.
 
 class Address(models.Model):
@@ -35,8 +35,9 @@ class Cart(models.Model):
         elif self.product.product_offer_price == self.product.category_offer_price and self.product.product_offer_price > 1 and self.product.category_offer_price > 1:
             return self.quantity * self.product.category_offer_price
         
-
+    
         # return self.quantity * self.product.product_price
+
 
     def get_final_price(self):
         return self.get_total_item_price()
@@ -58,8 +59,24 @@ class HistoryOrder(models.Model):
     amount = models.FloatField(default=0)
     address = models.ForeignKey(Address, on_delete=models.DO_NOTHING,default='')
     status = models.CharField(max_length=100, choices = choices, default="Order Placed",blank=True,null=True)
-    updated_date =models.DateTimeField(auto_now=True)
+    shipped_date =models.DateTimeField(blank=True,null=True)
+    outfordelivery_date =models.DateTimeField(blank=True,null=True)
+    delivered_date =models.DateTimeField(blank=True,null=True)
+    cancelled_date =models.DateTimeField(blank=True,null=True)
+    returned_date =models.DateTimeField(blank=True,null=True)
     coupon_code = models.CharField(max_length=100,blank=True)
+
+    def save(self, *args, **kwargs):
+        print("hastalavista")
+        if self.status == 'Shipped':
+            self.shipped_date = datetime.now()
+        if self.status == 'Out For Delivery':
+            self.outfordelivery_date = datetime.now()
+        if self.status == 'Delivered':
+            self.delivered_date = datetime.now()
+        if self.status == 'Cancel':
+            self.cancelled_date = datetime.now()
+        super(HistoryOrder, self).save(*args, **kwargs)
 
     def get_order_id(self):                                           #   strftime converts date to string
         order_id_no = self.ordered_date.strftime('PAYTOME%Y%m%dODR') + str(self.id)
