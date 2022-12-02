@@ -270,6 +270,7 @@ def status_update(request):
     if request.method == 'GET':
         id = request.GET['orderid']
         s = request.GET['stats']
+        print("s",s)
         order = HistoryOrder.objects.get(id=id)
         order.status = s
         order.save()

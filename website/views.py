@@ -19,11 +19,9 @@ User = get_user_model()
 
 @never_cache
 def index(request):
-    try:
-        guestuser = User.objects.get(username=request.COOKIES['cart'])
-    except:
-        guestuser = None
-    return render(request, 'index.html')
+    p = Product.objects.values_list('product_name',flat=True)
+    print(p)
+    return render(request, 'index.html',{'p':p})
 
 @never_cache
 def signup(request):

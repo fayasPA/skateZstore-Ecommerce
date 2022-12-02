@@ -1,6 +1,7 @@
 from django.db import models
 from admn.models import *
-from datetime import datetime, timedelta
+from django.utils import timezone
+import datetime
 # Create your models here.
 
 class Address(models.Model):
@@ -69,13 +70,13 @@ class HistoryOrder(models.Model):
     def save(self, *args, **kwargs):
         print("hastalavista")
         if self.status == 'Shipped':
-            self.shipped_date = datetime.now()
+            self.shipped_date = datetime.datetime.now(tz=timezone.utc)
         if self.status == 'Out For Delivery':
-            self.outfordelivery_date = datetime.now()
+            self.outfordelivery_date = datetime.datetime.now(tz=timezone.utc)
         if self.status == 'Delivered':
-            self.delivered_date = datetime.now()
+            self.delivered_date = datetime.datetime.now(tz=timezone.utc)
         if self.status == 'Cancel':
-            self.cancelled_date = datetime.now()
+            self.cancelled_date = datetime.datetime.now(tz=timezone.utc)
         super(HistoryOrder, self).save(*args, **kwargs)
 
     def get_order_id(self):                                           #   strftime converts date to string

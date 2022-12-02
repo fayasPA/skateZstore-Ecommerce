@@ -26,13 +26,13 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        {% if order.status == 'Delivered' %}
-                        <a href="{% url 'order_return' order.id  %}"><button type="button"
+                    {% if order.status == 'Delivered' %}
+                    <a href="{% url 'order_return' order.id  %}"><button type="button"
                         class="btn btn-primary">Confirm</button></a>
-                        {% else %}
-                        <a href="{% url 'order_cancel' order.id  %}"><button type="button"
-                          class="btn btn-primary">Confirm</button></a>
-                        {% endif %}
+                    {% else %}
+                    <a href="{% url 'order_cancel' order.id  %}"><button type="button"
+                        class="btn btn-primary">Confirm</button></a>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -74,21 +74,8 @@
                         class="font-weight-bold">Invoice</small></a> <small class="d-flex "> Track Order <span><i
                           class=" ml-2 fa fa-refresh" aria-hidden="true"></i></span></small>
                   </div>
-                  
-                  <div class="col mt-auto">
-<!-- dates -->
-<div class="media row justify-content-between ">
-  <div class="col-auto text-right"><span> <small class="text-right mr-sm-2"></small>{{order.ordered_date}}</span></div>
-  <div class="col"> <span> <small class="text-right mr-sm-2"></small><i
-        class="fa fa-circle"></i><small>{{order.ordered_date}}</small></span></div>
-  <div class="col"> <span> <small class="text-right mr-sm-2"></small><i
-        class="fa fa-circle"></i>{{order.ordered_date}}</span></div>
-  <div class="col-auto col-auto">
-    <smallclass="text-right mr-sm-2"></small><span> <i class="fa fa-circle"></i>{{order.ordered_date}}</span>
-  </div>
-</div>
 
-<!-- dates -->
+                  <div class="col mt-auto">
                     {% if order.status == 'Order Placed' or order.status == 'Return' %}
                     <div class="progress">
                       <div class="progress-bar  progress-bar  bg-dark rounded" style="width: 2%" role="progressbar"
@@ -97,7 +84,7 @@
                     {% elif order.status == 'Shipped' %}
                     <div class="progress">
                       <div class="progress-bar progress-bar bg-dark rounded" style="width: 35%" role="progressbar
-                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        aria-valuenow=" 25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     {% elif order.status == 'Out For Delivery' %}
                     <div class="progress">
@@ -115,11 +102,11 @@
                         aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     {% endif %}
-                    
+
                     {% if order.status == 'Cancel' %}
                     <div class="media row justify-content-end ">
-                      <div class="col-auto  flex-col-auto ">
-                        <smallclass="text-right mr-sm-2"></small><span> <i class="fa fa-circle"></i>Order Has Been
+                      <div class="col  flex-col-auto ">
+                        <small class="text-right mr-sm-2"></small><span> <i class="fa fa-circle"></i>Order Has Been
                             Cancelled</span>
                       </div>
                     </div>
@@ -127,27 +114,55 @@
                     <div class="media row justify-content-between ">
                       <div class="col-auto text-right"><span> <small class="text-right mr-sm-2"></small> <i
                             class="fa fa-circle active"></i> </span></div>
-                      <div class="flex-col"> <span> <small class="text-right mr-sm-2">Picked Up</small><i
-                            class="fa fa-circle"></i></span></div>
-                      <div class="flex-col"> <span> <small class="text-right mr-sm-2">Shipped</small><i
-                            class="fa fa-circle"></i></span></div>
+                      <div class="flex-col"> <span> <i  class="fa-solid fa-handshake"></i>
+                        <small class="text-right mr-sm-2">Pick Up</small></span></div>
+                      <div class="flex-col"> <span><i  class="fas fa-shipping-fast"></i> 
+                        <small class="text-right mr-sm-2">Packed & Shipped</small></span></div>
                       <div class="col-auto flex-col-auto">
-                        <smallclass="text-right mr-sm-2">Returned</small><span> <i class="fa fa-circle"></i></span>
+                        <smallclass="text-right mr-sm-2"> <i
+                            class="fa-solid fa-truck-ramp-box"></i>&nbsp;Returned</small><span></span>
                       </div>
                     </div>
                     {% else %}
                     <div class="media row justify-content-between ">
-                      <div class="col-auto text-right"><span> <small class="text-right mr-sm-2"></small> <i
-                            class="fa fa-circle active"></i> </span></div>
-                      <div class="flex-col"> <span> <small class="text-right mr-sm-2">Shipped</small><i
-                            class="fa fa-circle"></i></span></div>
-                      <div class="flex-col"> <span> <small class="text-right mr-sm-2">Out for delivery</small><i
-                            class="fa fa-circle"></i></span></div>
+                      <div class="col-auto text-right"><span>  <i
+                            class="fa-regular fa-circle active"></i><small class="text-right mr-sm-2">&nbsp;Packed</small> </span></div>
+                      <div class="flex-col"> <span> <i
+                            class="fa-solid fa-truck-ramp-box"></i><small class="text-right mr-sm-2">&nbsp;Shipped</small></span></div>
+                      <div class="flex-col"> <span> <i
+                            class="fas fa-shipping-fast"></i><small class="text-right mr-sm-2">&nbsp;Out For Delivery</small></span></div>
                       <div class="col-auto flex-col-auto">
-                        <smallclass="text-right mr-sm-2">Delivered</small><span> <i class="fa fa-circle"></i></span>
+                        <smallclass="text-right mr-sm-2"><i class="fa-solid fa-box"></i></i>&nbsp;Delivered</small><span> </span>
                       </div>
                     </div>
                     {% endif %}
+<!-- dates -->
+  {% if order.status != 'Return' and order.status != 'Cancel' %}
+<div class="media row justify-content-between ">
+  <div class="col"><span> <small
+          class="text-right mr-sm-2">{{order.ordered_date.date}}</small></span></div>
+    <div class="col"> <span> <small
+          class="text-right mr-sm-2">{{order.shipped_date.date}}</small></span></div>
+    <div class="col"> <span> <small
+          class="text-right mr-sm-2">{{order.outfordelivery_date.date}}</small></span></div>
+    <div class="col flex-col-auto">
+      <smallclass="text-right mr-sm-2">{{order.delivered_date.date}}</small><span> </span>
+    </div>
+  </div>
+  {% elif order.status == 'Cancel' %}
+<div class="media row justify-content-between ">
+  <div class="col"><span> <small
+      class="text-right mr-sm-2">{{order.cancelled_date.date}}</small></span></div>
+  </div>
+  {% else %}
+<div class="media row justify-content-between ">
+  <div class="col"><span> <small
+      class="text-right mr-sm-2">{{order.returned_date.date}}</small></span></div>
+  </div>
+  {% endif %}
+  
+  <!-- dates -->
+
                   </div>
                 </div>
               </div>
