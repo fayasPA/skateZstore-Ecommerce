@@ -30,11 +30,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-live_site = config('live_site')
-if live_site == 'FALSE':
-    ALLOWED_HOSTS = []
-else:
-    ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
+
 
 # Application definition
 
@@ -83,28 +80,15 @@ WSGI_APPLICATION = 'skatebuddy.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if live_site == 'FALSE':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DATABASE_NAME'),
-            'USER': config('DATABASE_USER'),
-            'PASSWORD': config('DATABASE_PASSWORD'),
-            'HOST': config('DATABASE_HOST'),
-        }
-    }
-else:
-    DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
         'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': config('DATABASE_HOST'),
-	    'PORT': '5432',
-    },
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -140,25 +124,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-if live_site == 'FALSE':
-    STATIC_URL = 'static/'
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR,'static')
-    ]
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static')
+]
 
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
-else:
-    STATIC_URL = 'static/'
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR,'/home/ec2-user/skatezstore/skatebuddy-Ecommerce/static')
-    ]
-    STATIC_ROOT = os.path.join(BASE_DIR, "/home/ec2-user/skatezstore/skatebuddy-Ecommerce/assets/")
-    
-    
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR,'/home/ec2-user/skatezstore/skatebuddy-Ecommerce/media')
 
 
 # Default primary key field type
