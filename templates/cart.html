@@ -73,7 +73,7 @@
                                     <!-- One Product ends -->
 
                                     <div class="pt-5">
-                                        <h6 class="mb-0"><a href="#!" class="text-body"><i
+                                        <h6 class="mb-0"><a href="{% url 'prod_deck' %}" class="text-body"><i
                                                     class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
                                     </div>
                                 </div>
@@ -130,40 +130,5 @@
     swal.fire(message)
 </script>
 {% endfor %}
-<script>
-    function minus(orderid, qty, item_tot_price) {
-        console.log("FAYAS")
-        $.ajax({
-            type: "GET",
-            url: "qty_minus/" + orderid,
-            success: function (response) {
-                if (response.qty == 1) {
-                    $("#minusbtn" + orderid).attr("disabled", true);
-                    document.getElementById(orderid).innerHTML = response.qty;
-                    document.getElementById(item_tot_price).innerHTML = response.updated_price;
-                    document.getElementById('total').innerHTML = response.tot_amount;
-                }
-                else {
-                    document.getElementById(orderid).innerHTML = response.qty;
-                    document.getElementById(item_tot_price).innerHTML = response.updated_price;
-                    document.getElementById('total').innerHTML = response.tot_amount;
-                }
-            }
-        });
-    }
-
-    function plus(orderid, qty, item_tot_price) {
-        console.log("plus", orderid, qty)
-        $.ajax({
-            type: "GET",
-            url: "qty_plus/" + orderid,
-            success: function (response) {
-                document.getElementById(orderid).innerHTML = response.qty;
-                document.getElementById(item_tot_price).innerHTML = response.updated_price;
-                document.getElementById('total').innerHTML = response.tot_amount;
-                $("#minusbtn" + orderid).attr("disabled", false);
-            }
-        })
-    }
-</script>
+<script src="{% static '/js/cart.js' %}"></script>
 {% endblock %}

@@ -76,8 +76,8 @@
             </ul>
             <form class="form-inline my-2 my-lg-0 mr-auto" method="" action="{% url 'search' %}">
               {% csrf_token %}
-              <input name="search" id="tags" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
+              <input name="search" id="tags" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" onclick="search_suggestion()">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
             <ul class="navbar-nav ">
               <li class="nav-item">
@@ -402,8 +402,6 @@
   <!-- setting a cookie -->
   <!-- GUEST USER ENDS-->
 
-
-
   <script src="{% static '/js/validation.js' %}"></script>
 
   <!-- jquery -->
@@ -412,8 +410,13 @@
 
 <!-- search autocomplete -->
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script  src="{% static '/js/index.js' %}"></script>
-
+<script>
+  function search_suggestion() {
+    $( "#tags" ).autocomplete({
+      source: "{% url 'index' %}",
+    });
+  } 
+</script>
 <!-- search autocomplete -->
 
   {% block lowerBodyScript %}

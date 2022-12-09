@@ -19,9 +19,28 @@ User = get_user_model()
 
 @never_cache
 def index(request):
-    p = Product.objects.values_list('product_name',flat=True)
-    print(p)
-    return render(request, 'index.html',{'p':p})
+    if 'term' in request.GET:
+        search_product = Product.objects.filter(product_name__istartswith=request.GET.get('term'))
+        search_sugg = []
+        for sp in search_product:
+            search_sugg.append(sp.product_name)
+        return JsonResponse(search_sugg,safe=False)         #safe argument is present inorder to send any other python datatype other than dictionaries
+    return render(request, 'index.html')
+
+
+@never_cache
+def search(request):
+    if request.method == 'GET':
+        q = request.GET['search']
+        query_list = Product.objects.filter(Q(product_name__icontains=q))
+        if query_list is not None and query_list.count() != 0:
+            p = Paginator(Product.objects.filter(product_name__icontains=q).order_by(
+                'product_name'), 10)  # set up pagination
+            page = request.GET.get('page')
+            queries = p.get_page(page)
+            return render(request, 'search.html', {'queries': queries, 'q': q})
+        else:
+            return render(request, 'search.html', {'message': "No result found", 'q': q})
 
 @never_cache
 def signup(request):
@@ -497,20 +516,6 @@ def paypal(request):
         orders.delete()
         return JsonResponse({'status': "Thank you for purchasing...pls Check My Orders for updates."})
 
-@never_cache
-def search(request):
-    if request.method == 'GET':
-        q = request.GET['search']
-        query_list = Product.objects.filter(Q(product_name__icontains=q))
-
-        if query_list is not None and query_list.count() != 0:
-            p = Paginator(Product.objects.filter(product_name__icontains=q).order_by(
-                'product_name'), 10)  # set up pagination
-            page = request.GET.get('page')
-            queries = p.get_page(page)
-            return render(request, 'search.html', {'queries': queries, 'q': q})
-        else:
-            return render(request, 'search.html', {'message': "No result found", 'q': q})
 
 @never_cache
 def user_orders(request):

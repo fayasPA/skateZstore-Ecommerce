@@ -48,7 +48,7 @@
               </ul>
               <form class="form-inline my-2 my-lg-0 mr-auto" method="" action="{% url 'search' %}">
               {% csrf_token %}
-              <input name="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <input name="search" class="form-control mr-sm-2" id="tags" type="search" placeholder="Search" aria-label="Search" onclick="search_suggestion()">
               <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
             </form>
               <ul class="navbar-nav ">
