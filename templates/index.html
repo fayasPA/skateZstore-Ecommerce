@@ -248,6 +248,36 @@
           </div>
         </div>
       </div>
+      <!-- <div class="product container">
+        <div class="row rounded  bg-light">
+          <div class="col-md-4 col-6 d-flex justify-content-center">
+            <div class="prod-box m-3" style="height: 350px;">
+              <div class="h-75 d-flex justify-content-center prod-img-box">
+                <img class="img-fluid" src="{% static 'images/p1.png'%}" alt="">
+              </div>
+              <div class="h-25 detail-box ">
+                <h4 class="d-flex justify-content-center">Skateboard</h4>
+                <h6 class="price d-flex justify-content-center">
+                  <span class="new_price">Rs.4999</span>
+                </h6>
+                <a class="d-flex justify-content-center" href="">Buy Now</a>
+              </div>
+            </div>
+            {% for product in product %}
+          {% if forloop.counter <= 3 %}
+      <div style="border-radius: 20px; background: rgba(236, 240, 236, 1)" class=" card col-md-4 col-5" >
+        <div class="d-flex justify-content-center">
+          <img style="border: none;height: 12rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
+            width="auto" height="auto" />
+        </div>
+      </div>
+      {% else %}
+      {% endif %}
+      {% endfor %}
+
+          </div>
+        </div> -->
+      </div>
     </section>
     <!-- product section ends -->
 
@@ -318,7 +348,7 @@
           </div>
         </div>
         <div class="pt-2 col-md-6 col-lg-3 mx-auto info_col">
-          <h5>Connect With Us</h5>
+          <h5>Connect With Me</h5>
           <div class="info_contact">
             <a class="" href="#">
               <i class="fa fa-map-marker" aria-hidden="true"></i>
@@ -326,11 +356,11 @@
             </a>
             <a href="">
               <i class="fa fa-phone" aria-hidden="true"></i>
-              <span>Call +01 1234567890</span>
+              <span>Call +91 7012983899</span>
             </a>
             <a href="">
               <i class="fa fa-envelope"></i>
-              <span>demo@gmail.com</span>
+              <span>fayasmuthaleef@gmail.com</span>
             </a>
           </div>
           <div class=" mt-2 social_box">
@@ -341,12 +371,17 @@
               <i class="fa fa-twitter" aria-hidden="true"></i>
             </a>
             <a href="">
-              <i class="fa fa-linkedin" aria-hidden="true"></i>
-            </a>
-            <a href="">
               <i class="fa fa-instagram" aria-hidden="true"></i>
             </a>
+            <a class="text-danger" style="text-decoration: none;" target="_blank" href="https://www.linkedin.com/in/fayas-p-a-328748142?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BUZ2dMSnMR%2Fi%2BFMZII8sCRQ%3D%3D">
+              &nbsp;<i class="fa fa-linkedin" aria-hidden="true"></i>
+            </a>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="p-0 col-md-12 col-12 d-flex justify-content-end">
+          <small class="font-weight-bold font-italic"><i class="fa-regular fa-copyright"></i>&nbsp;FayasMuthaleef</small>
         </div>
       </div>
     </div>

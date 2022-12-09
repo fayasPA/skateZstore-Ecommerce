@@ -19,14 +19,16 @@ User = get_user_model()
 
 @never_cache
 def index(request):
+    product = Product.objects.all().order_by('-product_offer')
+    for p in product:
+        print('prod',p.product_offer)
     if 'term' in request.GET:
         search_product = Product.objects.filter(product_name__istartswith=request.GET.get('term'))
         search_sugg = []
         for sp in search_product:
             search_sugg.append(sp.product_name)
         return JsonResponse(search_sugg,safe=False)         #safe argument is present inorder to send any other python datatype other than dictionaries
-    return render(request, 'index.html')
-
+    return render(request, 'index.html',{'product':product})
 
 @never_cache
 def search(request):
@@ -79,18 +81,33 @@ def signup(request):
             return redirect(signup)
 
         else:
-            global mobsignup, credentials
             mobsignup = country_code+phNo
             messageHandler(mobsignup).send_otp_on_phone()
-            return redirect(signupotpver)
+            context = {
+                'username' : username,
+                'email' : email,
+                'first_name' : first_name,
+                'password1' : password1,
+                'password2' : password2,
+                'phNo' : phNo,
+                'country_code' : country_code,
+            }
+            return render(request, 'signupotpver.html',context)
+            # return redirect(signupotpver,context)
     return render(request, 'signup.html')
 
 @never_cache
 def signupotpver(request):
-    if request.user.is_authenticated:
-        return redirect(index)
     if request.method == 'POST' and request.POST['otp']:
+        username = request.POST['username']
+        email = request.POST['email']
+        first_name = request.POST['first_name']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        phNo = request.POST['phone_number']
+        country_code = request.POST['country_code']
         otp = request.POST['otp']
+        mobsignup = country_code+phNo
         validation = messageHandler(mobsignup).validate(otp)
         if validation == 'approved':
             credentials = User.objects.create_user(
@@ -99,8 +116,17 @@ def signupotpver(request):
             return redirect(LogIn)
         else:
             messages.error(request, 'OTP is Incorrect')
-    return render(request, 'signupotpver.html')
-
+            context = {
+                'username' : username,
+                'email' : email,
+                'first_name' : first_name,
+                'password1' : password1,
+                'password2' : password2,
+                'phNo' : phNo,
+                'country_code' : country_code,
+            }
+            return render(request, 'signupotpver.html',context)
+            
 @never_cache
 def LogIn(request):
     if request.user.is_authenticated:

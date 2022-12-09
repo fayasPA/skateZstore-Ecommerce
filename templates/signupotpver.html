@@ -2,8 +2,24 @@
 {% load static %}
 {% block form %}
 <!-- Otp Verification -->
-<form action="" method="POST">
+<form action="/signupotpver" method="POST">
   {%csrf_token%}
+<div class="container">
+    <input name="username" value="{{username}}" type="hidden" placeholder="Username" id="form3Example90"
+      class="form-control form-control-lg" />
+    <input name="first_name" value="{{first_name}}" type="hidden" placeholder="First Name" id="form3Example90"
+      class="form-control form-control-lg" />
+    <input name="email" value="{{email}}" type="hidden" placeholder="Email" id="form3Example8"
+      class="form-control form-control-lg" />
+      <input value="{{country_code}}" name="country_code"  type="hidden" placeholder="Country" id="form3Example99"
+        class="form-control form-control-lg" />
+      <input name="phone_number" value="{{phNo}}" type="hidden" placeholder="Mobile" id="form3Example99"
+        class="form-control form-control-lg" />
+    <input name="password1" value="{{password1}}" type="hidden" placeholder="Password" id="form3Example90"
+      class="form-control form-control-lg" />
+    <input name="password2" value="{{password2}}" type="hidden" placeholder="Re-enter Password" id="form3Example90"
+      class="form-control form-control-lg" />
+    </div>
   <div class="container mb-4">
     <input name="otp" type="text" placeholder="Enter OTP" id="form3Example99" class="form-control form-control-lg" />
   </div>
