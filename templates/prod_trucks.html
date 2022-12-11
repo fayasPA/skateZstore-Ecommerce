@@ -11,7 +11,7 @@
   <div class="product container-fluid">
     <div class="row d-flex justify-content-center">
       {% for product in products %}
-      <div style="border-radius: 20px;background: rgba(236, 240, 236, 1)" class="card col-md-4 col-5">
+      <div style="border-radius: 15px;background: rgba(236, 240, 236, 1)" class="card col-md-4 col-5">
         <div class="d-flex justify-content-center">
           <img style="border: none;height: 12rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
           width="auto" height="auto" />
@@ -37,8 +37,8 @@
           {% endif %}
         </div>
         </div>
-        <div class="card-body text-center mx-auto">
-          <div class='cvp'>
+        <div class="card-body">
+          <div class='cvp d-flex flex-column justify-content-center align-items-center'>
             <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
                           
             {%if product.product_offer_price < 1 and product.category_offer_price < 1  %}
@@ -46,27 +46,27 @@
                 ₹{{product.product_price}}
             </span>
             {%elif product.product_offer_price > 1 and product.category_offer_price is 0 %}
-            <span class="stext-105" style="color:rgb(52, 151, 52);">
+            <span class="d-flex stext-105" style="color:rgb(52, 151, 52);">
                 ₹{{product.product_offer_price}} &nbsp;
                 <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
             </span>
             {%elif product.product_offer_price < 1 and product.category_offer_price > 1 %}
-            <span class="stext-105" style="color:rgb(52, 151, 52);">
+            <span class="d-flex stext-105" style="color:rgb(52, 151, 52);">
                 ₹{{product.category_offer_price}} &nbsp;
                 <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
             </span>
             {%elif product.product_offer_price < product.category_offer_price and product.category_offer_price > 1 %}
-            <span class="stext-105" style="color:rgb(52, 151, 52);">
+            <span class="d-flex stext-105" style="color:rgb(52, 151, 52);">
                 ₹{{product.product_offer_price}} &nbsp;
                 <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
             </span>
             {%elif product.category_offer_price < product.product_offer_price and product.product_offer_price > 1 %}
-            <span class="stext-105" style="color:rgb(52, 151, 52);">
+            <span class="d-flex stext-105" style="color:rgb(52, 151, 52);">
                 ₹{{product.category_offer_price}} &nbsp;
                 <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
             </span>
             {%elif product.category_offer_price == product.product_offer_price and product.product_offer_price > 1 and product.category_offer_price > 1 %}
-            <span class="stext-105" style="color:rgb(52, 151, 52);">
+            <span class="d-flex stext-105" style="color:rgb(52, 151, 52);">
                 ₹{{product.product_offer_price}} &nbsp;
                 <del style="color:rgb(240, 94, 94);">₹{{product.product_price}}</del>
             </span>

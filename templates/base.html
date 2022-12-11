@@ -10,10 +10,10 @@
                 </div>
                 <div class="col-md-6 col-6">
                     <ul class="d-flex  list-unstyled justify-content-end">
-                        <li ><a class="text-light" href=""><small>About Us</small></a></li>
-                        <li class=" mx-3"><a class="text-light" href=""><small>Contact Us</small></a></li>
+                        <li ><a class="text-light" href="/#about"><small>About Us</small></a></li>
+                        <li class=" mx-3"><a class="text-light" href="{% url 'contacts' %}"><small>Contact Us</small></a></li>
                 {% if not user.is_authenticated %}
-                <li><a class=" text-success" href="{% url 'signup' %}">SignUp</a></li>
+                <li><a class=" text-success" href="{% url 'signup' %}"><small>SignUp</small></a></li>
                 {% endif %}
                     </ul>
                 </div>
@@ -100,34 +100,34 @@
             <h5 style="color: rgba(236, 240, 236, 0.6);">Newsletter</h5>
             <form action="#">
               <input type="text" class="form-control" placeholder="Enter Your Email" />
-              <a href=""><button class="mt-2 btn btn-outline-secondary " type="submit">Subscribe</button></a>
+              <a href=""><button disabled class="mt-2 btn btn-outline-secondary " type="button">Subscribe</button></a>
             </form>
           </div>
         </div>
         <div  class="text-secondary  pt-2 col-md-6 col-lg-3 mx-auto info_col">
           <h5 style="color: rgba(236, 240, 236, 0.6);">Connect With Us</h5>
           <div class="info_contact">
-            <a class="" href="#">
+            <a target="_blank" class="" href="https://goo.gl/maps/edJ9Q6EEWGH3oHcJ6">
               <i class="fa fa-map-marker" aria-hidden="true"></i>
               <span>Location</span>
             </a>
-            <a href="">
+            <a href="tel:+917012983899">
               <i class="fa fa-phone" aria-hidden="true"></i>
-              <span>Call +91 7012983899</span>
+              <span>+91 7012983899</span>
             </a>
-            <a href="">
+          </div>
+          <a href="mailto:fayasmuthalib@gmail.com">
               <i class="fa fa-envelope"></i>
               <span>fayasmuthaleef@gmail.com</span>
             </a>
-          </div>
           <div class=" mt-2 social_box">
-            <a href="">
+            <a target="_blank" href="https://www.facebook.com/fay.man.923/">
               <i class="fa fa-facebook" aria-hidden="true"></i>
             </a>
-            <a href="">
+            <a target="_blank" href="https://twitter.com/fayasmuthalib">
               <i class="fa fa-twitter" aria-hidden="true"></i>
             </a>
-            <a href="">
+            <a target="_blank" href="https://www.instagram.com/__fayas_muthaleef__/">
               <i class="fa fa-instagram" aria-hidden="true"></i>
             </a>
             <a class="text-danger" style="text-decoration: none;" target="_blank" href="https://www.linkedin.com/in/fayas-p-a-328748142?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BUZ2dMSnMR%2Fi%2BFMZII8sCRQ%3D%3D">
@@ -138,7 +138,7 @@
       </div>
       <div class="row ">
         <div class="p-0 col-md-12 col-12 d-flex justify-content-end">
-          <small class="font-weight-bold font-italic text-light"><i class="fa-regular fa-copyright"></i>&nbsp;FayasMuthaleef</small>
+          <small class="font-weight-bold font-italic text-light"><i class="fa-regular fa-copyright"></i>&nbsp;FayasMuthaleef&nbsp;&nbsp;</small>
         </div>
       </div>
     </div>

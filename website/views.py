@@ -19,16 +19,18 @@ User = get_user_model()
 
 @never_cache
 def index(request):
-    product = Product.objects.all().order_by('-product_offer')
-    for p in product:
-        print('prod',p.product_offer)
+    featured_products = Product.objects.filter(category=Category.objects.get(category_name='Decks').id).order_by('-id')[:3]              #[:3], this limits the query set to 1st 3 objects
     if 'term' in request.GET:
         search_product = Product.objects.filter(product_name__istartswith=request.GET.get('term'))
         search_sugg = []
         for sp in search_product:
             search_sugg.append(sp.product_name)
         return JsonResponse(search_sugg,safe=False)         #safe argument is present inorder to send any other python datatype other than dictionaries
-    return render(request, 'index.html',{'product':product})
+    return render(request, 'index.html',{'products':featured_products})
+
+@never_cache
+def contacts(request):
+    return render(request,'contact_page.html')
 
 @never_cache
 def search(request):
@@ -49,7 +51,6 @@ def signup(request):
     if request.user.is_authenticated:
         return redirect(index)
     if request.method == 'POST':
-        global phNo, username, email, first_name, password1
         username = request.POST['username']
         email = request.POST['email']
         first_name = request.POST['first_name']
@@ -57,29 +58,13 @@ def signup(request):
         password2 = request.POST['password2']
         phNo = request.POST['phone_number']
         country_code = request.POST['country_code']
-
-        if len(username) < 3 or len(username) > 10:
-            messages.error(
-                request, 'Username must be atleast 3 and less than 10 characters ')
-            return redirect(signup)
         if not username.isalnum():
             messages.error(
                 request, 'Username must contain only numbers and letters')
             return redirect(signup)
-        if not first_name.isalpha():
-            messages.error(request, 'Only letters are to be entered in name')
-            return redirect(signup)
-        if len(phNo) < 10 or len(phNo) > 12:
-            messages.error(request, 'Mobile Or Phone number is wrong')
-            return redirect(signup)
-        if password1 != password2:
-            messages.error(request, 'Passwords does not match')
-            return redirect(signup)
-
         if User.objects.filter(username=username).exists() or User.objects.filter(phone_number=phNo).exists():
-            messages.error(request, 'Already taken user')
+            messages.error(request, 'This User Has Been Taken')
             return redirect(signup)
-
         else:
             mobsignup = country_code+phNo
             messageHandler(mobsignup).send_otp_on_phone()
@@ -93,7 +78,6 @@ def signup(request):
                 'country_code' : country_code,
             }
             return render(request, 'signupotpver.html',context)
-            # return redirect(signupotpver,context)
     return render(request, 'signup.html')
 
 @never_cache
@@ -166,25 +150,22 @@ def otplogin(request):
     if request.user.is_authenticated:
         return redirect(index)
     if request.method == 'POST' and request.POST['phone_number']:
-        global phone_number
         phone_number = request.POST['phone_number']
         country_code = request.POST['country_code']
-
         try:  # User with No phone no is present thus error will show up
             user = User.objects.get(phone_number=phone_number)
         except User.DoesNotExist:
             user = None
         if user is not None:
-            global mob
             mob = country_code+phone_number
             messageHandler(mob).send_otp_on_phone()
-            return redirect(otpver)
+            return redirect(otpver,mob,phone_number)
         else:
             messages.error(request, 'Phone Number is not registered with us')
     return render(request, 'otplogin.html')
 
 @never_cache
-def otpver(request):
+def otpver(request,mob,phone_number):
     if request.user.is_authenticated:
         return redirect(index)
     if request.method == 'POST' and request.POST['otp']:
@@ -196,7 +177,7 @@ def otpver(request):
             return render(request, 'index.html')
         else:
             messages.error(request, 'OTP is Incorrect')
-    return render(request, 'otpver.html')
+    return render(request, 'otpver.html',{'mob':mob})
 
 @never_cache
 def user_details(request):
@@ -415,7 +396,7 @@ def discount_coupon(request, code):
     if (coupon == None) or (tot_amnt < coupon.min_amnt) or (not coupon.active) or (now.date() < coupon.valid_from.date() or now.date() > coupon.valid_to.date()):
         if coupon == None:
             return JsonResponse({'errormessage': "INVALID coupon", 'coupon': None})
-        elif (now.date() < coupon.valid_from.date() and now.date() > coupon.valid_to.date()):
+        elif (now.date() < coupon.valid_from.date() or now.date() > coupon.valid_to.date()):
             return JsonResponse({'errormessage': "Coupon Has Expired", 'coupon': None})
         elif tot_amnt < coupon.min_amnt:
             remaining_amnt = coupon.min_amnt - tot_amnt

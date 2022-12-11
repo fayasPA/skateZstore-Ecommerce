@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- contact form starts -->
+<section class="h-100 " style="background-image: url(/static/images/logIn.jpg); background-size:cover;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class=" h2 col-md-12 d-flex justify-content-center">
+            <strong class="rounded bg-light ">Contact Me</strong>
+        </div>
+        <div class="my-4 m-0 row g-0" style="background: rgba(236, 240, 236, 0.2)">
+        <div class="m-0 d-flex align-items-center ">
+          <div class=" card-body p-md-5 text-black">
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-stretch">
+                    <div class="info-box">
+                      <h3 style="color: rgb(22, 20, 20);">Social Profiles</h3>
+                      <div class="social-links d-flex justify-content-around">
+                        <a href="https://www.facebook.com/fay.man.923/" class="text-light" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href="https://twitter.com/fayasmuthalib" class="text-light" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        <a href="https://www.instagram.com/__fayas_muthaleef__/" class="text-light" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href="https://www.linkedin.com/in/fayas-p-a-328748142/" class="text-light" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-6 mt-4 d-flex d-flex justify-content-center align-items-stretch">
+                    <div class="info-box">
+                      <h3 style="color: rgb(22, 20, 20);">Email Me</h3>
+                      <p class="text-light">fayasmuthalib@gmail.com</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-6 mt-4 d-flex d-flex justify-content-center align-items-stretch">
+                    <div class="info-box">
+                      <h3 style="color: rgb(22, 20, 20);">Call Me</h3>
+                      <p class="text-light">+91 7012 98 3899</p>
+                    </div>
+                  </div>
+            </div>
+            {% block form %}
+            <form  id="contactForm"  role="form" class="submit-form mt-4">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-6 form-group">
+                    <input type="text" name="name" class="form-control form-control-lg" id="name" placeholder="Name" onkeyup="validateName()">
+                    <span id=name-error></span>
+                  </div>
+                  <div class="col-md-6 form-group mt-3 mt-md-0">
+                    <input type="email" class="form-control form-control-lg" name="email" id="email" placeholder="Email" onkeyup="validateEmail()">
+                    <span id=email-error></span>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-md-6 form-group">
+                    <input type="text" name="subject" class="form-control form-control-lg" id="subject" placeholder="Subject" onkeyup="validateSubject()">
+                    <span id="subject-error"></span>
+                  </div>
+                  <div class="col-md-6 form-group mt-3 mt-md-0">
+                    <input type="tel" class="form-control form-control-lg" name="telephone" id="telephone" placeholder="Mobile" onkeyup="validateTel()">
+                    <span id="tel-error"></span>
+                  </div>
+                </div>
+                <div class="form-group mt-3">
+                  <textarea class="form-control form-control-lg" name="message" id="message" rows="5" placeholder="Message" onkeyup="validateMsg()"></textarea>
+                  <span id=message-error></span>
+                </div>
+                
+                <div class="text-center pt-4" ><button class="btn btn-dark btn-md ms-2"  type="submit" >Send Message</button>
+                <span id=submit-error></span>
+                </div>
+              </form>
+
+            {% endblock %}
+            {% block messages %}
+            {% for message in messages %}
+            <div class="pt-3 col-md-12 d-flex justify-content-center text-danger">
+              <p class="card ">{{message}}</p>
+            </div>
+            {% endfor %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- contact form ends -->
+{% endblock %}
+
+{% block lowerBodyScript %}
+<script src="{% static 'js/contact.js' %}"></script>
+{% endblock %}
+
+{% block msg %}
+<!-- Blank block for swal in conflict -->
+{% endblock %}

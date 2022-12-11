@@ -35,10 +35,10 @@
           </div>
           <div class="col-md-6 col-6">
             <ul class="d-flex  list-unstyled justify-content-end">
-              <li><a class="text-light" href=""><small>About Us</small></a></li>
-              <li class=" mx-3"><a class="text-light" href=""><small>Contact Us</small></a></li>
+              <li><a class="text-light" href="#about"><small>About Us</small></a></li>
+              <li class=" mx-3"><a class="text-light" href="{% url 'contacts' %}"><small>Contact Us</small></a></li>
               {% if not user.is_authenticated %}
-              <li><a class=" text-success" href="{% url 'signup' %}">SignUp</a></li>
+              <li><a class=" text-success" href="{% url 'signup' %}"><small>SignUp</small></a></li>
               {% endif %}
             </ul>
           </div>
@@ -168,14 +168,15 @@
     <!-- Offer ends -->
 
     <!-- about section -->
-    <section class="about_section about_section1 layout_padding-bottom">
+    <section id="about" class="about_section about_section1 layout_padding-bottom">
       <div class="container  ">
         <div class="row">
           <div class="col-md-6">
-            <div class="text-light detail-box" style="height: 15rem;">
-              <div class="heading_container">
-                <h2 class="heading">About Us</h2>
+            <div  class="text-light detail-box" style="height: 15rem;">
+              <div class="col-md-12 heading_container">
+                <h2  class="heading">About Us</h2>
               </div>
+              <div class="col-md-12">
               <p>
                 There are many variations of passages of Lorem Ipsum available, but the majority have suffered
                 alteration
@@ -183,8 +184,9 @@
                 are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden
                 in
                 the middle of text. All
+                <br><a href="">Read More</a>
               </p>
-              <a href="">Read More</a>
+            </div>
             </div>
           </div>
           <div class="col-md-6 d-flex justify-content-center align-items-center">
@@ -200,84 +202,29 @@
     <!-- Product section starts -->
     <section class="pt-4 product_section ">
       <div class="text-light container heading_container heading_center">
-        <h2>Featured Skateboards</h2>
+        <h2>Featured Skateboard Decks</h2>
       </div>
       <div class="product container">
         <div class="row rounded  bg-light">
+          
+          {% for product in products %}
           <div class="col-md-4 col-6 d-flex justify-content-center">
             <div class="prod-box m-3" style="height: 350px;">
               <div class="h-75 d-flex justify-content-center prod-img-box">
-                <img class="img-fluid" src="{% static 'images/p1.png'%}" alt="">
+                <img class="img-fluid" src="{{product.product_image.url}}" alt="">
               </div>
               <div class="h-25 detail-box ">
-                <h4 class="d-flex justify-content-center">Skateboard</h4>
+                <h4 class="d-flex justify-content-center">{{product.product_name}}</h4>
                 <h6 class="price d-flex justify-content-center">
-                  <span class="new_price">Rs.4999</span>
+                  <span class="new_price">₹&nbsp;{{product.product_price}}</span>
                 </h6>
-                <a class="d-flex justify-content-center" href="">Buy Now</a>
+                <a class="d-flex justify-content-center" href="{% url 'prod_details' product.id %}"><strong class="text-dark" style="box-shadow: 0px 0px 15px #212121;background: rgba(37, 39, 39, 0.3);" >Check it out</strong></a>
               </div>
             </div>
           </div>
-          <div class="col-md-4 col-6 d-flex justify-content-center">
-            <div class="prod-box m-3 " style="height: 350px;">
-              <div class="h-75  d-flex justify-content-center prod-img-box ">
-                <img class="img-fluid" src="{% static 'images/p4.png'%}" alt="">
-              </div>
-              <div class="h-25 detail-box ">
-                <h4 class="d-flex justify-content-center">Skateboard</h4>
-                <h6 class="price d-flex justify-content-center">
-                  <span class="new_price">Rs.4999</span>
-                </h6>
-                <a class="d-flex justify-content-center" href="">Buy Now</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-6 d-flex justify-content-center">
-            <div class="prod-box m-3" style="height: 350px;">
-              <div class="h-75  d-flex justify-content-center prod-img-box">
-                <img class="img-fluid" src="{% static 'images/p2.png'%}" alt="">
-              </div>
-              <div class="h-25 detail-box ">
-                <h4 class="d-flex justify-content-center">Skateboard</h4>
-                <h6 class="price d-flex justify-content-center">
-                  <span class="new_price">Rs.4999</span>
-                </h6>
-                <a class="d-flex justify-content-center" href="">Buy Now</a>
-              </div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
-      <!-- <div class="product container">
-        <div class="row rounded  bg-light">
-          <div class="col-md-4 col-6 d-flex justify-content-center">
-            <div class="prod-box m-3" style="height: 350px;">
-              <div class="h-75 d-flex justify-content-center prod-img-box">
-                <img class="img-fluid" src="{% static 'images/p1.png'%}" alt="">
-              </div>
-              <div class="h-25 detail-box ">
-                <h4 class="d-flex justify-content-center">Skateboard</h4>
-                <h6 class="price d-flex justify-content-center">
-                  <span class="new_price">Rs.4999</span>
-                </h6>
-                <a class="d-flex justify-content-center" href="">Buy Now</a>
-              </div>
-            </div>
-            {% for product in product %}
-          {% if forloop.counter <= 3 %}
-      <div style="border-radius: 20px; background: rgba(236, 240, 236, 1)" class=" card col-md-4 col-5" >
-        <div class="d-flex justify-content-center">
-          <img style="border: none;height: 12rem;" class='mx-auto img-thumbnail' src="{{product.product_image.url}}"
-            width="auto" height="auto" />
-        </div>
-      </div>
-      {% else %}
-      {% endif %}
-      {% endfor %}
-
-          </div>
-        </div> 
-      </div>-->
     </section>
     <!-- product section ends -->
 
@@ -343,37 +290,37 @@
             <h5>Newsletter</h5>
             <form action="#">
               <input type="text" class="form-control" placeholder="Enter Your Email" />
-              <a href=""><button class="mt-2 btn btn-outline-dark text-light" type="submit">Subscribe</button></a>
+              <a href=""><button disabled class="mt-2 btn btn-outline-dark text-light" type="button">Subscribe</button></a>
             </form>
           </div>
         </div>
         <div class="pt-2 col-md-6 col-lg-3 mx-auto info_col">
           <h5>Connect With Me</h5>
           <div class="info_contact">
-            <a class="" href="#">
+            <a target="_blank" class="" href="https://goo.gl/maps/edJ9Q6EEWGH3oHcJ6">
               <i class="fa fa-map-marker" aria-hidden="true"></i>
               <span>Location</span>
             </a>
-            <a href="">
+            <a href="tel:+917012983899">
               <i class="fa fa-phone" aria-hidden="true"></i>
-              <span>Call +91 7012983899</span>
-            </a>
-            <a href="">
-              <i class="fa fa-envelope"></i>
-              <span>fayasmuthaleef@gmail.com</span>
+              <span>+91 7012983899</span>
             </a>
           </div>
+          <a href="mailto:fayasmuthalib@gmail.com">
+              <i class="fa fa-envelope"></i>
+              <span>fayasmuthalib@gmail.com</span>
+            </a>
           <div class=" mt-2 social_box">
-            <a href="">
+            <a target="_blank" href="https://www.facebook.com/fay.man.923/">
               <i class="fa fa-facebook" aria-hidden="true"></i>
             </a>
-            <a href="">
+            <a target="_blank" href="https://twitter.com/fayasmuthalib">
               <i class="fa fa-twitter" aria-hidden="true"></i>
             </a>
-            <a href="">
+            <a target="_blank" href="https://www.instagram.com/__fayas_muthaleef__/">
               <i class="fa fa-instagram" aria-hidden="true"></i>
             </a>
-            <a class="text-danger" style="text-decoration: none;" target="_blank" href="https://www.linkedin.com/in/fayas-p-a-328748142?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BUZ2dMSnMR%2Fi%2BFMZII8sCRQ%3D%3D">
+            <a class="" style="text-decoration: none;" target="_blank" href="https://www.linkedin.com/in/fayas-p-a-328748142?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BUZ2dMSnMR%2Fi%2BFMZII8sCRQ%3D%3D">
               &nbsp;<i class="fa fa-linkedin" aria-hidden="true"></i>
             </a>
           </div>
@@ -381,7 +328,7 @@
       </div>
       <div class="row">
         <div class="p-0 col-md-12 col-12 d-flex justify-content-end">
-          <small class="font-weight-bold font-italic"><i class="fa-regular fa-copyright"></i>&nbsp;FayasMuthaleef</small>
+          <small class="font-weight-bold font-italic"><i class="fa-regular fa-copyright"></i>&nbsp;FayasMuthaleef&nbsp;&nbsp;</small>
         </div>
       </div>
     </div>
@@ -437,8 +384,6 @@
   <!-- setting a cookie -->
   <!-- GUEST USER ENDS-->
 
-  <script src="{% static '/js/validation.js' %}"></script>
-
   <!-- jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <!-- jquery -->
@@ -466,10 +411,12 @@
   {% block msg %}
   {% for message in messages %}
   <script>
-    swal.fire(
-      '{{message}}',
-      '',
-      'success',
+    swal.fire({
+      title:'{{message}}',
+      timer: 2000,
+      icon: 'success',
+      confirmButtonColor: 'rgb(46, 44, 44)',
+    }
     )
   </script>
   {% endfor %}
@@ -486,7 +433,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
     crossorigin="anonymous"></script>
-
 
 </body>
 
