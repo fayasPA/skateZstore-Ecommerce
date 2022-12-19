@@ -1,252 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{%block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/prod_detail.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
-
-*{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    font-family: 'Open Sans', sans-serif;
-}
-body{
-    line-height: 1.5;
-}
-.card-wrapper{
-    max-width: 1100px;
-    margin: 0 auto;
-}
-img{
-    width: 100%;
-    display: block;
-}
-.img-display{
-    overflow: hidden;
-}
-.img-showcase{
-    display: flex;
-    width: 100%;
-    transition: all 0.8s ease;
-}
-.img-showcase img{
-    min-width: 100%;
-}
-.img-select{
-    display: flex;
-}
-.img-item{
-    margin: 0.3rem;
-}
-.img-item:nth-child(1),
-.img-item:nth-child(2),
-.img-item:nth-child(3){
-    margin-right: 0;
-}
-.img-item:hover{
-    opacity: 0.8;
-}
-.product-content{
-    padding: 2rem 1rem;
-}
-.product-title{
-    font-size: 3rem;
-    text-transform: capitalize;
-    font-weight: 700;
-    position: relative;
-    color: #12263a;
-    margin: 1rem 0;
-}
-
-.product-link{
-    text-decoration: none;
-    text-transform: uppercase;
-    font-weight: 400;
-    font-size: 0.9rem;
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    background: #256eff;
-    color: #fff;
-    padding: 0 0.3rem;
-    transition: all 0.5s ease;
-}
-.product-link:hover{
-    opacity: 0.9;
-}
-.product-rating{
-    color: #ffc107;
-}
-.product-rating span{
-    font-weight: 600;
-    color: #252525;
-}
-.product-price{
-    margin: 1rem 0;
-    font-size: 1rem;
-    font-weight: 700;
-}
-.product-price span{
-    font-weight: 400;
-}
-.last-price span{
-    color: #f64749;
-    text-decoration: line-through;
-}
-.new-price span{
-    color: #256eff;
-}
-.product-detail h2{
-    text-transform: capitalize;
-    color: #12263a;
-    padding-bottom: 0.6rem;
-}
-.product-detail p{
-    font-size: 0.9rem;
-    padding: 0.3rem;
-    opacity: 0.8;
-}
-.product-detail ul{
-    margin: 1rem 0;
-    font-size: 0.9rem;
-}
-.product-detail ul li{
-    margin: 0;
-    list-style: none;
-    background: url(/static/images/tick.png) left center no-repeat;
-    background-size: 18px;
-    padding-left: 1.7rem;
-    margin: 0.4rem 0;
-    font-weight: 600;
-    opacity: 0.9;
-}
-.product-detail ul li span{
-    font-weight: 400;
-}
-.purchase-info{
-    margin: 1.5rem 0;
-}
-.purchase-info input,
-.purchase-info .btn{
-    border: 1.5px solid #ddd;
-    border-radius: 25px;
-    text-align: center;
-    padding: 0.45rem 0.8rem;
-    outline: 0;
-    margin-right: 0.2rem;
-    margin-bottom: 1rem;
-}
-.purchase-info input{
-    width: 60px;
-}
-.purchase-info .btn{
-    cursor: pointer;
-    color: #fff;
-}
-.purchase-info .btn:first-of-type{
-    background: #256eff;
-}
-.purchase-info .btn:last-of-type{
-    background: #f64749;
-}
-.purchase-info .btn:hover{
-    opacity: 0.9;
-}
-.social-links{
-    display: flex;
-    align-items: center;
-}
-.social-links a{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    color: #000;
-    border: 1px solid #000;
-    margin: 0 0.2rem;
-    border-radius: 50%;
-    text-decoration: none;
-    font-size: 0.8rem;
-    transition: all 0.5s ease;
-}
-.social-links a:hover{
-    background: #000;
-    border-color: transparent;
-    color: #fff;
-}
-
-@media screen and (min-width: 992px){
-    .card{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 1.5rem;
-    }
-    .card-wrapper{
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .product-imgs{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .product-content{
-        padding-top: 0;
-    }
-}
-</style>
-
-
-<!-- <section class="h-100 pb-5">
-
-    <div class=" container">
-        <div class="row rounded">
-            <div class="col-md-6 col-6 pt-3"> -->
-                <!-- <div style="height: 20rem" class=" show d-flex justify-content-center prod-img-box"
-                    href="{{prod_detail.product_image.url}}">
-                    <img id="show-img" class="img-fluid" src="{{prod_detail.product_image.url}}" alt="">
-                </div> -->
-
-                <!-- <div style="height: 20rem" class=" show d-flex justify-content-center prod-img-box">
-                    <img id="" class="img-fluid zoom" src="{{prod_detail.product_image.url}}" alt="">
-                </div>
-
-                <div class=" detail-box ">
-                    <div class=" d-flex  justify-content-center ">
-                        {% for pi in prod_detail.productimage_set.all %}
-                        <div class="col-md-4">
-                            <img class="img-fluid" src="{{pi.product_image.url}}" alt="">
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class=" col-md-6 col-6 pt-3">
-                <h3 class=" container">{{prod_detail.product_name}}</h3>
-                <h6 class="container ">{{prod_detail.product_description}}</h6>
-                <h6 class="container pt-2 text-danger ">Rs.{{prod_detail.product_price}}</h6>
-                <div class="container h-50 pt-5 d-flex justify-content-between">
-                    <a class="" href="{% url 'add_to_cart' prod_detail.id %}"><button class=" btn btn-warning">Add To Cart</button></a>
-                    <a class="" href=""><button class="mr-auto btn btn-success">Buy Now</button></a>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</section> -->
-
+<section>
 <div class = "container">
     <div class = "card">
       <!-- card left -->
       <div class = "product-imgs">
         <div class = "img-display">
           <div  class = "img-showcase">
-            <img class="zoom" src = "{{prod_detail.product_image.url}}" alt = "shoe image">
+            <img class="zoom" src = "{{prod_detail.product_image.url}}" alt = "skate img">
             {% for pi in prod_detail.productimage_set.all %}
                 <img  class="zoom" src="{{pi.product_image.url}}" alt="">
             {% endfor %}
@@ -266,7 +34,7 @@ img{
       <div class = "product-content">
         <h2 class = "product-title"><u>{{prod_detail.product_name}}</u></h2>
         <div class = "product-price">
-          <p class = "new-price">Price: <span>Rs.{{prod_detail.product_price}}</span></p>
+          <p class = "new-price">Price: ₹&nbsp;<span class="font-weight-bold" style="color:rgb(52, 151, 52);">{{prod_detail.product_price}}</span></p>
         </div>
   
         <div class = "product-detail">
@@ -299,6 +67,7 @@ img{
       </div>
     </div>
   </div>
+</section>
 
 {% endblock %}
 
@@ -337,19 +106,5 @@ window.addEventListener('resize', slideImage);
     })
 </script>
 <!-- Image Zoom -->
-
-<!-- Out of stock swal -->
-<script>
-    function outofstock() {
-      Swal.fire({
-        title: 'Out Of Stock!',
-        icon: 'info',
-        showConfirmButton: true,
-        confirmButtonText: 'Ok',
-        showCancelButton: false,
-      })
-    }
-  </script>
-<!-- Out of stock swal -->
 
 {% endblock %}

@@ -58,7 +58,7 @@ class HistoryOrder(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     amount = models.FloatField(default=0)
-    address = models.ForeignKey(Address, on_delete=models.DO_NOTHING,default='')
+    address = models.ForeignKey(Address, on_delete=models.CASCADE,default='')
     status = models.CharField(max_length=100, choices = choices, default="Order Placed",blank=True,null=True)
     shipped_date =models.DateTimeField(blank=True,null=True)
     outfordelivery_date =models.DateTimeField(blank=True,null=True)

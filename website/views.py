@@ -527,8 +527,10 @@ def paypal(request):
 @never_cache
 def user_orders(request):
     if request.user.is_authenticated:
-        orders = HistoryOrder.objects.filter(user=request.user).order_by('-id')
-        return render(request, 'user_orders.html', {'orders': orders})
+        if HistoryOrder.objects.filter(user=request.user):
+            orders = HistoryOrder.objects.filter(user=request.user).order_by('-id')
+            return render(request, 'user_orders.html', {'orders': orders})
+        return render(request, 'user_orders.html', {'message': 'You have No Order'})
     return redirect(index)
 
 @never_cache

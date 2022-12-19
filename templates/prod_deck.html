@@ -37,8 +37,8 @@
           </div>
         </div>
         <div class="card-body ">
-          <div class='cvp d-flex flex-column justify-content-center align-items-center'>
-            <h5 class="card-title font-weight-bold">{{product.product_name}}</h5>
+          <div class='cvp d-flex flex-column align-items-center'>
+            <h5 class="card-title">{{product.product_name}}</h5>
 
             {%if product.product_offer_price < 1 and product.category_offer_price < 1 %} <span class="d-flex stext-105 ">
               ₹{{product.product_price}}
@@ -76,14 +76,10 @@
                     </span>
                     {%else%}
                     {%endif%}
-
-                    <!-- <p class="card-text">₹&nbsp;{{product.product_price}}</p> -->
-
                     <div>
                       <a href="{% url 'prod_details' product.id %}" style="box-shadow: 0px 0px 15px #212121;"
                         class="font-weight-bold btn bg-dark text-light px-3">view details</a><br />
                     </div>
-                    <br />
           </div>
         </div>
       </div>

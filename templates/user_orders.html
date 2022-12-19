@@ -9,8 +9,16 @@
   <div class="container-fluid   d-flex  justify-content-center">
     <div class="bg-secondary col-md-12 card card-1">
       <div class="card-body">
+        {% if message %}
+            <div style="height: 50vh;" class="d-flex justify-content-center align-items-center text-light row">
+              <h4>{{message}}....</h4>
+              <div class="col-md-12 d-flex justify-content-center">
+              <a class="btn btn-lg btn-outline-light" href="{% url 'prod_deck' %}">Shop Now</a>
+            </div>
+            </div>
+        {% else %}
         <div class="row ">
-          <div class="col">
+          <div class="col bg-warning">
             {% for order in orders %}
             <!--product cancel modal -->
             <div class="modal fade" id="cancel_modal{{order.id}}" tabindex="-1" role="dialog"
@@ -172,7 +180,7 @@
 
           </div>
         </div>
-
+      {% endif %}
       </div>
 
     </div>
@@ -182,11 +190,13 @@
   <br>
   <div class="container-fluid d-flex justify-content-center">
     {% if products.has_previous %}
-    <a href="?page={{products.previous_page_number}}">&laquo;Prev</a>
+    <a href="?page={{products.previous_page_number}}"><button
+        class="btn btn-dark">{{products.previous_page_number}}</button></a>
     {% endif %}
-    Page {{products.number}} of {{products.paginator.num_pages}}
+    &nbsp;<button disabled class="btn btn-light">{{products.number}}</button>
     {% if products.has_next %}
-    <a href="?page={{products.next_page_number}}">Next&raquo;</a>
+    <a href="?page={{products.next_page_number}}">&nbsp;<button
+        class="btn btn-dark">{{products.next_page_number}}</button></a>
     {% endif %}
   </div>
   <!-- pagination ends -->
