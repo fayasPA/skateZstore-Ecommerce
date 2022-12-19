@@ -5,8 +5,9 @@
 <section class="" style="background-color: gainsboro;">
     <div class="container-fluid  ">
         <!-- Heading -->
+        <div class="col-md-12 col-12">
         <h2 class="my-3 h2 pt-3 text-center">Checkout form</h2>
-
+        </div>
         <!--Grid row-->
         <div class="row">
 
@@ -30,12 +31,13 @@
                                 <ul class="d-flex" style="list-style: none;">
                                     <li>
                                         <!-- Form start -->
-                                        <form class="" action="{% url 'place_order' %}" id="addressform" method="POST" >
-                        {% csrf_token %}
+                                        <form class="" action="{% url 'place_order' %}" id="addressform" method="POST">
+                                            {% csrf_token %}
                                             <div class=" ">
                                                 <input value="{{ua.id}}" id="{{ua.type}}"
                                                     onclick="selectAddress('{{ua.type}}','{{ua.address}}','{{ua.district}}','{{ua.pin}}','{{ua.state}}','{{ua.landmark}}','{{ua.phone_number}}')"
-                                                    id="address_chose" name="address_chose" type="radio" class="" required>
+                                                    id="address_chose" name="address_chose" type="radio" class=""
+                                                    required>
                                                 <label for="{{ua.type}}">&nbsp;{{ua.type}}</label>
                                             </div>
                                     </li>
@@ -146,21 +148,22 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between bg-light">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Promo code" name=""
-                            id="coupon_code"    aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <input type="text" class="form-control" placeholder="Promo code" name="" id="coupon_code"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <div class="input-group-append">
-                                <button class="btn btn-secondary btn-md waves-effect m-0" onclick="dis_coupon()" type="button">Redeem</button>
+                                <button class="btn btn-secondary btn-md waves-effect m-0" onclick="dis_coupon()"
+                                    type="button">Redeem</button>
                             </div>
                         </div>
                         <!-- Promo code -->
                     </li>
                     <li class="list-group-item d-flex justify-content-start bg-light">
-                    <span id="message"></span>
-                    <span id="errormessage"></span>
+                        <span id="message"></span>
+                        <span id="errormessage"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Total (Rs)</span>
-                        <strong >₹&nbsp;<span id="amntAfterDiscount">{{tot_amount}}</span></strong>
+                        <strong>₹&nbsp;<span id="amntAfterDiscount">{{tot_amount}}</span></strong>
                     </li>
                 </ul>
                 <!-- Cart -->
@@ -180,7 +183,7 @@
 
 {% block lowerBodyScript %}
 <script>
-    
+
     function selectAddress(type, address, district, pin, state, landmark, phone) {
         document.getElementById('type').value = type
         document.getElementById('address').value = address
@@ -194,25 +197,25 @@
     function dis_coupon() {
         a = document.getElementById('coupon_code').value
         $.ajax({
-            url: "/discount_coupon/" + a ,
+            url: "/discount_coupon/" + a,
             success: function (response) {
-            if(response.message){
-                document.getElementById('amntBeforeDiscount').innerHTML = response.tot_amnt;
-                document.getElementById('discountAmount').innerHTML = response.coupon_amnt;
-                document.getElementById('amntAfterDiscount').innerHTML = response.new_tot_amnt;
-                document.getElementById('message').innerHTML = response.message;
-                document.getElementById('message').style.color = "green";
-                console.log(response.coupon)
-                document.getElementById('couponid').value = response.coupon;
+                if (response.message) {
+                    document.getElementById('amntBeforeDiscount').innerHTML = response.tot_amnt;
+                    document.getElementById('discountAmount').innerHTML = response.coupon_amnt;
+                    document.getElementById('amntAfterDiscount').innerHTML = response.new_tot_amnt;
+                    document.getElementById('message').innerHTML = response.message;
+                    document.getElementById('message').style.color = "green";
+                    console.log(response.coupon)
+                    document.getElementById('couponid').value = response.coupon;
+                }
+                else {
+                    document.getElementById('errormessage').innerHTML = response.errormessage;
+                    document.getElementById('errormessage').style.color = "Red";
+                    console.log(response.coupon)
+                }
+
+
             }
-            else{
-                document.getElementById('errormessage').innerHTML = response.errormessage;
-                document.getElementById('errormessage').style.color = "Red";
-                console.log(response.coupon)
-            }
-                
-            
-        }
         })
     }
 
