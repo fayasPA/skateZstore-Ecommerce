@@ -39,16 +39,14 @@
     <div class="pt-5">
       <button type="button" class=" btn btn-primary" data-toggle="collapse" data-target="#demo">Address</button>
     </div>
-    {% if user.address_set.all %}
-
 
     <div id="demo" class="collapse">
       <div class="row pt-3">
-        <div class="col-md-12 pb-3 d-flex justify-content-end">
+        <div class="col-md-12 pb-2 d-flex justify-content-end">
           <a style="text-decoration: none;" href="{% url 'add_address' %}"><button type="submit"
               class="btn btn-sm btn-outline-dark my-2 my-sm-0">Add Address</button></a>
         </div>
-
+        {% if user.address_set.all %}
         {%for ua in user.address_set.all %}
         <!--Edit Modal start-->
         <div class="modal fade" id="editmodal{{ua.id}}" tabindex="-1" role="dialog"
