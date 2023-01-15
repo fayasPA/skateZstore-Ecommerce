@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="h-100 pb-5">
+    <div  class="container" >
+        <form class="" action=""  id="addressform" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+              <div class="pt-5 form-outline mb-4">
+                <input name="type" {% block valuetype %}{% endblock %} type="text" placeholder="Type (Eg.Home, Office)" id="type" class="border-dark form-control form-control-lg" onkeyup="validateType()"/>
+              <span id=type-error></span>
+              </div>
+              <!-- <div class="form-outline mb-4">
+                  <input name="address"  type="text" placeholder="Address" id="address" class="form-control form-control-lg" onkeyup="validateAddress()"/>  
+                  <span id=address-error></span>
+              </div> -->
+              <div class="form-outline mb-4">
+                <textarea name="address"  type="text" placeholder="Address" id="address" class="form-control form-control-lg" value="jgdjhfgjdsgfjdsgfj" onkeyup="validateAddress()">{% block valueaddress %}{% endblock %}</textarea>
+                <span id=address-error></span>
+            </div>
+
+                <div class="form-outline mb-4">
+                  <input name="pin" type="number" {% block valuepin %}{% endblock %} placeholder="PIN No." id="pin" class="form-control form-control-lg" onkeyup="validatePin()"/>
+                    <span id=pin-error></span>
+                </div>
+                <div class="form-outline mb-4">
+                  <input name="district" type="text" {% block valuedistrict %}{% endblock %} placeholder="District" id="district" class="form-control form-control-lg" onkeyup="validateDistrict()"/>
+                    <span id=district-error></span>
+                </div>
+                <div class="form-outline mb-4">
+                    <input name="state" type="text" {% block valuestate %}{% endblock %} placeholder="State" id="state" class="form-control form-control-lg" onkeyup="validateState()"/>
+                      <span id=state-error></span>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input name="landmark" type="text" {% block valuelandmark %}{% endblock %} placeholder="Landmark" id="landmark" class="form-control form-control-lg" onkeyup="validateLandmark()"/>
+                      <span id=landmark-error></span>
+                  </div>
+                  
+                  <div class=" form-outline ">
+                    <input name="phone_number" value="{{user.phone_number}}" type="number" placeholder="Mobile" id="phone_number" class="form-control form-control-lg" onkeyup="validatePhone()"/>
+                    <span id=phone-error></span>
+                  </div>
+              <div class=" d-flex justify-content-center">
+                <button  type="submit" class="btn btn-dark btn-lg ms-2">Update</button>
+              </div>
+          </form>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block lowerBodyScript %}
+
+
+<!-- validation submit -->
+
+<script>
+
+var typeError = document.getElementById('type-error');
+var addressError = document.getElementById('address-error');
+var pinError = document.getElementById('pin-error');
+var districtError = document.getElementById('district-error');
+var phoneError = document.getElementById('phone-error');
+var stateError = document.getElementById('state-error');
+var landmarkError = document.getElementById('landmark-error');
+
+function validateType() {
+var type=document.getElementById('type').value.trim();  
+
+if (type.length==0 || type.length<3) {
+    typeError.innerHTML='Enter min 3 characters';
+    typeError.style.color='red'
+    return false;
+}
+
+if (!type.match(/^[A-Za-z]*$/)){
+    typeError.innerHTML='Name is incorrect';
+    typeError.style.color='red'
+    return false;
+}
+
+typeError.innerHTML='Name is valid';
+typeError.style.color='green'
+return true;
+}
+
+function validateAddress() {
+    var address=document.getElementById('address').value.trim();  
+    
+    if (address.length==0 || address.length<3) {
+        addressError.innerHTML='Enter min 3 characters';
+        addressError.style.color='red'
+        return false;
+    }
+    
+    if (!address.match(/^[A-Za-z .(),]*$/)){
+        addressError.innerHTML='Address is incorrect';
+        addressError.style.color='red'
+        return false;
+    }
+    
+    addressError.innerHTML='Address is valid';
+    addressError.style.color='green'
+    return true;
+    }
+
+    function validatePin() {
+        var pin=document.getElementById('pin').value.trim();  
+        
+        if (pin.length==0 || pin.length<5) {
+            pinError.innerHTML='Enter correct Pin Code';
+            pinError.style.color='red'
+            return false;
+        }
+        pinError.innerHTML='Pin Code is Valid';
+        pinError.style.color='green'
+        return true;
+    }
+
+
+    function validateDistrict() {
+        var district=document.getElementById('district').value.trim();  
+        
+        if (district.length==0 || district.length<4) {
+            districtError.innerHTML='Enter Valid District Name';
+            districtError.style.color='red'
+            return false;
+        }
+        
+        if (!district.match(/^[A-Za-z]*$/)){
+            districtError.innerHTML='Type only letters';
+            districtError.style.color='red'
+            return false;
+        }
+        
+        districtError.innerHTML='District Name is valid';
+        districtError.style.color='green'
+        return true;
+        }
+    function validateState() {
+        var state=document.getElementById('state').value.trim();  
+        
+        if (state.length==0 || state.length<3) {
+            stateError.innerHTML='Enter Valid State Name';
+            stateError.style.color='red'
+            return false;
+        }
+        
+        if (!state.match(/^[A-Za-z]*$/)){
+            stateError.innerHTML='Type only letters';
+            stateError.style.color='red'
+            return false;
+        }
+        
+        stateError.innerHTML='State Name is valid';
+        stateError.style.color='green'
+        return true;
+        }
+
+    function validateLandmark() {
+        var landmark=document.getElementById('landmark').value.trim();  
+        
+        if (landmark.length==0 || landmark.length<3) {
+            landmarkError.innerHTML='Enter Valid';
+            landmarkError.style.color='red'
+            return false;
+        }
+        
+        if (!landmark.match(/^[A-Za-z ]*$/)){
+            landmarkError.innerHTML='Type only letters';
+            landmarkError.style.color='red'
+            return false;
+        }
+        
+        landmarkError.innerHTML='landmark is valid';
+        landmarkError.style.color='green'
+        return true;
+        }
+
+    
+    function validatePhone() {
+        var phone_number=document.getElementById('phone_number').value.trim();  
+        
+        if (phone_number.length==0 || phone_number.length<10) {
+            phoneError.innerHTML='Enter 10 digit Number';
+            phoneError.style.color='red'
+            return false;
+        }
+        phoneError.innerHTML='Number is Valid';
+        phoneError.style.color='green'
+        return true;
+    }
+</script>
+<script type="text/javascript">var jQuery_1_7_1 = $.noConflict(true);</script>
+
+<script>
+    jQuery_1_7_1(document).on("submit", "form", function (e) {
+        validateType()
+        validateAddress()
+        validatePin()
+        validateDistrict()
+        validatePhone()
+
+      if (validateType() && validateAddress() && validatePin() && validateDistrict()  && validatePhone() ) {
+         
+      } else {
+          e.preventDefault();
+      console.log("Fayas")
+      swal.fire('Invalid data! Ensure You have entered correct data');
+          return true;
+      }
+  });
+</script>
+{% endblock %}

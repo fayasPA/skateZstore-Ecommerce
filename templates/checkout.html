@@ -14,10 +14,11 @@
             <!--Grid column-->
             <div class="col-md-8 mb-4">
                 <!-- Add new address -->
-                <!-- <div class="col-md-12 row  pb-3 d-flex justify-content-start align-items-center">
-                    <a style="text-decoration: none;" href="{% url 'add_address' %}"><button type="submit"
-                            class="btn btn-sm btn-outline-dark my-2 my-sm-0">Add new Address</button></a>
-                </div> -->
+                <div class="col-md-12 row  pb-3 d-flex justify-content-start align-items-center">
+                    <a style="text-decoration: none;" href="{% url 'address_checkout' %}"><button type="button" class="btn btn-secondary  buttons" data-toggle="modal"
+                            data-target="#address_modal"><b> Add Address </b></button></a>
+                </div>
+
                 <!--Card-->
                 <div class="card">
                     {% if user.address_set.all %}
@@ -31,7 +32,7 @@
                                 <ul class="d-flex" style="list-style: none;">
                                     <li>
                                         <!-- Form start -->
-                                        <form class="" action="{% url 'place_order' %}" id="addressform" method="POST">
+                                        <form class="" action="{% url 'place_order' %}" id="" method="POST">
                                             {% csrf_token %}
                                             <div class=" ">
                                                 <input value="{{ua.id}}" id="{{ua.type}}"
@@ -45,46 +46,39 @@
                             </div>
                         </div>
                         {% endfor %}
-                        {% endif %}
-
                     </div>
+                    {% endif %}
+                    
                     <div class="container pb-3">
                         <div class="pt-5 form-outline mb-4">
                             <input disabled name="type" type="text" placeholder="Type (Eg.Home, Office)" id="type"
-                                class=" form-control form-control-lg" onkeyup="validateType()" />
-                            <span id=type-error></span>
+                                class=" form-control form-control-lg"  />
                         </div>
                         <div class="form-outline mb-4">
                             <textarea disabled name="address" type="text" placeholder="Address" id="address"
-                                class="form-control form-control-lg" onkeyup="validateAddress()"></textarea>
-                            <span id=address-error></span>
+                                class="form-control form-control-lg" ></textarea>
                         </div>
 
                         <div class="form-outline mb-4">
                             <input disabled name="pin" type="number" placeholder="PIN No." id="pin"
-                                class="form-control form-control-lg" onkeyup="validatePin()" />
-                            <span id=pin-error></span>
+                                class="form-control form-control-lg"  />
                         </div>
                         <div class="form-outline mb-4">
                             <input disabled name="district" type="text" placeholder="District" id="district"
-                                class="form-control form-control-lg" onkeyup="validateDistrict()" />
-                            <span id=district-error></span>
+                                class="form-control form-control-lg"  />
                         </div>
                         <div class="form-outline mb-4">
                             <input disabled name="state" type="text" placeholder="State" id="state"
-                                class="form-control form-control-lg" onkeyup="validateState()" />
-                            <span id=state-error></span>
+                                class="form-control form-control-lg"  />
                         </div>
                         <div class="form-outline mb-4">
                             <input disabled name="landmark" type="text" placeholder="Landmark" id="landmark"
-                                class="form-control form-control-lg" onkeyup="validateLandmark()" />
-                            <span id=landmark-error></span>
+                                class="form-control form-control-lg"  />
                         </div>
 
                         <div class=" form-outline ">
                             <input disabled name="phone_number" type="number" placeholder="Mobile" id="phone"
-                                class="form-control form-control-lg" onkeyup="validatePhone()" />
-                            <span id=phone-error></span>
+                                class="form-control form-control-lg"  />
                         </div>
 
                         <input type="hidden" name="couponid" id="couponid" value="">

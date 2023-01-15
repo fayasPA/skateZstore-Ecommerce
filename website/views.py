@@ -372,6 +372,24 @@ def removeitem(request, id):
     return redirect(cart)
 
 @never_cache
+def address_checkout(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            type = request.POST['type']
+            address = request.POST['address']
+            pin = request.POST['pin']
+            district = request.POST['district']
+            state = request.POST['state']
+            landmark = request.POST['landmark']
+            phone_number = request.POST['phone_number']
+            new_address = Address.objects.create(user=request.user, type=type, address=address,
+                                                 pin=pin, district=district, state=state, landmark=landmark, phone_number=phone_number)
+            new_address.save()
+            return redirect(checkout)
+        return render(request, 'address_checkout.html')
+    return redirect(LogIn)
+
+@never_cache
 def checkout(request):
     if request.user.is_authenticated:
         orders = Cart.objects.filter(user=request.user)

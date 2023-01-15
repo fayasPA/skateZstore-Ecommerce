@@ -25,6 +25,7 @@ urlpatterns = [
     path('qty_plus/<int:id>/',views.qty_plus,name='qty_plus'),
     path('removeitem/<int:id>/',views.removeitem,name='removeitem'),
     path('removeitem/<int:id>/',views.removeitem,name='removeitem'),
+    path('address_checkout',views.address_checkout,name='address_checkout'),
     path('checkout/',views.checkout,name='checkout'),
     path('place_order/',views.place_order,name='place_order'),
     path('user_orders/',views.user_orders,name='user_orders'),
