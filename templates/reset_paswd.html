@@ -1,0 +1,126 @@
+{% extends 'signup.html' %}
+{% load static %}
+  {% block form %} 
+  <div class="bg-light border border-dark rounded mb-4 container h4 d-flex justify-content-center">
+    Reset Password
+  </div>
+    <form id="forg_paswdForm" action="" method="POST">
+      {%csrf_token%}
+      <div class="form-outline mb-4">
+        <input name="username" type="text" placeholder="Username" id="user"
+          class="form-control form-control-lg" onkeyup="validateResetPaswdUser()"/>
+          <span id=username-error></span>
+        </div>
+      <div class="form-outline mb-4">
+        <input name="password1" type="password" placeholder="New Password" id="paswd1"
+          class="form-control form-control-lg" onkeyup="validatePaswd()"/>
+          <span id=paswd1-error></span>
+        </div>
+      <div class="form-outline mb-4">
+        <input name="password2" type="Password" placeholder="Re-enter Password" id="paswd2"
+          class="form-control form-control-lg" onkeyup="validateRePaswd()"/>
+          <span id=paswd2-error></span>
+        </div>
+      <div class="d-flex  pt-3">
+        <div class="text-light col-md-9">
+        <p>Don’t have an account?<a href="{% url 'signup' %}">SignUp</a></p>
+        </div>
+        <div class="col-md-3 d-flex justify-content-end">
+        <button type="submit" class="btn btn-dark btn-lg ms-2">Reset Password</button>
+        </div>  
+      </div>
+    </form>
+  {% endblock %}
+
+  {% block messages %}
+  {% endblock %}
+
+{% block lowerBodyScript %}
+<script>
+  //forg_paswdForm js
+var usernameError = document.getElementById('username-error');
+var paswd1Error = document.getElementById('paswd1-error');
+var paswd2Error = document.getElementById('paswd2-error');
+
+function validateResetPaswdUser() {
+    var username =document.getElementById('user').value.trim();
+    if(username.length==0){
+        usernameError.innerHTML ='Username is required';
+        usernameError.style.color='black'
+        return false;
+    }
+    if(username.length<4){
+        usernameError.innerHTML ='Enter atleast 3 characters';
+        usernameError.style.color='black'
+        return false;
+    }
+    usernameError.innerHTML='';
+    usernameError.style.color='white'
+    return true;   
+}
+
+function validatePaswd() {
+    var password1=document.getElementById('paswd1').value.trim();  
+
+    if (password1.length==0) {
+        paswd1Error.innerHTML='Paswword is Required';
+        paswd1Error.style.color='black'
+        return false;
+    }
+    paswd1Error.innerHTML='';
+    paswd1Error.style.color='white'
+    return true;
+}
+function validateRePaswd() {
+    var password2=document.getElementById('paswd2').value.trim();  
+    var password1=document.getElementById('paswd1').value.trim();  
+
+    if (password2.length==0) {
+        paswd2Error.innerHTML='Re-Enter Password';
+        paswd2Error.style.color='black'
+        return false;
+    }
+    
+    if (password2 != password1){
+        paswd2Error.innerHTML='Please Enter the same password';
+        paswd2Error.style.color='black'
+        return false;
+    }
+    
+    paswd2Error.innerHTML='';
+    paswd2Error.style.color='white'
+    return true;
+}
+
+$('#forg_paswdForm').submit(function(e){
+    e.preventDefault();                             //This is used to prevent window from submitting the form
+    if ( validateResetPaswdUser() && validatePaswd() && validateRePaswd()) {
+      $(this).unbind().submit()             //This is used to undo preventDefault
+    } 
+    else {
+    e.preventDefault();
+    swal.fire({text :'Ensure You have entered All Data',
+    icon: 'error',
+    confirmButtonColor: 'rgb(46, 44, 44)',
+    });
+    }
+});
+//forg_paswdForm Ends
+</script>
+{% endblock %}
+
+  <!-- swal error MSG -->
+  {% block msg %}
+  {% for message in messages %}
+  <script>
+    swal.fire({
+      title:'{{message}}',
+      //timer: 2000,
+      icon: 'error',
+      confirmButtonColor: 'rgb(46, 44, 44)',
+    }
+    )
+  </script>
+  {% endfor %}
+  {% endblock %}
+  <!-- swal error MSG -->

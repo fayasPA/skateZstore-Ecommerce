@@ -145,6 +145,26 @@ def LogIn(request):
             messages.error(request, 'Username or Password is Incorrect')
     return render(request, 'LogIn.html')
 
+
+@never_cache
+def forgot_paswd(request):
+    if request.user.is_authenticated:
+        return redirect(index)
+    if request.method == 'POST':
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        user = User.objects.filter(username=username)
+        if user.count() == 0:
+            messages.error(request, 'Username Is Not Found')
+        else:
+            user1 = User.objects.get(username=username)
+            print(user1.email)
+            user1.set_password(password1)
+            user1.save()
+            messages.info(request, 'Password has been successfully changed')
+            return redirect(LogIn)
+    return render(request, 'reset_paswd.html')
+
 @never_cache
 def otplogin(request):
     if request.user.is_authenticated:

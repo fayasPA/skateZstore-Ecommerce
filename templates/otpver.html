@@ -2,13 +2,70 @@
 {% load static %}
   {% block form %} 
     <!-- Otp Verification -->
-    <form action="" method="POST">
+    <form id="otpForm" action="" method="POST">
       {%csrf_token%}
       <div class="container mb-4">
-        <input name="otp" type="text" placeholder="Enter OTP" id="form3Example99" class="form-control form-control-lg" />
-      </div>
+        <input name="otp" type="text" placeholder="Enter OTP" id="otp" class="form-control form-control-lg" onkeyup="validateOtp()" />
+          <span id=otp-error></span>
+        </div>
       <div class=" d-flex justify-content-center">
         <button type="submit" class="btn btn-dark btn-lg ms-2">Verify OTP</button>
       </div>
     </form>
   {% endblock %}
+
+  {% block lowerBodyScript %}
+  <script>
+    //otplogin js
+  var otpError = document.getElementById('otp-error');
+  
+  function validateOtp() {
+    var otp =document.getElementById('otp').value.trim();
+    
+        if(otp)
+        {
+            otpError.innerHTML='';
+            otpError.style.color='white'
+            return true;
+        }
+  
+        else{
+            otpError.innerHTML ='OTP is Required';
+            otpError.style.color='black'
+            return false;
+        }
+    }
+  
+  $('#otpForm').submit(function(e){
+      e.preventDefault();                             //This is used to prevent window from submitting the form
+      if ( validateOtp() ) {
+        $(this).unbind().submit()             //This is used to undo preventDefault
+      } 
+      else {
+      e.preventDefault();
+      swal.fire({text :'Ensure You have entered All Data',
+      icon: 'error',
+      confirmButtonColor: 'rgb(46, 44, 44)',
+      });
+      }
+  });
+  
+  //otplogin Ends
+  </script>
+  {% endblock %}
+  
+    <!-- swal error MSG -->
+    {% block msg %}
+    {% for message in messages %}
+    <script>
+      swal.fire({
+        title:'{{message}}',
+        //timer: 2000,
+        icon: 'error',
+        confirmButtonColor: 'rgb(46, 44, 44)',
+      }
+      )
+    </script>
+    {% endfor %}
+    {% endblock %}
+    <!--  placed MSG -->

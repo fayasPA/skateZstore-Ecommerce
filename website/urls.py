@@ -7,6 +7,7 @@ urlpatterns = [
     path('signup',views.signup,name='signup'),
     path('signupotpver',views.signupotpver,name='signupotpver'),
     path('LogIn',views.LogIn,name='LogIn'),
+    path('forgot_paswd',views.forgot_paswd,name='forgot_paswd'),
     path('otplogin',views.otplogin,name='otplogin'),
     path('otpver/<str:mob>/<str:phone_number>',views.otpver,name='otpver'),
     path('LogOut',views.LogOut,name='LogOut'),
