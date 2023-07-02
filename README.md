@@ -1,4 +1,5 @@
 # skateZstore-Ecommerce
+## INTRO
 This is an Ecommerce Project of skateboard products.
 I have included an admin page on top of the website inorder to add new products and product offers and stocks.
 I have build the front end using bootstrap,html,css,js.
