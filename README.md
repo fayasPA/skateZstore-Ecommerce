@@ -12,5 +12,5 @@ Also i have hosted this website in AWS using cloudflare by purchasing domain fro
 - pip3
 - **Note:** It is advised to use virtual environment to run your application!
   - ```bash
-  sudo apt install python3.8-venv
-  ```
+        sudo apt install python3.8-venv
+    ```
