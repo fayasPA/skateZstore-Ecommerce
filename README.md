@@ -6,9 +6,7 @@ I have build the front end using bootstrap,html,css,js.
 I have build the back end using django's Framework.
 I have incorporated Postgresql as database for user and product information.
 Also i have hosted this website in AWS using cloudflare by purchasing domain from freenom.com
-<a href="https://drive.google.com/file/d/1cBQ9BOSOEbpPj5t_tao-3bM3d1D1sxpe/view?usp=drive_link">
-    <img src="https://drive.google.com/file/d/1cBQ9BOSOEbpPj5t_tao-3bM3d1D1sxpe/view?usp=drive_link" alt="Skatezstore logo" title="skatezstore" height="60" />
-</a>
+<a href="https://ibb.co/dJyhKC9"><img src="https://i.ibb.co/dJyhKC9/Screenshot-from-2023-07-03-11-56-55.png" alt="Screenshot-from-2023-07-03-11-56-55" border="0"></a>
 ![skatezstore-frontend](https://drive.google.com/file/d/1cBQ9BOSOEbpPj5t_tao-3bM3d1D1sxpe/view?usp=drive_link.png)
 ## Pre-requesites:
 - Python 3.8
