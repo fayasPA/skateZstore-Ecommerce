@@ -17,7 +17,7 @@ Also i have hosted this website in AWS using cloudflare by purchasing domain fro
 - Cart page and check out page and order page.
 - Payment gateways such as paypal and Razorpay.
 
-## Pre-requesites
+## Pre-requisite
 
 - Python 3.8
 - pip3
