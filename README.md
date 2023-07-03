@@ -6,4 +6,11 @@ I have build the front end using bootstrap,html,css,js.
 I have build the back end using django's Framework.
 I have incorporated Postgresql as database for user and product information.
 Also i have hosted this website in AWS using cloudflare by purchasing domain from freenom.com
-PROJECT LINK - https://skatezstore.tk/
+![skatezstore-frontend](https://drive.google.com/file/d/1cBQ9BOSOEbpPj5t_tao-3bM3d1D1sxpe/view?usp=drive_link)
+## Pre-requesites:
+- Python 3.8
+- pip3
+- **Note:** It is advised to use virtual environment to run your application!
+  - ```bash
+  sudo apt install python3.8-venv
+  ```
